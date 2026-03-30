@@ -16,8 +16,7 @@ Core delivery platform Node.js Frontend Template.
   - [Production](#production)
   - [Npm scripts](#npm-scripts)
   - [Update dependencies](#update-dependencies)
-  - [Formatting](#formatting)
-    - [Windows prettier issue](#windows-prettier-issue)
+  - [Linting and Formatting](#linting-and-formatting)
 - [Docker](#docker)
   - [Development image](#development-image)
   - [Production image](#production-image)
@@ -128,11 +127,16 @@ To update dependencies use [npm-check-updates](https://github.com/raineorshine/n
 ncu --interactive --format group
 ```
 
-### Formatting
+### Linting and Formatting
 
-#### Windows prettier issue
+Code style and formatting are enforced by [neostandard](https://github.com/neostandard/neostandard) via ESLint, per the [Defra JavaScript coding standards](https://defra.github.io/software-development-standards/). SCSS is linted by StyleLint with the GDS config.
 
-If you are having issues with formatting of line breaks on Windows update your global git config by running:
+```bash
+npm run lint          # Check for issues (read-only)
+npm run format        # Auto-fix issues
+```
+
+If you are having issues with line break formatting on Windows, update your global git config:
 
 ```bash
 git config --global core.autocrlf false
