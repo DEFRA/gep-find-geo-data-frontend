@@ -4,6 +4,7 @@ updates:
   # Update npm packages
   - package-ecosystem: npm
     directory: /
+    target-branch: develop
     open-pull-requests-limit: 10
 
     # Group packages into shared PR
@@ -12,17 +13,16 @@ updates:
         patterns:
           - '@babel/*'
           - 'autoprefixer'
-          - 'babel-plugin-module-resolver'
           - 'babel-loader'
-          - 'babel-plugin-transform-import-meta'
-          - 'tsx'
           - 'webpack'
           - 'webpack-*'
           - 'terser-webpack-plugin'
 
       lint:
         patterns:
-          - 'prettier'
+          - 'eslint'
+          - 'eslint-*'
+          - 'neostandard'
           - 'stylelint'
           - 'stylelint-*'
 
@@ -32,6 +32,16 @@ updates:
           - '*-pino-format'
           - 'pino'
           - 'pino-*'
+
+      defra:
+        patterns:
+          - '@defra/*'
+
+      hapi:
+        patterns:
+          - '@hapi/*'
+          - 'blankie'
+          - 'hapi-*'
 
       tools:
         patterns:
@@ -44,14 +54,13 @@ updates:
           - 'source-map-loader'
           - 'sass-*'
           - 'postcss-*'
+          - 'cheerio'
+          - 'clean-webpack-plugin'
+          - 'copy-webpack-plugin'
 
       types:
         patterns:
           - '@types/*'
-
-    ignore:
-      - dependency-name: 'eslint-*'
-      - dependency-name: 'eslint'
 
     # Schedule run every Monday, local time
     schedule:
@@ -68,6 +77,7 @@ updates:
   # Update GitHub Actions
   - package-ecosystem: github-actions
     directory: /
+    target-branch: develop
 
     # Schedule run every Monday, local time
     schedule:
