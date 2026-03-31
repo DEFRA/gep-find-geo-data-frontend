@@ -72,7 +72,7 @@
     "babel-loader": "10.1.1",
     "cheerio": "1.2.0",
     "clean-webpack-plugin": "4.0.0",
-    "copy-webpack-plugin": "13.0.1",
+    "copy-webpack-plugin": "14.0.0",
     "eslint": "9.39.4",
     "husky": "9.1.7",
     "neostandard": "0.13.0",
@@ -90,7 +90,7 @@
     "vitest-fetch-mock": "0.4.5",
     "webpack": "5.105.4",
     "webpack-assets-manifest": "6.5.1",
-    "webpack-cli": "6.0.1"
+    "webpack-cli": "7.0.2"
   },
   "overrides": {
     "tmp": "0.2.5",
