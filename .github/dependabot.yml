@@ -72,6 +72,10 @@ updates:
       - dependency-name: 'eslint'
         versions: ['>=10']
 
+      # stylelint 17 not yet supported by stylelint-config-gds
+      - dependency-name: 'stylelint'
+        versions: ['>=17']
+
     # Schedule run every Monday, local time
     schedule:
       interval: weekly
