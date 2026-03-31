@@ -23,8 +23,27 @@ Core delivery platform Node.js Frontend Template.
   - [Docker Compose](#docker-compose)
   - [Dependabot](#dependabot)
   - [SonarCloud](#sonarcloud)
+- [Version Control](#version-control)
+  - [Branching](#branching)
+  - [Commit Messages](#commit-messages)
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
+
+## Version Control
+
+### Branching
+
+This project follows [Gitflow](https://defra.github.io/software-development-standards/guides/developer_workflows/#gitflow).
+
+### Commit Messages
+
+This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. Commit messages must be structured as:
+
+```
+<type>(<optional scope>): <description>
+```
+
+Common types: `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `refactor`, `test`.
 
 ## Requirements
 
