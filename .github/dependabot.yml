@@ -9,14 +9,28 @@ updates:
 
     # Group packages into shared PR
     groups:
-      build:
+      dev-tools:
         patterns:
           - '@babel/*'
+          - '@vitest/*'
           - 'autoprefixer'
           - 'babel-loader'
+          - 'cheerio'
+          - 'clean-webpack-plugin'
+          - 'copy-webpack-plugin'
+          - 'cssnano'
+          - 'cssnano-*'
+          - 'husky'
+          - 'nodemon'
+          - 'npm-run-all'
+          - 'postcss-*'
+          - 'sass-*'
+          - 'source-map-loader'
+          - 'terser-webpack-plugin'
+          - 'vitest'
+          - 'vitest-*'
           - 'webpack'
           - 'webpack-*'
-          - 'terser-webpack-plugin'
 
       lint:
         patterns:
@@ -37,30 +51,26 @@ updates:
         patterns:
           - '@defra/*'
 
-      hapi:
+      server:
         patterns:
           - '@hapi/*'
           - 'blankie'
+          - 'convict'
+          - 'convict-*'
+          - 'date-fns'
+          - 'global-agent'
           - 'hapi-*'
-
-      tools:
-        patterns:
-          - 'husky'
-          - 'vitest'
-          - 'vitest-*'
-          - 'nodemon'
-          - 'npm-run-all'
+          - 'ioredis'
           - 'lodash'
-          - 'source-map-loader'
-          - 'sass-*'
-          - 'postcss-*'
-          - 'cheerio'
-          - 'clean-webpack-plugin'
-          - 'copy-webpack-plugin'
+          - 'node-fetch'
+          - 'nunjucks'
+          - 'semver'
+          - 'undici'
 
-      types:
-        patterns:
-          - '@types/*'
+    ignore:
+      # eslint 10 not yet supported by neostandard
+      - dependency-name: 'eslint'
+        versions: ['>=10']
 
     # Schedule run every Monday, local time
     schedule:
