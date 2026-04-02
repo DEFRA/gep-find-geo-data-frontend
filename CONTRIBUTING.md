@@ -22,7 +22,7 @@ Common types: `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `refactor`, `test`.
 
 ## Code style
 
-Code style and formatting are enforced by [neostandard](https://github.com/neostandard/neostandard) via ESLint — no semicolons, single quotes, no trailing commas. SCSS is linted by [StyleLint](https://stylelint.io/) with the GDS config.
+Code style and formatting are enforced by [neostandard](https://github.com/neostandard/neostandard) via ESLint. SCSS is linted by [StyleLint](https://stylelint.io/) with the GDS config.
 
 ```bash
 npm run lint          # Check for issues (read-only)

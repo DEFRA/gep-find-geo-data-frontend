@@ -60,7 +60,7 @@ describe('context and cache', () => {
               href: '/about'
             }
           ],
-          cspNonce: undefined,
+          cspNonce: null,
           serviceName: 'gep-find-geo-data-frontend',
           serviceUrl: '/'
         })
@@ -98,6 +98,7 @@ describe('context and cache', () => {
 
       test('Should log that the Webpack Manifest file is not available', () => {
         expect(mockLoggerError).toHaveBeenCalledWith(
+          expect.any(Error),
           'Webpack assets-manifest.json not found'
         )
       })
@@ -150,7 +151,7 @@ describe('context and cache', () => {
               href: '/about'
             }
           ],
-          cspNonce: undefined,
+          cspNonce: null,
           serviceName: 'gep-find-geo-data-frontend',
           serviceUrl: '/'
         })
