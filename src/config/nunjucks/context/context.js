@@ -14,6 +14,14 @@ const manifestPath = path.join(
 
 let webpackManifest
 
+function parseAnalyticsConsent (cookieValue) {
+  try {
+    return JSON.parse(decodeURIComponent(cookieValue || '')).analytics === true
+  } catch {
+    return false
+  }
+}
+
 export function context (request) {
   if (!webpackManifest) {
     try {
@@ -23,6 +31,12 @@ export function context (request) {
     }
   }
 
+  const cookieConsentSet = Boolean(request.state?.defra_cookies_policy_set)
+  const cookieAction = request.query?.cookieAction || null
+  const hasAnalyticsConsent = parseAnalyticsConsent(
+    request.state?.defra_cookies_policy
+  )
+
   return {
     assetPath: `${assetPath}/assets`,
     serviceName: config.get('serviceName'),
@@ -30,6 +44,11 @@ export function context (request) {
     breadcrumbs: [],
     navigation: buildNavigation(request),
     cspNonce: request.plugins?.blankie?.nonces?.script ?? null,
+    gtmContainerId: config.get('googleTagManager.containerId'),
+    cookieConsentSet,
+    cookieAction,
+    hasAnalyticsConsent,
+    currentUrl: request.path,
     getAssetPath (asset) {
       const webpackAssetPath = webpackManifest?.[asset]
       return `${assetPath}/${webpackAssetPath ?? asset}`
