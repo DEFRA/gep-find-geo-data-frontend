@@ -1,0 +1,21 @@
+Documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.md']
+
+Feature:
+  - head-branch: ['^feature', 'feature']
+
+Fix:
+  - head-branch: ['^fix', 'fix']
+
+Refactor:
+  - head-branch: ['^refactor', 'refactor']
+
+Chore:
+  - head-branch: ['^chore', 'chore']
+
+Develop:
+  - base-branch: ['^develop', 'develop']
+
+Production:
+  - base-branch: ['^main', 'main']
