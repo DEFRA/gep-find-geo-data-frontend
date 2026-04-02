@@ -23,7 +23,7 @@ describe('context and cache', () => {
   })
 
   describe('#context', () => {
-    const mockRequest = { path: '/' }
+    const mockRequest = { path: '/', state: {}, query: {} }
 
     describe('When webpack manifest file read succeeds', () => {
       let contextImport
@@ -61,6 +61,11 @@ describe('context and cache', () => {
             }
           ],
           cspNonce: null,
+          gtmContainerId: null,
+          cookieConsentSet: false,
+          cookieAction: null,
+          hasAnalyticsConsent: false,
+          currentUrl: '/',
           serviceName: 'gep-find-geo-data-frontend',
           serviceUrl: '/'
         })
@@ -106,7 +111,7 @@ describe('context and cache', () => {
   })
 
   describe('#context cache', () => {
-    const mockRequest = { path: '/' }
+    const mockRequest = { path: '/', state: {}, query: {} }
     let contextResult
 
     describe('Webpack manifest file cache', () => {
@@ -152,6 +157,11 @@ describe('context and cache', () => {
             }
           ],
           cspNonce: null,
+          gtmContainerId: null,
+          cookieConsentSet: false,
+          cookieAction: null,
+          hasAnalyticsConsent: false,
+          currentUrl: '/',
           serviceName: 'gep-find-geo-data-frontend',
           serviceUrl: '/'
         })
