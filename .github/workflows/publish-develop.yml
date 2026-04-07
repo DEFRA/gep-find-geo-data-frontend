@@ -24,14 +24,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Calculate version
+      - name: Auto version
         id: version
-        run: |
-          TAG=$(git tag --merged HEAD --sort=-v:refname \
-            | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
-          TAG="${TAG:-0.0.0}"
-          echo "value=${TAG}-dev.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-          echo "Calculated version: ${TAG}-dev.${{ github.run_number }}"
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DEFAULT_BUMP: patch
+          TAG_CONTEXT: branch
 
       - name: Test code and Create Test Coverage Reports
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -48,7 +48,7 @@ jobs:
         uses: DEFRA/cdp-build-action/build@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          version: ${{ steps.version.outputs.value }}
+          version: ${{ steps.version.outputs.new_tag }}
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.0
