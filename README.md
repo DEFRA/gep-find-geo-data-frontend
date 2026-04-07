@@ -17,39 +17,24 @@ Core delivery platform Node.js Frontend Template.
   - [Npm scripts](#npm-scripts)
   - [Update dependencies](#update-dependencies)
   - [Linting and Formatting](#linting-and-formatting)
+  - [Testing](#testing)
+  - [CI/CD](#cicd)
 - [Docker](#docker)
   - [Development image](#development-image)
   - [Production image](#production-image)
   - [Docker Compose](#docker-compose)
   - [Dependabot](#dependabot)
   - [SonarCloud](#sonarcloud)
-- [Version Control](#version-control)
-  - [Branching](#branching)
-  - [Commit Messages](#commit-messages)
+- [Branching Strategy](#branching-strategy)
+- [Contributing](#contributing-to-this-project)
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
-
-## Version Control
-
-### Branching
-
-This project follows [Gitflow](https://defra.github.io/software-development-standards/guides/developer_workflows/#gitflow).
-
-### Commit Messages
-
-This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. Commit messages must be structured as:
-
-```
-<type>(<optional scope>): <description>
-```
-
-Common types: `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `refactor`, `test`.
 
 ## Requirements
 
 ### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v22` and [npm](https://nodejs.org/) `>= v9`. You will find it
+Please install [Node.js](http://nodejs.org/) `>= v24` and [npm](https://nodejs.org/) `>= v10`. You will find it
 easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
 
 To use the correct version of Node.js for this application, via nvm:
@@ -161,6 +146,36 @@ If you are having issues with line break formatting on Windows, update your glob
 git config --global core.autocrlf false
 ```
 
+### Testing
+
+Run the test suite with coverage:
+
+```bash
+npm test
+```
+
+To run a single test file:
+
+```bash
+npx vitest run path/to/file.test.js
+```
+
+Test coverage must meet 90% for lines, functions, statements and branches. This is enforced by the [vitest configuration](vitest.config.js).
+
+### CI/CD
+
+Pull requests to `develop` and `main` trigger the [Check Pull Request](.github/workflows/check-pull-request.yml) workflow which ensures the frontend builds, linting passes, tests run with coverage thresholds met, a security audit passes, and the Docker image builds successfully.
+
+A [Gitflow PR target check](.github/workflows/gitflow-pr-target-check.yml) runs on all pull requests to ensure branches are targeting the correct base branch.
+
+#### Build and deploy
+
+Merges to `develop` trigger [Publish Develop](.github/workflows/publish-develop.yml) which patch-bumps a git tag (e.g. `0.3.1`, `0.3.2`) and builds a Docker image with that version. CDP auto-deploys these to the dev environment.
+
+Pushes to a `release/*` branch trigger [Publish Release](.github/workflows/publish-release.yml) which builds a versioned Docker image (e.g. `0.3.0`), creates a git tag, and updates `package.json`. Release branches must be named `release/X.Y.0`. Deploy release artifacts to staging and production manually through the CDP portal.
+
+Hotfixes are handled by the existing [Publish Hot Fix](.github/workflows/publish-hotfix.yml) workflow, triggered manually from a hotfix branch.
+
 ## Docker
 
 ### Development image
@@ -215,7 +230,15 @@ Dependabot is configured in [.github/dependabot.yml](.github/dependabot.yml) to 
 
 ### SonarCloud
 
-Instructions for setting up SonarCloud can be found in [sonar-project.properties](./sonar-project.properties).
+SonarCloud runs static analysis on pull requests via the [Check Pull Request](.github/workflows/check-pull-request.yml) workflow. Configuration is in [sonar-project.properties](./sonar-project.properties). Results are available on the [SonarCloud dashboard](https://sonarcloud.io/summary/new_code?id=DEFRA_gep-find-geo-data-frontend).
+
+## Branching Strategy
+
+This project follows [Gitflow](https://defra.github.io/software-development-standards/guides/developer_workflows/#gitflow) with `develop` as the integration branch and `main` for production releases. See [Contributing](CONTRIBUTING.md#branching) for full details.
+
+## Contributing to this project
+
+Please read the [contribution guidelines](CONTRIBUTING.md) before submitting a pull request.
 
 ## Licence
 
