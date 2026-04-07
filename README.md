@@ -25,6 +25,7 @@ Core delivery platform Node.js Frontend Template.
   - [Docker Compose](#docker-compose)
   - [Dependabot](#dependabot)
   - [SonarCloud](#sonarcloud)
+- [Branching Strategy](#branching-strategy)
 - [Contributing](#contributing-to-this-project)
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
@@ -224,6 +225,10 @@ Dependabot is configured in [.github/dependabot.yml](.github/dependabot.yml) to 
 ### SonarCloud
 
 SonarCloud runs static analysis on pull requests via the [Check Pull Request](.github/workflows/check-pull-request.yml) workflow. Configuration is in [sonar-project.properties](./sonar-project.properties). Results are available on the [SonarCloud dashboard](https://sonarcloud.io/summary/new_code?id=DEFRA_gep-find-geo-data-frontend).
+
+## Branching Strategy
+
+This project follows [Gitflow](https://defra.github.io/software-development-standards/guides/developer_workflows/#gitflow) with `develop` as the integration branch and `main` for production releases. See [Contributing](CONTRIBUTING.md#branching) for full details.
 
 ## Contributing to this project
 
