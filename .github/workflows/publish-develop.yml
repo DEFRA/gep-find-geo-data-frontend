@@ -16,7 +16,6 @@ env:
 
 jobs:
   build:
-    if: github.run_number != 1
     name: CDP-build-develop
     runs-on: ubuntu-latest
     steps:
