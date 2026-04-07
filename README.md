@@ -168,7 +168,13 @@ Pull requests to `develop` and `main` trigger the [Check Pull Request](.github/w
 
 A [Gitflow PR target check](.github/workflows/gitflow-pr-target-check.yml) runs on all pull requests to ensure branches are targeting the correct base branch.
 
-Merges to `main` trigger the [Publish](.github/workflows/publish.yml) workflow which builds and publishes a Docker image via the CDP build action.
+#### Build and deploy
+
+Merges to `develop` trigger [Publish Develop](.github/workflows/publish-develop.yml) which builds a Docker image tagged with a pre-release version (e.g. `0.2.0-dev.48`). This is the image that CDP auto-deploys to the dev environment.
+
+Pushes to a `release/*` branch trigger [Publish Release](.github/workflows/publish-release.yml) which builds a versioned Docker image (e.g. `0.3.0`), creates a git tag, and updates `package.json`. Deploy release artifacts to staging and production manually through the CDP portal. *Release builds also set the `latest` Docker tag, which means auto-deploy to dev will briefly pick up the release image until the next develop build reclaims it.*
+
+Hotfixes are handled by the existing [Publish Hot Fix](.github/workflows/publish-hotfix.yml) workflow, triggered manually from a hotfix branch.
 
 ## Docker
 
