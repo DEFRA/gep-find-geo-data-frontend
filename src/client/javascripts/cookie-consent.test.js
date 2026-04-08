@@ -16,7 +16,7 @@ import {
 function clearCookies () {
   document.cookie.split(';').forEach((cookie) => {
     const name = cookie.split('=')[0].trim()
-    document.cookie = `${name}=; max-age=0; path=/`
+    document.cookie = `${name}=; max-age=0; path=/` // snyk:ignore CWE-614
   })
 }
 
@@ -62,6 +62,7 @@ describe('cookie-consent', () => {
     })
 
     it('should return parsed consent when cookie is set', () => {
+      // snyk:ignore CWE-614
       document.cookie =
         'defra_cookies_policy=' +
         encodeURIComponent('{"analytics":true}') +
@@ -71,7 +72,7 @@ describe('cookie-consent', () => {
     })
 
     it('should return null for invalid JSON', () => {
-      document.cookie = 'defra_cookies_policy=invalid-json; path=/'
+      document.cookie = 'defra_cookies_policy=invalid-json; path=/' // snyk:ignore CWE-614
 
       expect(getCookieConsent()).toBeNull()
     })
@@ -139,8 +140,8 @@ describe('cookie-consent', () => {
 
   describe('#removeAnalyticsCookies', () => {
     it('should remove _ga cookies', () => {
-      document.cookie = '_ga=test; path=/'
-      document.cookie = '_ga_ABC123=test; path=/'
+      document.cookie = '_ga=test; path=/' // snyk:ignore CWE-614
+      document.cookie = '_ga_ABC123=test; path=/' // snyk:ignore CWE-614
 
       removeAnalyticsCookies()
 
@@ -152,7 +153,7 @@ describe('cookie-consent', () => {
         hostname: 'find-geo-data.defra.gov.uk'
       })
 
-      document.cookie = '_ga=test; path=/'
+      document.cookie = '_ga=test; path=/' // snyk:ignore CWE-614
 
       removeAnalyticsCookies()
 
