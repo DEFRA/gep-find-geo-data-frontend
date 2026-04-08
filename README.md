@@ -174,7 +174,7 @@ Merges to `develop` trigger [Publish Develop](.github/workflows/publish-develop.
 
 Pushes to a `release/*` branch trigger [Publish Release](.github/workflows/publish-release.yml) which builds a versioned Docker image (e.g. `0.2.0`), creates a git tag, updates `package.json`, and opens a draft PR to `main` with auto-generated release notes. Release branches must be named `release/X.Y.0`. Deploy the release artifact to staging and production via the CDP portal, then mark the PR ready for review and merge once tested.
 
-When a PR is merged into `main`, the [Auto Back-merge](.github/workflows/auto-back-merge.yml) workflow merges `main` back into `develop` to keep it up to date. If the merge fails due to conflicts, a PR from `main` to `develop` must be opened manually.
+When a PR is merged into `main`, the [Auto Back-merge](.github/workflows/auto-back-merge.yml) workflow opens a PR to merge `main` back into `develop`. Review and merge it to keep develop up to date.
 
 Hotfixes are handled by the [Publish Hot Fix](.github/workflows/publish-hotfix.yml) workflow, triggered manually from a hotfix branch. Each trigger builds a new patch version (e.g. `0.2.1`, `0.2.2`) so fixes can be re-tested before merging. Deploy hotfix artifacts via the CDP portal.
 

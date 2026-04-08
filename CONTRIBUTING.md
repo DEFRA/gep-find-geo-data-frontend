@@ -18,9 +18,7 @@ Create feature branches from `develop` using kebab-case names, e.g. `feature/add
 2. Push the branch. The [Publish Release](.github/workflows/publish-release.yml) workflow builds, tests, tags, and opens a draft PR to `main` with generated release notes
 3. Deploy the release artifact via the CDP portal and test it
 4. Mark the PR ready for review. Once approved, merge to `main`
-5. The [Auto Back-merge](.github/workflows/auto-back-merge.yml) workflow merges `main` back into `develop`
-
-If the back-merge fails (usually a conflict), open a PR from `main` to `develop` and resolve it manually.
+5. The [Auto Back-merge](.github/workflows/auto-back-merge.yml) workflow opens a PR to merge `main` back into `develop`. Review and merge it
 
 > **Note:** Do not update the version in `package.json` manually. The release and hotfix workflows handle version bumping automatically.
 
@@ -30,7 +28,7 @@ If the back-merge fails (usually a conflict), open a PR from `main` to `develop`
 2. Open a PR targeting `main`
 3. To build and deploy for testing, manually trigger the [Publish Hot Fix](.github/workflows/publish-hotfix.yml) workflow from the hotfix branch. This is intentionally manual so the fix can be reviewed before publishing. Each trigger produces a new patch version (e.g. `0.2.1`, `0.2.2`), so you can push more commits and re-trigger to test further fixes
 4. Merge the PR to `main`
-5. The back-merge workflow syncs the fix to `develop`
+5. The back-merge workflow opens a PR to sync the fix to `develop`. Review and merge it
 
 ### Branch rules
 

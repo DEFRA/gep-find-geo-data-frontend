@@ -134,11 +134,11 @@ jobs:
           if [ -n "$PREV_TAG" ]; then
             NOTES_ARGS="$NOTES_ARGS -f previous_tag_name=$PREV_TAG"
           fi
-          BODY=$(gh api repos/${{ github.repository }}/releases/generate-notes \
-            -X POST $NOTES_ARGS --jq '.body')
+          gh api repos/${{ github.repository }}/releases/generate-notes \
+            -X POST $NOTES_ARGS --jq '.body' > "$RUNNER_TEMP/release-notes.md"
           gh pr create \
             --base main \
             --head "${{ github.ref_name }}" \
             --title "release: ${VERSION_MINOR}" \
-            --body "$BODY" \
+            --body-file "$RUNNER_TEMP/release-notes.md" \
             --draft
