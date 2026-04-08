@@ -1,4 +1,5 @@
 import { config } from '../../config/config.js'
+import { getSafeRedirect } from '../common/helpers/get-safe-redirect.js'
 
 const gtmContainerId = config.get('googleTagManager.containerId')
 
@@ -43,7 +44,7 @@ const cookiesPostController = {
 
 const bannerAcceptController = {
   handler (request, h) {
-    const returnUrl = request.payload?.returnUrl || '/'
+    const returnUrl = getSafeRedirect(request.payload?.returnUrl)
     const consent = encodeURIComponent(JSON.stringify({ analytics: true }))
 
     return h
@@ -55,7 +56,7 @@ const bannerAcceptController = {
 
 const bannerRejectController = {
   handler (request, h) {
-    const returnUrl = request.payload?.returnUrl || '/'
+    const returnUrl = getSafeRedirect(request.payload?.returnUrl)
     const consent = encodeURIComponent(JSON.stringify({ analytics: false }))
 
     return h
