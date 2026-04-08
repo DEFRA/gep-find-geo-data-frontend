@@ -16,6 +16,12 @@ jobs:
           BASE_BRANCH: ${{ github.base_ref }}
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |
+          # Allow merging main back into develop (manual back-merge after conflict)
+          if [[ "$HEAD_BRANCH" == "main" && "$BASE_BRANCH" == "develop" ]]; then
+            echo "Allowed: $HEAD_BRANCH → $BASE_BRANCH"
+            exit 0
+          fi
+
           # Allow merging feature, hotfix, bugfix, release, or dependabot into develop
           if [[ "$HEAD_BRANCH" =~ ^(feature/|hotfix/|bugfix/|release/|dependabot/) && "$BASE_BRANCH" == "develop" ]]; then
             echo "Allowed: $HEAD_BRANCH → $BASE_BRANCH"
@@ -37,6 +43,7 @@ jobs:
           # If none of the above conditions match, block the PR
           echo "Error: Invalid PR - '$HEAD_BRANCH' cannot be merged into '$BASE_BRANCH'."
           echo "Allowed merges:"
+          echo "  - main → develop (back-merge)"
           echo "  - feature/*, hotfix/*, bugfix/*, release/*, dependabot/* → develop"
           echo "  - release/*, hotfix/* → main"
           echo "  - sync/* → intermediate-sync"
