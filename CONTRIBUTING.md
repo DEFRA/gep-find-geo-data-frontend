@@ -6,9 +6,39 @@ When raising a bug, please fill out the issue template including what you did, w
 
 ## Branching
 
-This project follows [Gitflow](https://defra.github.io/software-development-standards/guides/developer_workflows/#gitflow). Create feature branches from `develop` using kebab-case names, e.g. `feature/add-search-page`.
+This project follows [Gitflow](https://defra.github.io/software-development-standards/guides/developer_workflows/#gitflow) with one difference: releases and hotfixes only merge into `main`. A workflow handles merging `main` back into `develop` automatically.
 
-Branch protection is enforced through repository rulesets. All changes to `develop`, `release/*` and `main` must go through a pull request with all status checks passing. Pull requests for new features should target `develop`. A GitHub Action is included in the repository to check that PR targets match Gitflow workflow rules.
+### Day-to-day work
+
+Create feature branches from `develop` using kebab-case names, e.g. `feature/add-search-page` or `feature/GEP-123/add-search-page`. The task reference is optional. Open a PR targeting `develop`.
+
+### Releases
+
+1. Create a `release/X.Y.0` branch from `develop`
+2. Push the branch. The [Publish Release](.github/workflows/publish-release.yml) workflow builds, tests, tags, and opens a draft PR to `main` with generated release notes
+3. Deploy the release artifact via the CDP portal and test it
+4. Mark the PR ready for review. Once approved, merge to `main`
+5. The [Auto Back-merge](.github/workflows/auto-back-merge.yml) workflow merges `main` back into `develop`
+
+If the back-merge fails (usually a conflict), open a PR from `main` to `develop` and resolve it manually.
+
+> **Note:** Do not update the version in `package.json` manually. The release and hotfix workflows handle version bumping automatically.
+
+### Hotfixes
+
+1. Create a `hotfix/` branch from `main`
+2. Open a PR targeting `main`
+3. To build and deploy for testing, manually trigger the [Publish Hot Fix](.github/workflows/publish-hotfix.yml) workflow from the hotfix branch. This is intentionally manual so the fix can be reviewed before publishing. Each trigger produces a new patch version (e.g. `0.2.1`, `0.2.2`), so you can push more commits and re-trigger to test further fixes
+4. Merge the PR to `main`
+5. The back-merge workflow syncs the fix to `develop`
+
+### Branch rules
+
+Branch protection is enforced through repository rulesets. All changes to `develop`, `release/*` and `main` must go through a pull request with status checks passing. A [PR target check](.github/workflows/gitflow-pr-target-check.yml) validates that branches target the correct base:
+
+- `feature/*`, `bugfix/*`, `hotfix/*`, `release/*`, `dependabot/*` can target `develop`
+- `release/*`, `hotfix/*` can target `main`
+- `main` can target `develop` (back-merge)
 
 ## Commit messages
 

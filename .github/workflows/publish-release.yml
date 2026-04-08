@@ -35,6 +35,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check minor is not used by develop
+        run: |
+          MINOR=$(echo "${{ github.ref_name }}" | sed 's|release/||' | awk -F. '{print $1"."$2}')
+          DEV_TAGS=$(git tag --merged origin/develop | grep -E "^${MINOR}\.[1-9][0-9]*$")
+          if [ -n "$DEV_TAGS" ]; then
+            LATEST_RELEASE=$(git tag --sort=-v:refname | grep -E '^\d+\.\d+\.0$' | head -1)
+            NEXT=$(echo "$LATEST_RELEASE" | awk -F. '{printf "%d.%d.0", $1, $2+2}')
+            echo "::error::Minor ${MINOR} has develop builds. Use release/${NEXT} instead."
+            exit 1
+          fi
+
       - name: Calculate version
         id: version
         run: |
@@ -50,6 +61,21 @@ jobs:
           fi
           echo "value=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "Calculated version: ${VERSION}"
+
+      - name: Seed next develop minor
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEXT_MINOR=$(echo "${{ steps.version.outputs.value }}" | awk -F. '{printf "%d.%d.0", $1, $2+1}')
+          if git rev-parse "$NEXT_MINOR" >/dev/null 2>&1; then
+            echo "Seed tag $NEXT_MINOR already exists, skipping"
+          else
+            DEVELOP_SHA=$(gh api repos/${{ github.repository }}/git/refs/heads/develop --jq '.object.sha')
+            gh api repos/${{ github.repository }}/git/refs -X POST \
+              -f ref="refs/tags/$NEXT_MINOR" \
+              -f sha="$DEVELOP_SHA"
+            echo "Created seed tag $NEXT_MINOR on develop"
+          fi
 
       - name: Test code and Create Test Coverage Reports
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
@@ -91,3 +117,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Create release PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION_MINOR=$(echo "${{ steps.version.outputs.value }}" | awk -F. '{print $1"."$2}')
+          EXISTING=$(gh pr list --base main --head "${{ github.ref_name }}" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            echo "PR #${EXISTING} already exists for ${{ github.ref_name }} -> main"
+            exit 0
+          fi
+          CURRENT_MINOR=$(echo "${{ steps.version.outputs.value }}" | awk -F. '{print $1"."$2}')
+          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^\d+\.\d+\.0$' | grep -v "^${CURRENT_MINOR}\." | head -1)
+          NOTES_ARGS="-f tag_name=${{ steps.version.outputs.value }}"
+          if [ -n "$PREV_TAG" ]; then
+            NOTES_ARGS="$NOTES_ARGS -f previous_tag_name=$PREV_TAG"
+          fi
+          BODY=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            -X POST $NOTES_ARGS --jq '.body')
+          gh pr create \
+            --base main \
+            --head "${{ github.ref_name }}" \
+            --title "release: ${VERSION_MINOR}" \
+            --body "$BODY" \
+            --draft
