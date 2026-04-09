@@ -1,6 +1,6 @@
 {
   "name": "gep-find-geo-data-frontend",
-  "version": "0.4.2",
+  "version": "0.6.1",
   "description": "CDP Frontend Template",
   "sideEffects": false,
   "main": "src/index.js",
