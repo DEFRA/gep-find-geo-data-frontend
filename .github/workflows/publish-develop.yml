@@ -26,12 +26,19 @@ jobs:
 
       - name: Auto version
         id: version
-        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: false
-          DEFAULT_BUMP: patch
-          TAG_CONTEXT: branch
+        run: |
+          LATEST=$(git tag --merged HEAD --sort=-v:refname \
+            | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 || true)
+          if [ -z "$LATEST" ]; then
+            LATEST="0.0.0"
+          fi
+          NEXT=$(echo "$LATEST" | awk -F. '{print $1"."$2"."$3+1}')
+          echo "new_tag=${NEXT}" >> "$GITHUB_OUTPUT"
+          echo "Bumping ${LATEST} -> ${NEXT}"
+          git tag "$NEXT"
+          git push origin "$NEXT"
 
       - name: Test code and Create Test Coverage Reports
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0

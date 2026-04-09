@@ -147,6 +147,28 @@ describe('#cookiesController', () => {
       expect(response.headers.location).toBe('/?cookieAction=accept')
     })
 
+    test('should redirect to home when return URL is an external URL', async () => {
+      const response = await server.inject({
+        method: 'POST',
+        url: '/cookies/accept',
+        payload: { returnUrl: 'https://evil.com' }
+      })
+
+      expect(response.statusCode).toBe(302)
+      expect(response.headers.location).toBe('/?cookieAction=accept')
+    })
+
+    test('should redirect to home when return URL is protocol-relative', async () => {
+      const response = await server.inject({
+        method: 'POST',
+        url: '/cookies/accept',
+        payload: { returnUrl: '//evil.com' }
+      })
+
+      expect(response.statusCode).toBe(302)
+      expect(response.headers.location).toBe('/?cookieAction=accept')
+    })
+
     test('should set consent cookies', async () => {
       const response = await server.inject({
         method: 'POST',
@@ -183,6 +205,17 @@ describe('#cookiesController', () => {
       const response = await server.inject({
         method: 'POST',
         url: '/cookies/reject'
+      })
+
+      expect(response.statusCode).toBe(302)
+      expect(response.headers.location).toBe('/?cookieAction=reject')
+    })
+
+    test('should redirect to home when return URL is an external URL', async () => {
+      const response = await server.inject({
+        method: 'POST',
+        url: '/cookies/reject',
+        payload: { returnUrl: 'https://evil.com' }
       })
 
       expect(response.statusCode).toBe(302)

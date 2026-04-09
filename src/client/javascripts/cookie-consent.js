@@ -1,6 +1,8 @@
 const COOKIE_NAME = 'defra_cookies_policy'
 const COOKIE_SET_NAME = 'defra_cookies_policy_set'
 const MAX_AGE_SECONDS = 31536000
+const isSecure = globalThis.location?.protocol === 'https:'
+const secureSuffix = isSecure ? '; Secure' : ''
 
 export function getCookieConsent () {
   const match = document.cookie
@@ -19,8 +21,8 @@ export function getCookieConsent () {
 
 export function setCookieConsent (consent) {
   const value = encodeURIComponent(JSON.stringify(consent))
-  document.cookie = `${COOKIE_NAME}=${value}; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Lax`
-  document.cookie = `${COOKIE_SET_NAME}=true; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Lax`
+  document.cookie = `${COOKIE_NAME}=${value}; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Lax${secureSuffix}`
+  document.cookie = `${COOKIE_SET_NAME}=true; path=/; max-age=${MAX_AGE_SECONDS}; SameSite=Lax${secureSuffix}`
 }
 
 export function hasConsentBeenSet () {
@@ -55,8 +57,8 @@ export function removeAnalyticsCookies () {
   for (const cookie of cookies) {
     const name = cookie.split('=')[0]
     if (name.startsWith('_ga')) {
-      document.cookie = `${name}=; path=/; max-age=0`
-      document.cookie = `${name}=; path=/; max-age=0; domain=.${cookieDomain}`
+      document.cookie = `${name}=; path=/; max-age=0${secureSuffix}`
+      document.cookie = `${name}=; path=/; max-age=0; domain=.${cookieDomain}${secureSuffix}`
     }
   }
 }

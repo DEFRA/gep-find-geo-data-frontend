@@ -14,7 +14,7 @@ Create feature branches from `develop` using kebab-case names, e.g. `feature/add
 
 ### Releases
 
-1. Create a `release/X.Y.0` branch from `develop`
+1. Create a `release/X.Y` branch from `develop` (e.g. `release/0.1`)
 2. Push the branch. The [Publish Release](.github/workflows/publish-release.yml) workflow builds, tests, tags, and opens a draft PR to `main` with generated release notes
 3. Deploy the release artifact via the CDP portal and test it
 4. Mark the PR ready for review. Once approved, merge to `main`
