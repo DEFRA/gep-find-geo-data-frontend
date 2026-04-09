@@ -3,7 +3,7 @@ name: Publish Release
 on:
   push:
     branches:
-      - 'release/**'
+      - "release/**"
 
 concurrency:
   group: publish-release-${{ github.ref_name }}
@@ -38,10 +38,10 @@ jobs:
       - name: Check minor is not used by develop
         run: |
           MINOR=$(echo "${{ github.ref_name }}" | sed 's|release/||')
-          DEV_TAGS=$(git tag --merged origin/develop | grep -E "^${MINOR}\.[1-9][0-9]*$")
+          DEV_TAGS=$(git tag --merged origin/develop | grep -E "^${MINOR}\.[1-9][0-9]*$" || true)
           if [ -n "$DEV_TAGS" ]; then
-            LATEST_RELEASE=$(git tag --sort=-v:refname | grep -E '^\d+\.\d+\.0$' | head -1)
-            NEXT=$(echo "$LATEST_RELEASE" | awk -F. '{printf "%d.%d", $1, $2+2}')
+            LATEST_DEV=$(git tag --merged origin/develop --sort=-v:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 || true)
+            NEXT=$(echo "$LATEST_DEV" | awk -F. '{printf "%d.%d", $1, $2+1}')
             echo "::error::Minor ${MINOR} has develop builds. Use release/${NEXT} instead."
             exit 1
           fi
@@ -51,7 +51,7 @@ jobs:
         run: |
           MINOR=$(echo "${{ github.ref_name }}" | sed 's|release/||')
           LATEST=$(git tag --sort=-v:refname \
-            | grep -E "^${MINOR}\.[0-9]+$" | head -1)
+            | grep -E "^${MINOR}\.[0-9]+$" | head -1 || true)
           if [ -z "$LATEST" ]; then
             VERSION="${MINOR}.0"
           else
@@ -127,8 +127,7 @@ jobs:
             echo "PR #${EXISTING} already exists for ${{ github.ref_name }} -> main"
             exit 0
           fi
-          CURRENT_MINOR=$(echo "${{ steps.version.outputs.value }}" | awk -F. '{print $1"."$2}')
-          PREV_TAG=$(git tag --sort=-v:refname | grep -E '^\d+\.\d+\.0$' | grep -v "^${CURRENT_MINOR}\." | head -1)
+          PREV_TAG=$(git tag --merged origin/main --sort=-v:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 || true)
           NOTES_ARGS="-f tag_name=${{ steps.version.outputs.value }}"
           if [ -n "$PREV_TAG" ]; then
             NOTES_ARGS="$NOTES_ARGS -f previous_tag_name=$PREV_TAG"
