@@ -222,6 +222,26 @@ export const config = convict({
       default: 'x-cdp-request-id',
       env: 'TRACING_HEADER'
     }
+  },
+  geonetwork: {
+    apiUrl: {
+      doc: 'GeoNetwork 4 REST API base URL',
+      format: String,
+      default: 'http://localhost:8080/geonetwork/srv/api',
+      env: 'GEONETWORK_API_URL'
+    },
+    useMock: {
+      doc: 'Use mock GeoNetwork responses instead of a live instance',
+      format: Boolean,
+      default: true,
+      env: 'GEONETWORK_USE_MOCK'
+    },
+    mockRecordCount: {
+      doc: 'Generated mock records to include in the pool',
+      format: Number,
+      default: 100,
+      env: 'GEONETWORK_MOCK_RECORD_COUNT'
+    }
   }
 })
 

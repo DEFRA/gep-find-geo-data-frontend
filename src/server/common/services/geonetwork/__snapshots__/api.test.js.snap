@@ -1,0 +1,173 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`#api > #search Elasticsearch query generation > query body snapshots > combined query, filters, facets and sort 1`] = `
+{
+  "_source": [
+    "resourceTitleObject.default",
+    "resourceAbstractObject.default",
+    "OrgForResourceObject.default",
+    "resourceDate.date",
+  ],
+  "aggs": {
+    "dataType": {
+      "aggs": {
+        "dataType": {
+          "terms": {
+            "field": "cl_spatialRepresentationType.key",
+            "size": 50,
+          },
+        },
+      },
+      "filter": {
+        "bool": {
+          "filter": [
+            {
+              "terms": {
+                "OrgForResourceObject.default": [
+                  "Environment Agency",
+                  "Natural England",
+                ],
+              },
+            },
+          ],
+        },
+      },
+    },
+    "owner": {
+      "aggs": {
+        "owner": {
+          "terms": {
+            "field": "OrgForResourceObject.default",
+            "size": 50,
+          },
+        },
+      },
+      "filter": {
+        "bool": {
+          "filter": [
+            {
+              "terms": {
+                "cl_spatialRepresentationType.key": [
+                  "grid",
+                ],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  "from": 0,
+  "post_filter": {
+    "bool": {
+      "filter": [
+        {
+          "terms": {
+            "OrgForResourceObject.default": [
+              "Environment Agency",
+              "Natural England",
+            ],
+          },
+        },
+        {
+          "terms": {
+            "cl_spatialRepresentationType.key": [
+              "grid",
+            ],
+          },
+        },
+      ],
+    },
+  },
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "fields": [
+              "resourceTitleObject.default^3",
+              "resourceAbstractObject.default",
+            ],
+            "query": "flood",
+            "type": "best_fields",
+          },
+        },
+      ],
+    },
+  },
+  "size": 10,
+  "sort": [
+    {
+      "resourceDate.date": {
+        "nested": {
+          "path": "resourceDate",
+        },
+        "order": "desc",
+      },
+    },
+  ],
+}
+`;
+
+exports[`#api > #search Elasticsearch query generation > query body snapshots > empty input 1`] = `
+{
+  "_source": [
+    "resourceTitleObject.default",
+    "resourceAbstractObject.default",
+    "OrgForResourceObject.default",
+    "resourceDate.date",
+  ],
+  "from": 0,
+  "size": 10,
+  "sort": [
+    {
+      "_score": {
+        "order": "desc",
+      },
+    },
+  ],
+}
+`;
+
+exports[`#api > #search Elasticsearch query generation > query body snapshots > sort by newest 1`] = `
+{
+  "_source": [
+    "resourceTitleObject.default",
+    "resourceAbstractObject.default",
+    "OrgForResourceObject.default",
+    "resourceDate.date",
+  ],
+  "from": 0,
+  "size": 10,
+  "sort": [
+    {
+      "resourceDate.date": {
+        "nested": {
+          "path": "resourceDate",
+        },
+        "order": "desc",
+      },
+    },
+  ],
+}
+`;
+
+exports[`#api > #search Elasticsearch query generation > query body snapshots > sort by titleAsc 1`] = `
+{
+  "_source": [
+    "resourceTitleObject.default",
+    "resourceAbstractObject.default",
+    "OrgForResourceObject.default",
+    "resourceDate.date",
+  ],
+  "from": 0,
+  "size": 10,
+  "sort": [
+    {
+      "resourceTitleObject.default.keyword": {
+        "order": "asc",
+      },
+    },
+  ],
+}
+`;
