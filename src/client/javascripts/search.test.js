@@ -23,8 +23,11 @@ function setupDom () {
           </div>
         </details>
         <select name="sort">
-          <option value="relevance" selected>Relevance</option>
-          <option value="title">Title</option>
+          <option value="relevance" selected>Best match</option>
+          <option value="titleAsc">Alphabetical (A-Z)</option>
+          <option value="titleDesc">Alphabetical (Z-A)</option>
+          <option value="newest">Updated (newest)</option>
+          <option value="oldest">Updated (oldest)</option>
         </select>
       </div>
       <div id="search-results">

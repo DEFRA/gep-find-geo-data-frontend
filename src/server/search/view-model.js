@@ -6,11 +6,11 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 export const DEFAULT_PAGE_SIZE = 20
 
 const SORT_OPTIONS = [
-  { value: 'relevance', text: 'Relevance' },
-  { value: 'newest', text: 'Most recently updated' },
-  { value: 'oldest', text: 'Least recently updated' },
-  { value: 'titleAsc', text: 'Title A to Z' },
-  { value: 'titleDesc', text: 'Title Z to A' }
+  { value: 'relevance', text: 'Best match' },
+  { value: 'titleAsc', text: 'Alphabetical (A-Z)' },
+  { value: 'titleDesc', text: 'Alphabetical (Z-A)' },
+  { value: 'newest', text: 'Updated (newest)' },
+  { value: 'oldest', text: 'Updated (oldest)' }
 ]
 
 const VALID_SORTS = new Set(SORT_OPTIONS.map((option) => option.value))
