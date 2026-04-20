@@ -30,7 +30,7 @@ function matchesQuery (record, terms) {
 function pickSearchFields (record) {
   const result = { id: record.id }
   for (const [name, field] of Object.entries(fields)) {
-    if (!field.hitAccessor) {
+    if (!field.inSearchResult) {
       continue
     }
     result[name] = record[name] ?? null
@@ -153,4 +153,12 @@ async function search ({
   }
 }
 
-export { search }
+/**
+ * @param {string} id
+ * @returns {Promise<import('./client.js').MetadataRecord | null>}
+ */
+async function getRecord (id) {
+  return pool.find((record) => record.id === id) ?? null
+}
+
+export { search, getRecord }

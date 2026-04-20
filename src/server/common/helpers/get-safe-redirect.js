@@ -1,6 +1,6 @@
 /**
  * Validates and returns a safe redirect URL.
- * @param {string} url - The redirect URL to validate
+ * @param {unknown} url - The redirect URL to validate
  * @returns {string} Safe relative path, or '/' if invalid
  */
 export function getSafeRedirect (url) {

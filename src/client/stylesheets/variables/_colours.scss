@@ -14,5 +14,9 @@ $govuk-light-grey: #f3f2f1;
 $govuk-mid-grey: #b1b4b6;
 $govuk-yellow: #ffdd00;
 $govuk-focus-colour: #ffdd00;
+$govuk-secondary-text-colour: #505a5f;
 
 $app-light-grey: #f8f8f8;
+
+// Typography (matches $govuk-font-family override in _govuk-frontend.scss)
+$app-font-family: 'Helvetica', 'Arial', sans-serif;

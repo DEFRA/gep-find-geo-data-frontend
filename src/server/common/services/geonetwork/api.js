@@ -7,8 +7,9 @@ import {
   facetNames,
   fields,
   searchFields,
+  searchSourceIncludes,
+  recordSourceIncludes,
   sortMap,
-  sourceIncludes,
   validateSearchOptions
 } from './fields.js'
 
@@ -64,6 +65,27 @@ function facetFilterClauses (filters, excludeKey) {
 }
 
 /**
+ * @param {import('./client.js').GeoPoint} [location]
+ * @returns {object | null}
+ */
+function locationClause (location) {
+  if (!location) {
+    return null
+  }
+  return {
+    geo_shape: {
+      geom: {
+        shape: {
+          type: 'point',
+          coordinates: [location.longitude, location.latitude]
+        },
+        relation: 'intersects'
+      }
+    }
+  }
+}
+
+/**
  * @param {{ query?: string, filters: import('./client.js').SearchFilters }} options
  * @returns {object | undefined}
  */
@@ -80,9 +102,20 @@ function buildQuery ({ query, filters }) {
     }]
   }
 
+  const filterClauses = []
+
   const range = updatedAtRangeClause(filters.updatedAtBetween)
   if (range) {
-    bool.filter = [range]
+    filterClauses.push(range)
+  }
+
+  const geo = locationClause(filters.location)
+  if (geo) {
+    filterClauses.push(geo)
+  }
+
+  if (filterClauses.length > 0) {
+    bool.filter = filterClauses
   }
 
   if (Object.keys(bool).length === 0) {
@@ -199,20 +232,40 @@ async function postSearch (body) {
 
 /**
  * @param {{ _id: string, _source?: Object<string, any> }} hit
- * @returns {import('./client.js').SearchResult}
+ * @param {(field: import('./fields.js').Field) => boolean} include
  */
-function mapHit (hit) {
+function mapHit (hit, include) {
   const src = hit._source ?? {}
   const result = { id: hit._id }
 
   for (const [name, field] of Object.entries(fields)) {
-    if (!field.hitAccessor) {
+    if (!field.hitAccessor || !include(field)) {
       continue
     }
     result[name] = field.hitAccessor(src)
   }
 
-  return /** @type {import('./client.js').SearchResult} */ (result)
+  return result
+}
+
+/**
+ * @param {{ _id: string, _source?: Object<string, any> }} hit
+ * @returns {import('./client.js').SearchResult}
+ */
+function mapSearchHit (hit) {
+  return /** @type {import('./client.js').SearchResult} */ (
+    mapHit(hit, (field) => Boolean(field.inSearchResult))
+  )
+}
+
+/**
+ * @param {{ _id: string, _source?: Object<string, any> }} hit
+ * @returns {import('./client.js').MetadataRecord}
+ */
+function mapRecordHit (hit) {
+  return /** @type {import('./client.js').MetadataRecord} */ (
+    mapHit(hit, () => true)
+  )
 }
 
 /**
@@ -258,7 +311,7 @@ async function search ({
   const body = {
     from,
     size,
-    _source: sourceIncludes,
+    _source: searchSourceIncludes,
     query: buildQuery({ query, filters }),
     post_filter: buildPostFilter(filters),
     aggs: buildAggs(facets, filters),
@@ -269,9 +322,28 @@ async function search ({
 
   return {
     total: esResponse.hits?.total?.value ?? 0,
-    results: (esResponse.hits?.hits ?? []).map(mapHit),
+    results: (esResponse.hits?.hits ?? []).map(mapSearchHit),
     facets: mapFacets(esResponse.aggregations, facets)
   }
 }
 
-export { search }
+/**
+ * @param {string} id
+ * @returns {Promise<import('./client.js').MetadataRecord | null>}
+ */
+async function getRecord (id) {
+  const body = {
+    size: 1,
+    _source: recordSourceIncludes,
+    query: { ids: { values: [id] } }
+  }
+
+  const esResponse = await postSearch(body)
+  const hit = esResponse.hits?.hits?.[0]
+  if (!hit) {
+    return null
+  }
+  return mapRecordHit(hit)
+}
+
+export { search, getRecord }

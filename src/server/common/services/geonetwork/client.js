@@ -9,10 +9,17 @@ import { config } from '../../../../config/config.js'
  */
 
 /**
+ * @typedef {Object} GeoPoint
+ * @property {number} latitude
+ * @property {number} longitude
+ */
+
+/**
  * @typedef {Object} SearchFilters
  * @property {string[]} [owner]
  * @property {string[]} [dataType]
  * @property {UpdatedAtBetween} [updatedAtBetween]
+ * @property {GeoPoint} [location]
  */
 
 /**
@@ -70,4 +77,13 @@ async function search (options) {
   return client.search(options)
 }
 
-export { search }
+/**
+ * @param {string} id
+ * @returns {Promise<MetadataRecord | null>}
+ */
+async function getRecord (id) {
+  const client = config.get('geonetwork.useMock') ? mock : api
+  return client.getRecord(id)
+}
+
+export { search, getRecord }

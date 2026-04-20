@@ -1,0 +1,9 @@
+@use '../variables/colours' as *;
+
+.govuk-pagination__item--current {
+  background-color: $defra-green;
+
+  &:hover {
+    background-color: $defra-green-dark;
+  }
+}

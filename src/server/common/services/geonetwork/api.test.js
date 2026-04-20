@@ -124,7 +124,8 @@ describe('#api', () => {
           query: 'flood',
           filters: {
             owner: ['Environment Agency', 'Natural England'],
-            dataType: ['grid']
+            dataType: ['Grid'],
+            location: { latitude: 51.501, longitude: -0.142 }
           },
           facets: ['owner', 'dataType'],
           sort: 'newest'
@@ -235,7 +236,7 @@ describe('#api', () => {
       await search({
         filters: {
           owner: ['Natural England'],
-          dataType: ['grid']
+          dataType: ['Grid']
         }
       })
       const body = lastRequestBody()
@@ -244,7 +245,7 @@ describe('#api', () => {
         bool: {
           filter: [
             { terms: { 'OrgForResourceObject.default': ['Natural England'] } },
-            { terms: { 'cl_spatialRepresentationType.key': ['grid'] } }
+            { terms: { 'cl_spatialRepresentationType.default': ['Grid'] } }
           ]
         }
       })
@@ -255,7 +256,7 @@ describe('#api', () => {
       await search({
         filters: {
           owner: ['Natural England'],
-          dataType: ['grid'],
+          dataType: ['Grid'],
           updatedAtBetween: { from: '2024-01-01T00:00:00.000Z' }
         },
         facets: ['owner', 'dataType']
@@ -265,7 +266,7 @@ describe('#api', () => {
       expect(body.aggs.owner.filter).toEqual({
         bool: {
           filter: [
-            { terms: { 'cl_spatialRepresentationType.key': ['grid'] } }
+            { terms: { 'cl_spatialRepresentationType.default': ['Grid'] } }
           ]
         }
       })
@@ -281,18 +282,45 @@ describe('#api', () => {
         }
       })
       expect(body.aggs.dataType.aggs.dataType).toEqual({
-        terms: { field: 'cl_spatialRepresentationType.key', size: 50 }
+        terms: { field: 'cl_spatialRepresentationType.default', size: 50 }
       })
     })
 
     test('a facet with only its own filter selected wraps in match_all', async () => {
       mockEmptyResponse()
       await search({
-        filters: { dataType: ['grid'] },
+        filters: { dataType: ['Grid'] },
         facets: ['dataType']
       })
       const body = lastRequestBody()
       expect(body.aggs.dataType.filter).toEqual({ match_all: {} })
+    })
+
+    test('location emits a geo_shape intersects clause', async () => {
+      mockEmptyResponse()
+      await search({
+        filters: {
+          location: { latitude: 51.501, longitude: -0.142 }
+        }
+      })
+      const body = lastRequestBody()
+      expect(body.query).toEqual({
+        bool: {
+          filter: [
+            {
+              geo_shape: {
+                geom: {
+                  shape: {
+                    type: 'point',
+                    coordinates: [-0.142, 51.501]
+                  },
+                  relation: 'intersects'
+                }
+              }
+            }
+          ]
+        }
+      })
     })
 
     test('empty updatedAtBetween is dropped', async () => {

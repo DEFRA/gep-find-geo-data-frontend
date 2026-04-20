@@ -23,7 +23,7 @@ describe('#errors', () => {
     })
 
     expect(result).toEqual(
-      expect.stringContaining('Page not found | gep-find-geo-data-frontend')
+      expect.stringContaining('Page not found | Data Search Catalogue')
     )
     expect(statusCode).toBe(statusCodes.notFound)
   })

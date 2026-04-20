@@ -13,7 +13,7 @@ const defraOrgs = [
   'Department for Environment, Food and Rural Affairs'
 ]
 
-const dataTypes = ['vector', 'grid']
+const dataTypes = ['Vector', 'Grid']
 
 const themes = [
   'Forest Cover',

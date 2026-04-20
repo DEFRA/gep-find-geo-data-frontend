@@ -8,6 +8,7 @@ import {
 } from 'govuk-frontend'
 
 import { initCookieBanner, initCookiesPage } from './cookie-consent.js'
+import { initSearch } from './search.js'
 
 createAll(Button)
 createAll(Checkboxes)
@@ -17,3 +18,4 @@ createAll(SkipLink)
 
 initCookieBanner()
 initCookiesPage()
+initSearch()

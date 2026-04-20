@@ -46,6 +46,11 @@ export const config = convict({
     format: String,
     default: 'gep-find-geo-data-frontend'
   },
+  serviceDisplayName: {
+    doc: 'Human-readable service name shown in the UI',
+    format: String,
+    default: 'Data Search Catalogue'
+  },
   root: {
     doc: 'Project root',
     format: String,

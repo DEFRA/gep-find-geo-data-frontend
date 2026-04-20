@@ -1,0 +1,348 @@
+@use '../variables/colours' as *;
+
+// ===== Search box (input + button) =====
+
+.app-search-box {
+  margin-bottom: 20px;
+}
+
+.app-search-box--sidebar {
+  max-width: none;
+}
+
+.app-search-box__group {
+  display: flex;
+  align-items: stretch;
+  max-width: 540px;
+}
+
+.app-search-box__input {
+  flex: 1;
+  margin-bottom: 0;
+  border-right: 0;
+}
+
+.app-search-box__button {
+  background-color: $defra-green;
+  border: 2px solid $defra-green;
+  width: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $govuk-white;
+  cursor: pointer;
+  box-shadow: none;
+
+  &:hover {
+    background-color: $defra-green-dark;
+    border-color: $defra-green-dark;
+  }
+
+  &:focus {
+    outline: 3px solid $govuk-yellow;
+    outline-offset: 0;
+    background-color: $govuk-yellow;
+    color: $govuk-black;
+    border-color: $govuk-black;
+    box-shadow: inset 0 0 0 1px $govuk-black;
+  }
+}
+
+.app-search-box__icon {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+// ===== Filter panel (sidebar) =====
+
+.app-filter-panel {
+  margin-bottom: 20px;
+
+  > .govuk-details {
+    margin-bottom: 0;
+  }
+}
+
+.app-filter-group {
+  margin-bottom: 0;
+  border-bottom: 1px solid $govuk-mid-grey;
+
+  &:first-of-type {
+    border-top: 1px solid $govuk-mid-grey;
+  }
+
+  .govuk-details__summary {
+    position: relative;
+    padding: 12px 0 12px 28px;
+    list-style: none;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  // govuk-frontend renders its own ::before arrow with higher specificity
+  // when [open]; we must match both states to suppress it.
+  .govuk-details__summary::before,
+  &[open] > .govuk-details__summary::before {
+    display: none;
+  }
+
+  &[open] .app-filter-group__chevron {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .govuk-details__summary-text {
+    color: $defra-green;
+    font-weight: bold;
+    padding-left: 0;
+  }
+
+  .govuk-details__text {
+    padding: 0 0 15px;
+    border-left: 0;
+  }
+}
+
+.app-filter-group__count {
+  display: block;
+  margin-top: 2px;
+  font-family: $app-font-family;
+  font-size: 14px;
+  font-weight: 400;
+  color: $govuk-secondary-text-colour;
+}
+
+.app-filter-group__chevron {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  color: $govuk-secondary-text-colour;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+}
+
+.govuk-frontend-supported .app-js-fallback {
+  display: none;
+}
+
+.app-filter-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-top: 15px;
+}
+
+.app-filter-panel__apply {
+  background-color: $defra-green;
+
+  &:hover {
+    background-color: $defra-green-dark;
+  }
+}
+
+// ===== Active filter groups (grouped chips) =====
+
+.app-active-filters {
+  margin-bottom: 20px;
+}
+
+.app-active-filters__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 15px;
+  padding: 10px 15px;
+  margin: 0;
+  background-color: $govuk-white;
+
+  &:nth-child(odd) {
+    background-color: $govuk-light-grey;
+  }
+}
+
+.app-active-filters__facet {
+  flex: 0 0 auto;
+  font-family: $app-font-family;
+  font-size: 16px;
+  color: $govuk-secondary-text-colour;
+  min-width: 70px;
+}
+
+.app-active-filters__items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-active-filters__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.app-active-filters__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border: 1px solid $govuk-mid-grey;
+  border-radius: 3px;
+  background-color: $govuk-white;
+  font-family: $app-font-family;
+  font-size: 16px;
+  line-height: 1.5;
+
+  &,
+  &:link,
+  &:visited,
+  &:hover,
+  &:active,
+  &:focus {
+    color: $govuk-black;
+    text-decoration: none;
+  }
+
+  &:hover {
+    background-color: $defra-light-green;
+    border-color: $defra-green;
+  }
+
+  &:focus {
+    outline: 3px solid $govuk-yellow;
+    outline-offset: 0;
+    background-color: $govuk-yellow;
+    box-shadow: inset 0 0 0 1px $govuk-black;
+  }
+}
+
+.app-active-filters__chip-x {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 1;
+  color: $govuk-secondary-text-colour;
+
+  .app-active-filters__chip:hover &,
+  .app-active-filters__chip:focus & {
+    color: $govuk-black;
+  }
+}
+
+.app-active-filters__or {
+  font-family: $app-font-family;
+  font-size: 16px;
+  color: $govuk-secondary-text-colour;
+}
+
+// ===== Results controls (sort + per-page) =====
+
+.app-results-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 0;
+
+  .govuk-form-group {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+  }
+
+  .govuk-label {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+}
+
+.app-results-controls__select {
+  width: auto;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.app-result-range {
+  margin-top: 15px;
+  margin-bottom: 0;
+  text-align: right;
+  color: $govuk-secondary-text-colour;
+}
+
+// ===== Loading state =====
+
+.app-search-region[aria-busy="true"] {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+// ===== Search results list =====
+
+.app-search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.app-search-results__item {
+  padding: 15px 0;
+  border-bottom: 1px solid $govuk-mid-grey;
+
+  &:first-child {
+    border-top: 1px solid $govuk-mid-grey;
+  }
+}
+
+.app-search-results__title {
+  &,
+  &:link,
+  &:visited {
+    color: $defra-green;
+  }
+
+  &:hover {
+    color: $defra-green-dark;
+  }
+
+  &:focus {
+    color: $govuk-black;
+  }
+}
+
+.govuk-pagination__link {
+  &,
+  &:link,
+  &:visited {
+    color: $defra-green;
+  }
+
+  &:hover {
+    color: $defra-green-dark;
+  }
+}
+
+.app-search-results__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  color: $govuk-secondary-text-colour;
+  margin-bottom: 0;
+}
+
+.app-search-results__meta-item {
+  display: inline-block;
+}

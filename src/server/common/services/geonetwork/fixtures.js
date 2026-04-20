@@ -1,4 +1,5 @@
 const curatedRecords = [
+  // https://environment.data.gov.uk/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0
   {
     id: '92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
     title: 'Priority Habitats Inventory (England)',
@@ -22,9 +23,10 @@ Coastal sand dunes – Dunes under coniferous woodland (CWDUN), Dunes under deci
 General – Degraded (DEGRD)
  Attribution statement: © Natural England copyright. Contains Ordnance Survey data © Crown copyright and database right [year].`,
     owner: 'Natural England',
-    dataType: 'vector',
+    dataType: 'Vector',
     updatedAt: '2025-10-23T00:00:00.000Z'
   },
+  // https://environment.data.gov.uk/dataset/2c8553c9-aa45-4666-9824-8ce0c7faf6a9
   {
     id: '2c8553c9-aa45-4666-9824-8ce0c7faf6a9',
     title: 'Reservoir Flood Extents (Individual)',
@@ -38,17 +40,19 @@ Each scenario represents a prediction of a credible worst case scenario, however
 
 Flood extents are not included for smaller reservoirs or for reservoirs commissioned after the reservoir modelling programme began in October 2016. Attribution statement: © Environment Agency copyright and/or database right 2025. All rights reserved.`,
     owner: 'Environment Agency',
-    dataType: 'vector',
+    dataType: 'Vector',
     updatedAt: '2026-03-10T00:00:00.000Z'
   },
+  // https://environment.data.gov.uk/dataset/ba8dc201-66ef-4983-9d46-7378af21027e
   {
     id: 'ba8dc201-66ef-4983-9d46-7378af21027e',
     title: 'Sites of Special Scientific Interest (England)',
     abstract: 'A Site of Special Scientific Interest (SSSI) is the land notified as an SSSI under the Wildlife and Countryside Act (1981), as amended. Sites notified under the 1949 Act only are not included in the Data set. SSSI are the finest sites for wildlife and natural features in England, supporting many characteristic, rare and endangered species, habitats and natural features. The data do not include "proposed" sites. Boundaries are generally mapped against Ordnance Survey MasterMap. Attribution statement: © Natural England copyright. Contains Ordnance Survey data © Crown copyright and database right [year].',
     owner: 'Natural England',
-    dataType: 'vector',
+    dataType: 'Vector',
     updatedAt: '2025-04-15T00:00:00.000Z'
   },
+  // https://environment.data.gov.uk/dataset/f425f1e1-fc18-4b5a-88d8-76934125627c
   {
     id: 'f425f1e1-fc18-4b5a-88d8-76934125627c',
     title: 'Ancient Woodland (England)',
@@ -60,9 +64,10 @@ Ancient woodland includes Ancient Semi-Natural Woodland (ASNW), which retains a 
 Our guidance document can be accessed below.
  Attribution statement: © Natural England [Year]; © Crown Copyright and database rights [year]. Ordnance Survey AC0000851168; © 2015 Getmapping plc and Bluesky International Ltd; © Woodland Trust; © Forest Commission; Contains, or is based on, information supplied by the Forestry Commission. © Crown copyright and database right [Year] Ordnance Survey [100021242]; © and database right Crown copyright and Landmark Information Group Ltd. All rights reserved [year]; © Ancient Tree Hunt`,
     owner: 'Natural England',
-    dataType: 'vector',
+    dataType: 'Vector',
     updatedAt: '2026-03-15T00:00:00.000Z'
   },
+  // https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc
   {
     id: '13787b9a-26a4-4775-8523-806d13af58fc',
     title: 'LIDAR Composite Digital Terrain Model (DTM) - 1m',
@@ -74,7 +79,7 @@ The 2022 LIDAR Composite contains surveys undertaken between 6th June 2000 and 2
 
 The data is available to download as GeoTiff rasters in 5km tiles aligned to the OS National grid. The data is presented in metres, referenced to Ordinance Survey Newlyn and using the OSTN’15 transformation method. All individual LIDAR surveys going into the production of the composite had a vertical accuracy of +/-15cm RMSE. Attribution statement: © Environment Agency copyright and/or database right 2022. All rights reserved.`,
     owner: 'Environment Agency',
-    dataType: 'grid',
+    dataType: 'Grid',
     updatedAt: '2023-12-15T00:00:00.000Z'
   }
 ]

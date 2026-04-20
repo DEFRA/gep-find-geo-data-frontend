@@ -1,7 +1,20 @@
 @use 'govuk-frontend' as *;
+@use '../variables/colours' as *;
 
 body {
   font-family: Helvetica, Arial, sans-serif;
+}
+
+.govuk-link:link {
+  color: $defra-green;
+}
+
+.govuk-link:visited {
+  color: $govuk-link-visited-colour;
+}
+
+.govuk-link:hover {
+  color: $defra-green-dark;
 }
 
 .app-main-wrapper {

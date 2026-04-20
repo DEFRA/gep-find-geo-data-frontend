@@ -13,7 +13,7 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
       "aggs": {
         "dataType": {
           "terms": {
-            "field": "cl_spatialRepresentationType.key",
+            "field": "cl_spatialRepresentationType.default",
             "size": 50,
           },
         },
@@ -47,8 +47,8 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
           "filter": [
             {
               "terms": {
-                "cl_spatialRepresentationType.key": [
-                  "grid",
+                "cl_spatialRepresentationType.default": [
+                  "Grid",
                 ],
               },
             },
@@ -71,8 +71,8 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
         },
         {
           "terms": {
-            "cl_spatialRepresentationType.key": [
-              "grid",
+            "cl_spatialRepresentationType.default": [
+              "Grid",
             ],
           },
         },
@@ -81,6 +81,22 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
   },
   "query": {
     "bool": {
+      "filter": [
+        {
+          "geo_shape": {
+            "geom": {
+              "relation": "intersects",
+              "shape": {
+                "coordinates": [
+                  -0.142,
+                  51.501,
+                ],
+                "type": "point",
+              },
+            },
+          },
+        },
+      ],
       "must": [
         {
           "multi_match": {
