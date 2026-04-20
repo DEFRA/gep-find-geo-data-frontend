@@ -1,0 +1,26 @@
+{% if results.length %}
+  <ul class="app-search-results">
+    {% for result in results %}
+      <li class="app-search-results__item">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+          <a href="{{ result.href }}" class="govuk-link app-search-results__title">{{ result.title }}</a>
+        </h3>
+        {% if result.abstract %}
+          <p class="govuk-body-s govuk-!-margin-bottom-1">{{ result.abstract }}</p>
+        {% endif %}
+        {% if result.owner or result.updatedAt %}
+          <p class="govuk-body-s app-search-results__meta">
+            {% if result.owner %}
+              <span class="app-search-results__meta-item">Data owner: {{ result.owner }}</span>
+            {% endif %}
+            {% if result.updatedAt %}
+              <span class="app-search-results__meta-item">Date last updated: {{ result.updatedAt | formatDate }}</span>
+            {% endif %}
+          </p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="govuk-body">No results found. Try fewer keywords or clear your filters.</p>
+{% endif %}

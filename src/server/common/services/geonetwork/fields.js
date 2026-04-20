@@ -6,6 +6,7 @@
  * @property {boolean} [sortable]
  * @property {boolean} [facetable]
  * @property {boolean} [searchable]
+ * @property {boolean} [inSearchResult]
  * @property {number} [searchBoost]
  * @property {(src: object) => string | null} [hitAccessor]
  */
@@ -17,27 +18,32 @@ const fields = {
     esSortField: 'resourceTitleObject.default.keyword',
     sortable: true,
     searchable: true,
+    inSearchResult: true,
     searchBoost: 3,
     hitAccessor: (src) => src.resourceTitleObject?.default ?? ''
   },
   abstract: {
     esField: 'resourceAbstractObject.default',
     searchable: true,
+    inSearchResult: true,
     hitAccessor: (src) => src.resourceAbstractObject?.default ?? ''
   },
   owner: {
     esField: 'OrgForResourceObject.default',
     facetable: true,
+    inSearchResult: true,
     hitAccessor: (src) => src.OrgForResourceObject?.default ?? null
   },
   dataType: {
-    esField: 'cl_spatialRepresentationType.key',
-    facetable: true
+    esField: 'cl_spatialRepresentationType.default',
+    facetable: true,
+    hitAccessor: (src) => src.cl_spatialRepresentationType?.[0]?.default ?? null
   },
   updatedAt: {
     esField: 'resourceDate.date',
     esNestedPath: 'resourceDate',
     sortable: true,
+    inSearchResult: true,
     hitAccessor: (src) => {
       const dates = (src.resourceDate ?? [])
         .map((entry) => entry?.date)
@@ -63,7 +69,11 @@ const sortMap = {
   oldest: { field: 'updatedAt', order: 'asc' }
 }
 
-const sourceIncludes = Object.values(fields)
+const searchSourceIncludes = Object.values(fields)
+  .filter((field) => field.inSearchResult && field.hitAccessor && field.esField)
+  .map((field) => field.esField)
+
+const recordSourceIncludes = Object.values(fields)
   .filter((field) => field.hitAccessor && field.esField)
   .map((field) => field.esField)
 
@@ -77,7 +87,7 @@ const facetNames = Object.keys(fields).filter(
   (name) => fields[name].facetable && fields[name].esField
 )
 
-const validFilterKeys = new Set([...facetNames, 'updatedAtBetween'])
+const validFilterKeys = new Set([...facetNames, 'updatedAtBetween', 'location'])
 
 /**
  * @param {object} [options]
@@ -108,7 +118,8 @@ function validateSearchOptions ({ filters, facets, sort } = {}) {
 export {
   fields,
   sortMap,
-  sourceIncludes,
+  searchSourceIncludes,
+  recordSourceIncludes,
   searchFields,
   facetNames,
   validateSearchOptions

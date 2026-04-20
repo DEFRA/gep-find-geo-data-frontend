@@ -54,7 +54,7 @@ describe('#mock', () => {
 
     test('narrows the result set when a dataType filter is applied', async () => {
       const filtered = await search({
-        filters: { dataType: ['vector'] },
+        filters: { dataType: ['Vector'] },
         size: testRecordCount
       })
       expect(filtered.total).toBeGreaterThan(0)
@@ -159,7 +159,7 @@ describe('#mock', () => {
 
     test('facet buckets filters for other facets', async () => {
       const result = await search({
-        filters: { dataType: ['vector'] },
+        filters: { dataType: ['Vector'] },
         facets: ['owner'],
         size: 0
       })

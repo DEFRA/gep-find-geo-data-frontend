@@ -1,0 +1,39 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% for group in facetGroups %}
+  <details class="govuk-details app-filter-group" data-module="govuk-details" data-filter-group="{{ group.name }}">
+    <summary class="govuk-details__summary">
+      <span class="govuk-details__summary-text">{{ group.legend }}</span>
+      {% if group.selectedCount %}
+        <span class="app-filter-group__count">{{ group.selectedCount }} selected</span>
+      {% endif %}
+      {% include "search/_filter-chevron.njk" %}
+    </summary>
+    <div class="govuk-details__text">
+      {% if group.items.length %}
+        {{ govukCheckboxes({
+          name: group.name,
+          classes: "govuk-checkboxes--small",
+          fieldset: {
+            legend: { text: group.legend, classes: "govuk-visually-hidden" }
+          },
+          items: group.items
+        }) }}
+      {% else %}
+        <p class="govuk-body govuk-hint">No options available</p>
+      {% endif %}
+    </div>
+  </details>
+{% endfor %}
+
+{% include "search/filters/date/_filter.njk" %}
+
+{% include "search/filters/location/_filter.njk" %}
+
+<div class="app-filter-panel__actions app-js-fallback">
+  {{ govukButton({
+    text: "Apply filters",
+    classes: "app-filter-panel__apply"
+  }) }}
+</div>

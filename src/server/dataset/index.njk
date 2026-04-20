@@ -1,0 +1,13 @@
+{% extends 'layouts/page.njk' %}
+
+{% block content %}
+  <div class="defra-width-container govuk-!-margin-top-5">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">{{ heading }}</h1>
+
+        <pre class="govuk-body" style="white-space: pre-wrap; word-break: break-word; background: #f3f2f1; padding: 15px;">{{ record | dump(2) }}</pre>
+      </div>
+    </div>
+  </div>
+{% endblock %}

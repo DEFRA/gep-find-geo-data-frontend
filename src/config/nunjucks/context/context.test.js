@@ -53,11 +53,6 @@ describe('context and cache', () => {
               current: true,
               text: 'Home',
               href: '/'
-            },
-            {
-              current: false,
-              text: 'About',
-              href: '/about'
             }
           ],
           cspNonce: null,
@@ -66,7 +61,7 @@ describe('context and cache', () => {
           cookieAction: null,
           hasAnalyticsConsent: false,
           currentUrl: '/',
-          serviceName: 'gep-find-geo-data-frontend',
+          serviceName: 'Data Search Catalogue',
           serviceUrl: '/'
         })
       })
@@ -149,11 +144,6 @@ describe('context and cache', () => {
               current: true,
               text: 'Home',
               href: '/'
-            },
-            {
-              current: false,
-              text: 'About',
-              href: '/about'
             }
           ],
           cspNonce: null,
@@ -162,7 +152,7 @@ describe('context and cache', () => {
           cookieAction: null,
           hasAnalyticsConsent: false,
           currentUrl: '/',
-          serviceName: 'gep-find-geo-data-frontend',
+          serviceName: 'Data Search Catalogue',
           serviceUrl: '/'
         })
       })

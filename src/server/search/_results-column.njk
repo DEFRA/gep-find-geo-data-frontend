@@ -1,0 +1,51 @@
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% if hasErrors %}
+  <p class="govuk-body">Fix the problems above to see results.</p>
+{% else %}
+
+<h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+  {{ totalResults }} result{% if totalResults !== 1 %}s{% endif %}
+</h2>
+
+<div data-app-active-filters>
+  {% include "search/_active-filters.njk" %}
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
+
+<div class="app-results-controls">
+  {{ govukSelect({
+    id: "sort",
+    name: "sort",
+    label: { text: "Sort by" },
+    items: sortOptions,
+    classes: "app-results-controls__select"
+  }) }}
+  {{ govukSelect({
+    id: "per-page",
+    name: "size",
+    label: { text: "Results per page" },
+    items: pageSizeOptions,
+    classes: "app-results-controls__select"
+  }) }}
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible govuk-section-break--m">
+
+{% include "search/_results-list.njk" %}
+
+<div data-app-pagination>
+  {% if pagination %}
+    {{ govukPagination(pagination) }}
+  {% endif %}
+</div>
+
+{% if resultRange %}
+  <p class="app-result-range govuk-body-s">
+    {% include "search/_result-range-text.njk" %}
+  </p>
+{% endif %}
+
+{% endif %}

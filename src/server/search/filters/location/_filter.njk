@@ -1,0 +1,15 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+<details class="govuk-details app-filter-group" data-module="govuk-details" data-filter-group="location"{% if locationFilter.hasErrors %} open{% endif %}>
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">Location</span>
+    {% if locationFilter.selected and not locationFilter.hasErrors %}
+      <span class="app-filter-group__count">1 selected</span>
+    {% endif %}
+    {% include "search/_filter-chevron.njk" %}
+  </summary>
+  <div class="govuk-details__text">
+    {{ govukInput(locationFilter.latitudeInput) }}
+    {{ govukInput(locationFilter.longitudeInput) }}
+  </div>
+</details>

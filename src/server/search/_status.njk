@@ -1,0 +1,5 @@
+{% if resultRange %}
+  {% include "search/_result-range-text.njk" %}
+{% elif totalResults === 0 %}
+  No results found
+{% endif %}

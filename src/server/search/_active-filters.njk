@@ -1,0 +1,23 @@
+{% if activeFilterGroups.length %}
+  <div class="app-active-filters">
+    {% for group in activeFilterGroups %}
+      <div class="app-active-filters__row">
+        <span class="app-active-filters__facet">{{ group.legend }}</span>
+        <ul class="app-active-filters__items">
+          {% for item in group.items %}
+            <li class="app-active-filters__item">
+              <a href="{{ item.removeHref }}" class="app-active-filters__chip"
+                 aria-label="Remove filter {{ group.legend }}: {{ item.label }}">
+                <span class="app-active-filters__chip-x" aria-hidden="true">&#x2715;</span>
+                <span class="app-active-filters__chip-label">{{ item.label }}</span>
+              </a>
+              {% if not loop.last %}
+                <span class="app-active-filters__or">or</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
