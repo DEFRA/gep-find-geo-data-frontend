@@ -29,6 +29,7 @@ updates:
           - 'cssnano'
           - 'cssnano-*'
           - 'husky'
+          - 'jsdom'
           - 'nodemon'
           - 'npm-run-all'
           - 'postcss-*'
