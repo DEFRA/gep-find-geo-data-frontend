@@ -121,6 +121,12 @@ describe('#dateFilter', () => {
       expect(params.get('beforeDate-year')).toBe('2024')
     })
 
+    test('writes nothing for an empty range', () => {
+      const params = new URLSearchParams()
+      dateFilter.appendToParams(params, dateFilter.parse({ dateMode: 'range' }))
+      expect(params.toString()).toBe('')
+    })
+
     test('writes nothing when mode is null', () => {
       const params = new URLSearchParams()
       dateFilter.appendToParams(params, dateFilter.parse({}))
@@ -227,6 +233,18 @@ describe('#dateFilter', () => {
         exactDateInput: { id: 'exactDate' },
         afterDateInput: { id: 'afterDate' },
         beforeDateInput: { id: 'beforeDate' }
+      })
+    })
+
+    test('does not mark an empty range as selected', () => {
+      const parsed = {
+        dateInput: dateFilter.parse({ dateMode: 'range' }),
+        dateErrors: {}
+      }
+
+      expect(dateFilter.toFormViewModel(parsed)).toMatchObject({
+        mode: 'range',
+        selected: false
       })
     })
   })

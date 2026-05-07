@@ -38,9 +38,9 @@ function updatedAtRangeClause (between) {
   }
 
   const field = fields.updatedAt
-  const clause = { range: { [field.esField]: range } }
-  if (field.esNestedPath) {
-    return { nested: { path: field.esNestedPath, query: clause } }
+  const clause = { range: { [field.filter.field]: range } }
+  if (field.filter.nestedPath) {
+    return { nested: { path: field.filter.nestedPath, query: clause } }
   }
   return clause
 }
@@ -58,7 +58,8 @@ function facetFilterClauses (filters, excludeKey) {
     }
     const values = filters[name]
     if (values && values.length > 0) {
-      clauses.push({ terms: { [fields[name].esField]: values } })
+      const field = fields[name]
+      clauses.push({ terms: { [field.filter.field]: values } })
     }
   }
   return clauses
@@ -119,7 +120,7 @@ function buildQuery ({ query, filters }) {
   }
 
   if (Object.keys(bool).length === 0) {
-    return undefined
+    return { match_all: {} }
   }
   return { bool }
 }
@@ -155,7 +156,7 @@ function buildAggs (facets, filters) {
     aggs[name] = {
       filter: aggFilter,
       aggs: {
-        [name]: { terms: { field: fields[name].esField, size: FACET_BUCKET_SIZE } }
+        [name]: { terms: { field: fields[name].facet.field, size: FACET_BUCKET_SIZE } }
       }
     }
   }
@@ -172,19 +173,19 @@ function buildSort (sort) {
     return undefined
   }
 
-  if (spec.esSortField) {
-    return [{ [spec.esSortField]: { order: spec.order } }]
+  if (spec.field === '_score') {
+    return [{ [spec.field]: { order: spec.order } }]
   }
 
   const field = fields[spec.field]
-  if (!field?.sortable) {
+  if (!field?.sort) {
     return undefined
   }
 
-  const path = field.esSortField ?? field.esField
+  const path = field.sort.field
   const clause = { order: spec.order }
-  if (field.esNestedPath) {
-    clause.nested = { path: field.esNestedPath }
+  if (field.sort.nestedPath) {
+    clause.nested = { path: field.sort.nestedPath }
   }
   return [{ [path]: clause }]
 }
@@ -285,8 +286,10 @@ function mapFacets (esAggregations, requestedNames) {
     if (!inner?.buckets) {
       continue
     }
+    const labelMap = fields[name]?.facet?.labelMap
     facets[name] = inner.buckets.map((b) => ({
       value: b.key,
+      label: labelMap ? (labelMap[b.key] ?? b.key) : b.key,
       count: b.doc_count
     }))
   }

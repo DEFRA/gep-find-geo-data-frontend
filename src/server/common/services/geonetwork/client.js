@@ -18,6 +18,9 @@ import { config } from '../../../../config/config.js'
  * @typedef {Object} SearchFilters
  * @property {string[]} [owner]
  * @property {string[]} [dataType]
+ * @property {string[]} [accessLevel]
+ * @property {string[]} [updateFrequency]
+ * @property {string[]} [category]
  * @property {UpdatedAtBetween} [updatedAtBetween]
  * @property {GeoPoint} [location]
  */
@@ -38,6 +41,9 @@ import { config } from '../../../../config/config.js'
  * @property {string} title
  * @property {string} abstract
  * @property {string} dataType
+ * @property {string | null} accessLevel
+ * @property {string | null} updateFrequency
+ * @property {string | null} category
  * @property {string | null} owner
  * @property {string | null} updatedAt
  */
@@ -54,6 +60,7 @@ import { config } from '../../../../config/config.js'
 /**
  * @typedef {Object} Facet
  * @property {string} value
+ * @property {string} label
  * @property {number} count
  */
 

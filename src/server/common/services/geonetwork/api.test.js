@@ -240,7 +240,7 @@ describe('#api', () => {
         }
       })
       const body = lastRequestBody()
-      expect(body.query).toBeUndefined()
+      expect(body.query).toEqual({ match_all: {} })
       expect(body.post_filter).toEqual({
         bool: {
           filter: [
@@ -327,7 +327,7 @@ describe('#api', () => {
       mockEmptyResponse()
       await search({ filters: { updatedAtBetween: {} } })
       const body = lastRequestBody()
-      expect(body.query).toBeUndefined()
+      expect(body.query).toEqual({ match_all: {} })
     })
 
     test('throws on an unknown facet name', async () => {
@@ -336,6 +336,21 @@ describe('#api', () => {
 
     test('throws on a non-facetable field', async () => {
       await expect(search({ facets: ['title'] })).rejects.toThrow('Unknown facet')
+    })
+
+    test('accessLevel filter uses stable ES values', async () => {
+      mockEmptyResponse()
+      await search({
+        filters: { accessLevel: ['true'] }
+      })
+      const body = lastRequestBody()
+      expect(body.post_filter).toEqual({
+        bool: {
+          filter: [
+            { terms: { isOpenData: ['true'] } }
+          ]
+        }
+      })
     })
 
     test('full-text query uses multi_match with boosted title', async () => {
@@ -418,8 +433,34 @@ describe('#api', () => {
 
       expect(result.facets).toEqual({
         owner: [
-          { value: 'Environment Agency', count: 2 },
-          { value: 'Natural England', count: 1 }
+          { value: 'Environment Agency', label: 'Environment Agency', count: 2 },
+          { value: 'Natural England', label: 'Natural England', count: 1 }
+        ]
+      })
+    })
+
+    test('accessLevel facet keeps stable values and adds display labels', async () => {
+      mockEsResponse({
+        hits: { total: { value: 3 }, hits: [] },
+        aggregations: {
+          accessLevel: {
+            doc_count: 3,
+            accessLevel: {
+              buckets: [
+                { key: 'false', doc_count: 2 },
+                { key: 'true', doc_count: 1 }
+              ]
+            }
+          }
+        }
+      })
+
+      const result = await search({ facets: ['accessLevel'] })
+
+      expect(result.facets).toEqual({
+        accessLevel: [
+          { value: 'false', label: 'Restricted access', count: 2 },
+          { value: 'true', label: 'Open data', count: 1 }
         ]
       })
     })

@@ -61,6 +61,33 @@ describe('#mock', () => {
       expect(filtered.total).toBeLessThan(testRecordCount)
     })
 
+    test('narrows the result set when an accessLevel filter is applied', async () => {
+      const filtered = await search({
+        filters: { accessLevel: ['true'] },
+        size: testRecordCount
+      })
+      expect(filtered.total).toBeGreaterThan(0)
+      expect(filtered.total).toBeLessThan(testRecordCount)
+    })
+
+    test('narrows the result set when an updateFrequency filter is applied', async () => {
+      const filtered = await search({
+        filters: { updateFrequency: ['Monthly'] },
+        size: testRecordCount
+      })
+      expect(filtered.total).toBeGreaterThan(0)
+      expect(filtered.total).toBeLessThan(testRecordCount)
+    })
+
+    test('narrows the result set when a category filter is applied', async () => {
+      const filtered = await search({
+        filters: { category: ['Elevation'] },
+        size: testRecordCount
+      })
+      expect(filtered.total).toBeGreaterThan(0)
+      expect(filtered.total).toBeLessThan(testRecordCount)
+    })
+
     test('treats an empty filter array as absent', async () => {
       const result = await search({ filters: { owner: [] }, size: 10 })
       expect(result.total).toBe(testRecordCount)

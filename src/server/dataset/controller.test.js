@@ -17,6 +17,9 @@ function exampleRecord (overrides = {}) {
     title: 'Flood Extents',
     abstract: 'Recorded flood extents for England.',
     dataType: 'Vector',
+    accessLevel: 'Open data',
+    updateFrequency: 'Monthly',
+    category: 'Habitats and biotopes',
     owner: 'Environment Agency',
     updatedAt: '2026-04-10T00:00:00Z',
     ...overrides
