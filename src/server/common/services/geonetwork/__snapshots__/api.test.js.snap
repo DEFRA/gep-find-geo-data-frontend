@@ -134,6 +134,9 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceDate.date",
   ],
   "from": 0,
+  "query": {
+    "match_all": {},
+  },
   "size": 10,
   "sort": [
     {
@@ -154,6 +157,9 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceDate.date",
   ],
   "from": 0,
+  "query": {
+    "match_all": {},
+  },
   "size": 10,
   "sort": [
     {
@@ -177,6 +183,9 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceDate.date",
   ],
   "from": 0,
+  "query": {
+    "match_all": {},
+  },
   "size": 10,
   "sort": [
     {

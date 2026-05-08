@@ -63,6 +63,8 @@ function formatParts (parts) {
 }
 
 const hasAnyParts = (parts) => Object.values(parts).some((v) => v !== '')
+const hasAnyRangeParts = (input) =>
+  hasAnyParts(input.afterDate) || hasAnyParts(input.beforeDate)
 
 /**
  * @param {DateParts} parts
@@ -238,10 +240,14 @@ function appendToParams (params, input) {
   if (!input.mode) {
     return
   }
-  params.set('dateMode', input.mode)
   if (input.mode === MODE_EXACT) {
+    params.set('dateMode', input.mode)
     appendDateParts(params, input.exactDate, EXACT_DATE)
   } else {
+    if (!hasAnyRangeParts(input)) {
+      return
+    }
+    params.set('dateMode', input.mode)
     appendDateParts(params, input.afterDate, AFTER_DATE)
     appendDateParts(params, input.beforeDate, BEFORE_DATE)
   }
@@ -249,9 +255,12 @@ function appendToParams (params, input) {
 
 function toFormViewModel (parsed) {
   const { dateInput, dateErrors = {} } = parsed
+  const selected = dateInput.mode === MODE_EXACT ||
+    (dateInput.mode === MODE_RANGE && hasAnyRangeParts(dateInput))
+
   return {
     mode: dateInput.mode,
-    selected: dateInput.mode !== null,
+    selected,
     hasErrors: Object.keys(dateErrors).length > 0,
     exactDateInput: buildDateInputParams(
       EXACT_DATE,

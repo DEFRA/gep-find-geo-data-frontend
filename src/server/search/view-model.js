@@ -1,4 +1,5 @@
 import { buildPagination } from '../common/helpers/pagination.js'
+import { facetValueLabel } from '../common/services/geonetwork/fields.js'
 import { dateFilter } from './filters/date/view-model.js'
 import { locationFilter } from './filters/location/view-model.js'
 
@@ -17,12 +18,18 @@ const VALID_SORTS = new Set(SORT_OPTIONS.map((option) => option.value))
 const DEFAULT_SORT = SORT_OPTIONS[0].value
 const VALID_PAGE_SIZES = new Set(PAGE_SIZE_OPTIONS)
 
-const facetConfigs = [
-  { name: 'owner', legend: 'Data owner' },
-  { name: 'dataType', legend: 'Data type' }
+const SIDEBAR_ORDER = [
+  { type: 'facet', name: 'accessLevel', legend: 'Access level' },
+  { type: 'facet', name: 'category', legend: 'Category' },
+  { type: 'date' },
+  { type: 'facet', name: 'dataType', legend: 'Data type' },
+  { type: 'facet', name: 'owner', legend: 'Data owner' },
+  { type: 'location' },
+  { type: 'facet', name: 'updateFrequency', legend: 'Update frequency' }
 ]
 
-const FACETS = facetConfigs.map((cfg) => cfg.name)
+const FACET_CONFIGS = SIDEBAR_ORDER.filter((item) => item.type === 'facet')
+const FACETS = FACET_CONFIGS.map((cfg) => cfg.name)
 
 const ABSTRACT_WORD_LIMIT = 50
 const QUERY_MAX_LENGTH = 500
@@ -180,12 +187,12 @@ function buildResultRange (parsed, response) {
 
 function buildFacetGroups (response, parsed) {
   const facetsResp = response.facets ?? {}
-  return facetConfigs.map((cfg) => {
+  return FACET_CONFIGS.map((cfg) => {
     const buckets = facetsResp[cfg.name] ?? []
     const selected = new Set(parsed.filters[cfg.name] ?? [])
     const items = buckets.map((bucket) => ({
       value: bucket.value,
-      text: bucket.value,
+      text: bucket.label ?? facetValueLabel(cfg.name, bucket.value),
       checked: selected.has(bucket.value),
       hint: { text: String(bucket.count) }
     }))
@@ -194,7 +201,7 @@ function buildFacetGroups (response, parsed) {
       if (!buckets.some((bucket) => bucket.value === value)) {
         items.push({
           value,
-          text: value,
+          text: facetValueLabel(cfg.name, value),
           checked: true,
           hint: { text: '0' }
         })
@@ -212,7 +219,7 @@ function buildFacetGroups (response, parsed) {
 
 function buildFacetChipGroups (parsed, chipHref) {
   const groups = []
-  for (const cfg of facetConfigs) {
+  for (const cfg of FACET_CONFIGS) {
     const values = parsed.filters[cfg.name] ?? []
     if (values.length === 0) {
       continue
@@ -226,7 +233,7 @@ function buildFacetChipGroups (parsed, chipHref) {
         remainingFilters[cfg.name] = remaining
       }
       return {
-        label: value,
+        label: facetValueLabel(cfg.name, value),
         removeHref: chipHref({ filters: remainingFilters, page: 1 })
       }
     })
@@ -278,6 +285,17 @@ export function buildViewModel ({ parsed, response, basePath }) {
     selected: value === parsed.size
   }))
 
+  const facetGroupsByName = Object.fromEntries(
+    buildFacetGroups(response, parsed).map((g) => [g.name, g])
+  )
+
+  const sidebarItems = SIDEBAR_ORDER.map((item) => {
+    if (item.type === 'facet') {
+      return { type: 'facet', ...facetGroupsByName[item.name] }
+    }
+    return item
+  })
+
   return {
     pageTitle: 'Search Defra Data',
     heading: 'Search Defra Data',
@@ -289,7 +307,7 @@ export function buildViewModel ({ parsed, response, basePath }) {
     pageSizeOptions,
     totalResults: response.total,
     results: mapResults(response.results),
-    facetGroups: buildFacetGroups(response, parsed),
+    sidebarItems,
     dateFilter: dateFilter.toFormViewModel(parsed),
     locationFilter: locationFilter.toFormViewModel(parsed),
     errorSummary: buildErrorSummary(parsed),

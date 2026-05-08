@@ -15,7 +15,7 @@ function emptyResponse (overrides = {}) {
   return {
     total: 0,
     results: [],
-    facets: { owner: [], dataType: [] },
+    facets: { owner: [], dataType: [], accessLevel: [], updateFrequency: [], category: [] },
     ...overrides
   }
 }
@@ -65,7 +65,7 @@ describe('#searchController', () => {
           owner: ['Natural England', 'Environment Agency'],
           dataType: ['Grid']
         },
-        facets: ['owner', 'dataType'],
+        facets: ['accessLevel', 'category', 'dataType', 'owner', 'updateFrequency'],
         sort: 'titleAsc'
       })
     })

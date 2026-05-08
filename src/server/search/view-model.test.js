@@ -10,7 +10,7 @@ const basePath = '/'
 const emptyResponse = (overrides = {}) => ({
   total: 0,
   results: [],
-  facets: { owner: [], dataType: [] },
+  facets: { owner: [], dataType: [], accessLevel: [], updateFrequency: [], category: [] },
   ...overrides
 })
 
@@ -39,7 +39,7 @@ describe('#search view-model', () => {
           from: 100,
           size: 50,
           filters: {},
-          facets: ['owner', 'dataType'],
+          facets: ['accessLevel', 'category', 'dataType', 'owner', 'updateFrequency'],
           sort: 'titleAsc'
         })
     })
@@ -268,10 +268,10 @@ describe('#search view-model', () => {
         })
       })
 
-      test('exposes facetGroups as one entry per facet config', () => {
-        expect(viewModel().facetGroups.map((g) => g.name)).toEqual([
-          'owner',
-          'dataType'
+      test('sidebarItems contains facets and filters in declared order', () => {
+        const items = viewModel().sidebarItems.map((i) => i.type === 'facet' ? i.name : i.type)
+        expect(items).toEqual([
+          'accessLevel', 'category', 'date', 'dataType', 'owner', 'location', 'updateFrequency'
         ])
       })
     })
@@ -322,7 +322,10 @@ describe('#search view-model', () => {
       })
     })
 
-    describe('facetGroups', () => {
+    describe('sidebarItems facets', () => {
+      const findFacet = (vm, name) =>
+        vm.sidebarItems.find((i) => i.type === 'facet' && i.name === name)
+
       test('shapes buckets into checkbox items with counts', () => {
         const vm = viewModel({}, {
           facets: {
@@ -333,7 +336,7 @@ describe('#search view-model', () => {
             dataType: []
           }
         })
-        expect(vm.facetGroups[0].items).toEqual([
+        expect(findFacet(vm, 'owner').items).toEqual([
           { value: 'Natural England', text: 'Natural England', checked: false, hint: { text: '5' } },
           { value: 'Environment Agency', text: 'Environment Agency', checked: false, hint: { text: '3' } }
         ])
@@ -344,17 +347,30 @@ describe('#search view-model', () => {
           { owner: 'Natural England' },
           { facets: { owner: [{ value: 'Natural England', count: 5 }], dataType: [] } }
         )
-        expect(vm.facetGroups[0].items[0].checked).toBe(true)
-        expect(vm.facetGroups[0].selectedCount).toBe(1)
+        expect(findFacet(vm, 'owner').items[0].checked).toBe(true)
+        expect(findFacet(vm, 'owner').selectedCount).toBe(1)
       })
 
       test('renders a selected value with zero hint even if absent from response', () => {
         const vm = viewModel({ owner: 'Natural England' })
-        expect(vm.facetGroups[0].items).toEqual([{
+        expect(findFacet(vm, 'owner').items).toEqual([{
           value: 'Natural England',
           text: 'Natural England',
           checked: true,
           hint: { text: '0' }
+        }])
+      })
+
+      test('uses facet labels for checkbox text', () => {
+        const vm = viewModel(
+          { accessLevel: 'true' },
+          { facets: { accessLevel: [{ value: 'true', label: 'Open data', count: 2 }] } }
+        )
+        expect(findFacet(vm, 'accessLevel').items).toEqual([{
+          value: 'true',
+          text: 'Open data',
+          checked: true,
+          hint: { text: '2' }
         }])
       })
     })
@@ -370,14 +386,22 @@ describe('#search view-model', () => {
         ])
       })
 
-      test('produces separate groups per facet in facet order', () => {
+      test('uses facet labels for active filter chips', () => {
+        const vm = viewModel({ accessLevel: 'true' })
+        const group = vm.activeFilterGroups.find((g) => g.name === 'accessLevel')
+        expect(group.items[0].label).toBe('Open data')
+        expect(group.items[0].removeHref).toBe('/')
+      })
+
+      test('produces separate groups per facet in sidebar order', () => {
         const vm = viewModel({ dataType: 'Vector', owner: 'Natural England' })
-        expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['owner', 'dataType'])
+        expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['dataType', 'owner'])
       })
 
       test('chip removeHref drops only the targeted value and always drops page', () => {
         const vm = viewModel({ q: 'flood', owner: ['A', 'B'], dataType: 'Grid', page: '5' })
-        const firstChip = vm.activeFilterGroups[0].items[0]
+        const ownerGroup = vm.activeFilterGroups.find((g) => g.name === 'owner')
+        const firstChip = ownerGroup.items[0]
         expect(firstChip.removeHref).toContain('q=flood')
         expect(firstChip.removeHref).toContain('owner=B')
         expect(firstChip.removeHref).not.toContain('owner=A')
@@ -603,6 +627,13 @@ describe('#search view-model', () => {
           .toEqual(['1', '1', '2024'])
         expect(vm.dateFilter.beforeDateInput.items.map((i) => i.value))
           .toEqual(['', '', ''])
+      })
+
+      test('does not count an empty range as selected', () => {
+        const vm = viewModel({ dateMode: 'range' })
+        expect(vm.dateFilter.selected).toBe(false)
+        expect(vm.currentUrl).toBe('/')
+        expect(vm.activeFilterGroups.find((g) => g.name === 'updatedAt')).toBeUndefined()
       })
     })
 

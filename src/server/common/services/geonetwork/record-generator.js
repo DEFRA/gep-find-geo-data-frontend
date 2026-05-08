@@ -15,6 +15,20 @@ const defraOrgs = [
 
 const dataTypes = ['Vector', 'Grid']
 
+const accessLevels = ['Open data', 'Restricted access']
+
+const updateFrequencies = ['Monthly', 'Annually', 'As needed', 'Not planned']
+
+const categories = [
+  'Habitats and biotopes',
+  'Protected sites',
+  'Elevation',
+  'Land use',
+  'Environmental monitoring facilities',
+  'Hydrography',
+  'Species distribution'
+]
+
 const themes = [
   'Forest Cover',
   'Tree Density',
@@ -100,6 +114,9 @@ function generateRecord (index, prng) {
     abstract,
     owner: org,
     dataType: pick(prng, dataTypes),
+    accessLevel: pick(prng, accessLevels),
+    updateFrequency: pick(prng, updateFrequencies),
+    category: pick(prng, categories),
     updatedAt: randomIsoDate(prng)
   }
 }

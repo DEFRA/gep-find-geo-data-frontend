@@ -1,5 +1,12 @@
 import { config } from '../../../../config/config.js'
-import { facetNames, fields, sortMap, validateSearchOptions } from './fields.js'
+import {
+  facetLabelValue,
+  facetNames,
+  facetValueLabel,
+  fields,
+  sortMap,
+  validateSearchOptions
+} from './fields.js'
 import { curatedRecords } from './fixtures.js'
 import { generateRecords } from './record-generator.js'
 
@@ -38,12 +45,13 @@ function pickSearchFields (record) {
   return /** @type {import('./client.js').SearchResult} */ (result)
 }
 
-function matchesTerms (recordValue, values) {
+function matchesFacetTerms (record, name, values) {
   if (!values || values.length === 0) {
     return true
   }
-  const recordValues = toArray(recordValue)
-  return values.some((v) => recordValues.includes(v))
+  const recordValues = toArray(record[name])
+    .map((value) => facetLabelValue(name, value))
+  return values.some((value) => recordValues.includes(value))
 }
 
 function matchesUpdatedAtBetween (value, between) {
@@ -70,7 +78,7 @@ function matchesFilters (record, filters, excludeKey) {
     if (name === excludeKey) {
       continue
     }
-    if (!matchesTerms(record[name], filters[name])) {
+    if (!matchesFacetTerms(record, name, filters[name])) {
       return false
     }
   }
@@ -84,7 +92,7 @@ function matchesFilters (record, filters, excludeKey) {
  */
 function sortRecords (records, sort) {
   const spec = sortMap[sort]
-  if (!spec?.field) {
+  if (!spec?.field || spec.field === '_score') {
     return records
   }
 
@@ -103,12 +111,13 @@ function mapFacet (records, name) {
   const counts = new Map()
   for (const record of records) {
     for (const value of toArray(record[name])) {
-      counts.set(value, (counts.get(value) ?? 0) + 1)
+      const normalised = facetLabelValue(name, value)
+      counts.set(normalised, (counts.get(normalised) ?? 0) + 1)
     }
   }
 
   return [...counts.entries()]
-    .map(([value, count]) => ({ value, count }))
+    .map(([value, count]) => ({ value, label: facetValueLabel(name, value), count }))
     .sort((a, b) => b.count - a.count)
 }
 
