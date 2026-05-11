@@ -79,9 +79,18 @@ describe('#mock', () => {
       expect(filtered.total).toBeLessThan(testRecordCount)
     })
 
-    test('narrows the result set when a category filter is applied', async () => {
+    test('narrows the result set when a categories filter is applied', async () => {
       const filtered = await search({
-        filters: { category: ['Elevation'] },
+        filters: { categories: ['Environment'] },
+        size: testRecordCount
+      })
+      expect(filtered.total).toBeGreaterThan(0)
+      expect(filtered.total).toBeLessThan(testRecordCount)
+    })
+
+    test('narrows the result set when a keyword filter is applied', async () => {
+      const filtered = await search({
+        filters: { keywords: ['Habitats and biotopes'] },
         size: testRecordCount
       })
       expect(filtered.total).toBeGreaterThan(0)

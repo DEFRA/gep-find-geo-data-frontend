@@ -10,7 +10,7 @@ const basePath = '/'
 const emptyResponse = (overrides = {}) => ({
   total: 0,
   results: [],
-  facets: { owner: [], dataType: [], accessLevel: [], updateFrequency: [], category: [] },
+  facets: { owner: [], dataType: [], accessLevel: [], updateFrequency: [], categories: [] },
   ...overrides
 })
 
@@ -39,7 +39,7 @@ describe('#search view-model', () => {
           from: 100,
           size: 50,
           filters: {},
-          facets: ['accessLevel', 'category', 'dataType', 'owner', 'updateFrequency'],
+          facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
           sort: 'titleAsc'
         })
     })
@@ -112,10 +112,14 @@ describe('#search view-model', () => {
       expect(parseQuery({ owner: ['A', ''] }).filters).toEqual({
         owner: ['A']
       })
+      expect(parseQuery({ categories: ['Environment', 'Elevation'] }).filters).toEqual({
+        categories: ['Environment', 'Elevation']
+      })
     })
 
     test('omits unknown and empty filter keys', () => {
       expect(parseQuery({ owner: '' }).filters).toEqual({})
+      expect(parseQuery({ category: 'Environment' }).filters).toEqual({})
       expect(parseQuery({ madeUp: 'x' }).filters).toEqual({})
     })
 
@@ -271,7 +275,7 @@ describe('#search view-model', () => {
       test('sidebarItems contains facets and filters in declared order', () => {
         const items = viewModel().sidebarItems.map((i) => i.type === 'facet' ? i.name : i.type)
         expect(items).toEqual([
-          'accessLevel', 'category', 'date', 'dataType', 'owner', 'location', 'updateFrequency'
+          'accessLevel', 'categories', 'date', 'dataType', 'owner', 'location', 'updateFrequency'
         ])
       })
     })

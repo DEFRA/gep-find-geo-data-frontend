@@ -353,6 +353,32 @@ describe('#api', () => {
       })
     })
 
+    test('keyword filter checks INSPIRE theme and other keyword fields without adding a facet', async () => {
+      mockEmptyResponse()
+      await search({
+        filters: { keywords: ['Habitats and biotopes'] },
+        facets: ['categories']
+      })
+      const body = lastRequestBody()
+      expect(body.post_filter).toEqual({
+        bool: {
+          filter: [{
+            bool: {
+              should: [
+                { terms: { 'th_httpinspireeceuropaeutheme-theme.default': ['Habitats and biotopes'] } },
+                { terms: { 'th_otherKeywords-theme.default': ['Habitats and biotopes'] } }
+              ],
+              minimum_should_match: 1
+            }
+          }]
+        }
+      })
+      expect(body.aggs.categories.filter).toEqual({
+        bool: { filter: [body.post_filter.bool.filter[0]] }
+      })
+      expect(body.aggs.keywords).toBeUndefined()
+    })
+
     test('full-text query uses multi_match with boosted title', async () => {
       mockEmptyResponse()
       await search({ query: 'flood water' })

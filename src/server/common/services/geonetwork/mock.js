@@ -1,8 +1,8 @@
 import { config } from '../../../../config/config.js'
 import {
   facetLabelValue,
-  facetNames,
   facetValueLabel,
+  filterNames,
   fields,
   sortMap,
   validateSearchOptions
@@ -45,7 +45,7 @@ function pickSearchFields (record) {
   return /** @type {import('./client.js').SearchResult} */ (result)
 }
 
-function matchesFacetTerms (record, name, values) {
+function matchesFilterTerms (record, name, values) {
   if (!values || values.length === 0) {
     return true
   }
@@ -74,11 +74,11 @@ function matchesFilters (record, filters, excludeKey) {
   if (!matchesUpdatedAtBetween(record.updatedAt, filters.updatedAtBetween)) {
     return false
   }
-  for (const name of facetNames) {
+  for (const name of filterNames) {
     if (name === excludeKey) {
       continue
     }
-    if (!matchesFacetTerms(record, name, filters[name])) {
+    if (!matchesFilterTerms(record, name, filters[name])) {
       return false
     }
   }
