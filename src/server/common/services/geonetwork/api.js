@@ -4,7 +4,7 @@ import { config } from '../../../../config/config.js'
 import { statusCodes } from '../../constants/status-codes.js'
 import { createLogger } from '../../helpers/logging/logger.js'
 import {
-  facetNames,
+  filterNames,
   fields,
   searchFields,
   searchSourceIncludes,
@@ -46,20 +46,38 @@ function updatedAtRangeClause (between) {
 }
 
 /**
+ * @param {string | string[]} field
+ * @param {string[]} values
+ * @returns {object}
+ */
+function termsClause (field, values) {
+  if (Array.isArray(field)) {
+    return {
+      bool: {
+        should: field.map((fieldName) => ({ terms: { [fieldName]: values } })),
+        minimum_should_match: 1
+      }
+    }
+  }
+
+  return { terms: { [field]: values } }
+}
+
+/**
  * @param {import('./client.js').SearchFilters} filters
  * @param {string} [excludeKey]
  * @returns {object[]}
  */
-function facetFilterClauses (filters, excludeKey) {
+function filterClauses (filters, excludeKey) {
   const clauses = []
-  for (const name of facetNames) {
+  for (const name of filterNames) {
     if (name === excludeKey) {
       continue
     }
     const values = filters[name]
     if (values && values.length > 0) {
       const field = fields[name]
-      clauses.push({ terms: { [field.filter.field]: values } })
+      clauses.push(termsClause(field.filter.field, values))
     }
   }
   return clauses
@@ -103,20 +121,20 @@ function buildQuery ({ query, filters }) {
     }]
   }
 
-  const filterClauses = []
+  const queryFilterClauses = []
 
   const range = updatedAtRangeClause(filters.updatedAtBetween)
   if (range) {
-    filterClauses.push(range)
+    queryFilterClauses.push(range)
   }
 
   const geo = locationClause(filters.location)
   if (geo) {
-    filterClauses.push(geo)
+    queryFilterClauses.push(geo)
   }
 
-  if (filterClauses.length > 0) {
-    bool.filter = filterClauses
+  if (queryFilterClauses.length > 0) {
+    bool.filter = queryFilterClauses
   }
 
   if (Object.keys(bool).length === 0) {
@@ -130,7 +148,7 @@ function buildQuery ({ query, filters }) {
  * @returns {object | undefined}
  */
 function buildPostFilter (filters) {
-  const clauses = facetFilterClauses(filters)
+  const clauses = filterClauses(filters)
   if (clauses.length === 0) {
     return undefined
   }
@@ -148,7 +166,7 @@ function buildAggs (facets, filters) {
   }
   const aggs = {}
   for (const name of facets) {
-    const otherFacetClauses = facetFilterClauses(filters, name)
+    const otherFacetClauses = filterClauses(filters, name)
     const aggFilter = otherFacetClauses.length > 0
       ? { bool: { filter: otherFacetClauses } }
       : { match_all: {} }
@@ -346,6 +364,7 @@ async function getRecord (id) {
   if (!hit) {
     return null
   }
+
   return mapRecordHit(hit)
 }
 

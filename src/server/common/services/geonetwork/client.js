@@ -20,7 +20,8 @@ import { config } from '../../../../config/config.js'
  * @property {string[]} [dataType]
  * @property {string[]} [accessLevel]
  * @property {string[]} [updateFrequency]
- * @property {string[]} [category]
+ * @property {string[]} [categories]
+ * @property {string[]} [keywords]
  * @property {UpdatedAtBetween} [updatedAtBetween]
  * @property {GeoPoint} [location]
  */
@@ -36,6 +37,27 @@ import { config } from '../../../../config/config.js'
  */
 
 /**
+ * @typedef {Object} MetadataLink
+ * @property {string} url
+ * @property {string} name
+ * @property {string} description
+ */
+
+/**
+ * @typedef {Object} TemporalExtent
+ * @property {string | null} start
+ * @property {string | null} end
+ */
+
+/**
+ * @typedef {Object} BoundingBox
+ * @property {number} west
+ * @property {number} south
+ * @property {number} east
+ * @property {number} north
+ */
+
+/**
  * @typedef {Object} MetadataRecord
  * @property {string} id
  * @property {string} title
@@ -43,9 +65,22 @@ import { config } from '../../../../config/config.js'
  * @property {string} dataType
  * @property {string | null} accessLevel
  * @property {string | null} updateFrequency
- * @property {string | null} category
+ * @property {string[]} categories
  * @property {string | null} owner
  * @property {string | null} updatedAt
+ * @property {string | null} lineage
+ * @property {string | null} contactPoint
+ * @property {string | null} licence
+ * @property {string | null} useLimitation
+ * @property {string | null} language
+ * @property {string[]} keywords
+ * @property {string[]} format
+ * @property {MetadataLink[]} links
+ * @property {TemporalExtent | null} temporalExtent
+ * @property {string | null} coordinateReferenceSystem
+ * @property {BoundingBox | null} geographicExtent
+ * @property {string | null} publicationDate
+ * @property {string | null} creationDate
  */
 
 /**

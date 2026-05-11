@@ -20,7 +20,7 @@ const VALID_PAGE_SIZES = new Set(PAGE_SIZE_OPTIONS)
 
 const SIDEBAR_ORDER = [
   { type: 'facet', name: 'accessLevel', legend: 'Access level' },
-  { type: 'facet', name: 'category', legend: 'Category' },
+  { type: 'facet', name: 'categories', legend: 'Categories' },
   { type: 'date' },
   { type: 'facet', name: 'dataType', legend: 'Data type' },
   { type: 'facet', name: 'owner', legend: 'Data owner' },

@@ -1,15 +1,24 @@
 import {
+  allDefaults,
+  boundingBox,
+  datedEntry,
   firstDefault,
+  firstEmail,
+  firstNestedCode,
+  keywordDefaults,
   latestNestedDate,
+  linkArray,
   mappedValue,
-  objectDefault
+  objectDefault,
+  rawArray,
+  temporalExtent
 } from './field-accessors.js'
 
 const accessLevelMap = { true: 'Open data', false: 'Restricted access' }
 
 /**
  * @typedef {object} FieldOperation
- * @property {string} field GeoNetwork Elasticsearch field used for this operation.
+ * @property {string | string[]} field GeoNetwork Elasticsearch field used for this operation.
  * @property {string} [nestedPath] Nested document path when the field must be queried or sorted inside a nested clause.
  * @property {number} [boost] Full-text search boost, only used by search operations.
  * @property {Record<string, string>} [labelMap] Display labels for machine values when GeoNetwork does not provide labels.
@@ -23,7 +32,7 @@ const accessLevelMap = { true: 'Open data', false: 'Restricted access' }
  * @property {FieldOperation} [facet] Field used to aggregate checkbox options.
  * @property {FieldOperation} [sort] Field used to sort results.
  * @property {boolean} [inSearchResult] Include this field in search result rows.
- * @property {(src: object) => string | null} [hitAccessor] Maps a GeoNetwork _source object into the domain value.
+ * @property {(src: object) => *} [hitAccessor] Maps a GeoNetwork _source object into the domain value.
  */
 
 /**
@@ -72,11 +81,11 @@ const fields = {
     facet: { field: 'cl_maintenanceAndUpdateFrequency.default' },
     hitAccessor: firstDefault('cl_maintenanceAndUpdateFrequency')
   },
-  category: {
-    source: ['th_httpinspireeceuropaeutheme-theme'],
-    filter: { field: 'th_httpinspireeceuropaeutheme-theme.default' },
-    facet: { field: 'th_httpinspireeceuropaeutheme-theme.default' },
-    hitAccessor: firstDefault('th_httpinspireeceuropaeutheme-theme')
+  categories: {
+    source: ['cl_topic'],
+    filter: { field: 'cl_topic.default' },
+    facet: { field: 'cl_topic.default' },
+    hitAccessor: allDefaults('cl_topic')
   },
   updatedAt: {
     source: ['resourceDate.date'],
@@ -84,6 +93,70 @@ const fields = {
     sort: { field: 'resourceDate.date', nestedPath: 'resourceDate' },
     inSearchResult: true,
     hitAccessor: latestNestedDate('resourceDate')
+  },
+  lineage: {
+    source: ['lineageObject.default'],
+    hitAccessor: objectDefault('lineageObject')
+  },
+  contactPoint: {
+    source: ['contactForResource'],
+    hitAccessor: firstEmail('contactForResource')
+  },
+  licence: {
+    source: ['MD_ConstraintsUseLimitationObject'],
+    hitAccessor: firstDefault('MD_ConstraintsUseLimitationObject')
+  },
+  useLimitation: {
+    source: ['MD_LegalConstraintsOtherConstraintsObject'],
+    hitAccessor: firstDefault('MD_LegalConstraintsOtherConstraintsObject')
+  },
+  language: {
+    source: ['mainLanguage'],
+    hitAccessor: (src) => src.mainLanguage ?? null
+  },
+  keywords: {
+    // Raw `tag` aggregates topics and thesaurus keywords. Use structured keyword
+    // fields for filtering, and source `cl_topic` only to exclude categories.
+    source: ['th_httpinspireeceuropaeutheme-theme', 'th_otherKeywords-theme', 'cl_topic'],
+    filter: {
+      field: [
+        'th_httpinspireeceuropaeutheme-theme.default',
+        'th_otherKeywords-theme.default'
+      ]
+    },
+    hitAccessor: keywordDefaults(
+      'th_httpinspireeceuropaeutheme-theme',
+      'th_otherKeywords-theme',
+      'cl_topic'
+    )
+  },
+  format: {
+    source: ['format'],
+    hitAccessor: rawArray('format')
+  },
+  links: {
+    source: ['link'],
+    hitAccessor: linkArray('link')
+  },
+  temporalExtent: {
+    source: ['resourceTemporalExtentDetails'],
+    hitAccessor: temporalExtent('resourceTemporalExtentDetails')
+  },
+  coordinateReferenceSystem: {
+    source: ['crsDetails'],
+    hitAccessor: firstNestedCode('crsDetails')
+  },
+  geographicExtent: {
+    source: ['geom'],
+    hitAccessor: boundingBox('geom')
+  },
+  publicationDate: {
+    source: ['resourceDate.date', 'resourceDate.type'],
+    hitAccessor: datedEntry('resourceDate', 'publication')
+  },
+  creationDate: {
+    source: ['resourceDate.date', 'resourceDate.type'],
+    hitAccessor: datedEntry('resourceDate', 'creation')
   }
 }
 
