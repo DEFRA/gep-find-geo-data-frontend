@@ -1,0 +1,162 @@
+@use "govuk-frontend" as *;
+@use "../variables/colours" as *;
+
+.app-dataset-sidebar {
+  border-top: 1px solid var(--govuk-border-colour);
+  padding-top: govuk-spacing(3);
+}
+
+.app-dataset-data {
+  background: govuk-colour("black", $variant: "tint-95");
+  border: 1px solid var(--govuk-border-colour);
+  border-radius: 8px;
+  padding: govuk-spacing(4);
+}
+
+.app-dataset-data .govuk-accordion__show-all {
+  display: none;
+}
+
+.app-dataset-data .govuk-accordion {
+  border-bottom: none;
+}
+
+.app-dataset-data .govuk-accordion__section-button {
+  border-top: none;
+}
+
+.app-dataset-data .govuk-accordion__section-content {
+  padding-bottom: 0;
+}
+
+.app-dataset-data .govuk-table {
+  margin-bottom: govuk-spacing(4);
+}
+
+.app-dataset-data .govuk-table:last-child {
+  margin-bottom: 0;
+}
+
+.app-dataset-data__col--narrow {
+  width: 120px;
+}
+
+.app-dataset-data .govuk-table__body .govuk-table__row:last-child .govuk-table__cell {
+  border-bottom: none;
+}
+
+.app-copy-link-table-cell {
+  display: none;
+}
+
+.app-copy-link-supported .app-copy-link-table-cell {
+  display: table-cell;
+}
+
+.app-link-button {
+  @include govuk-font($size: 19);
+  background: none;
+  border: 0;
+  color: $defra-green;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+}
+
+.app-link-button:hover {
+  color: $defra-green-dark;
+  text-decoration-thickness: max(3px, .1875rem, .12em);
+}
+
+.app-link-button:focus {
+  background-color: var(--govuk-focus-colour);
+  box-shadow: 0 -2px var(--govuk-focus-colour), 0 4px var(--govuk-focus-text-colour);
+  color: var(--govuk-focus-text-colour);
+  outline: 3px solid transparent;
+  text-decoration-thickness: max(3px, .1875rem, .12em);
+}
+
+.app-link-button:focus:not(:focus-visible):not(:active) {
+  background: none;
+  box-shadow: none;
+  color: $defra-green;
+  outline: none;
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+}
+
+.app-link-button:active {
+  background-color: var(--govuk-focus-colour);
+  box-shadow: 0 -2px var(--govuk-focus-colour), 0 4px var(--govuk-focus-text-colour);
+  color: var(--govuk-focus-text-colour);
+  outline: 3px solid transparent;
+  text-decoration-thickness: max(3px, .1875rem, .12em);
+}
+
+.app-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: govuk-spacing(2);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 govuk-spacing(4);
+}
+
+.app-tag-list__tag {
+  @include govuk-font($size: 16);
+  display: inline-block;
+  padding: govuk-spacing(1) govuk-spacing(3);
+  background: govuk-colour("black", $variant: "tint-95");
+  border-radius: 16px;
+  color: var(--govuk-text-colour);
+  text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+
+  &:link,
+  &:visited {
+    color: var(--govuk-text-colour);
+  }
+
+  &:hover {
+    background: govuk-colour("black", $variant: "tint-80");
+    text-decoration-thickness: max(1px, .0625rem);
+  }
+
+  &:focus {
+    background-color: var(--govuk-focus-colour);
+    color: var(--govuk-focus-text-colour);
+    box-shadow: none;
+    outline: 3px solid transparent;
+    text-decoration: underline;
+    text-decoration-thickness: max(3px, .1875rem, .12em);
+    text-decoration-skip-ink: none;
+  }
+}
+
+.app-dataset-dl {
+  margin: 0;
+}
+
+.app-dataset-dl__row {
+  padding: govuk-spacing(3) 0;
+  border-bottom: 1px solid var(--govuk-border-colour);
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  dt {
+    @include govuk-font($size: 19, $weight: bold);
+    margin-bottom: govuk-spacing(1);
+  }
+
+  dd {
+    @include govuk-font($size: 19);
+    margin: 0;
+  }
+}

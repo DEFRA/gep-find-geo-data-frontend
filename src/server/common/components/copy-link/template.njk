@@ -1,0 +1,8 @@
+{% set statusId = params.id + "-status" %}
+<button type="button"
+        class="govuk-link app-link-button app-js-only"
+        data-module="app-copy-link"
+        data-app-copy-url="{{ params.url }}"
+        aria-describedby="{{ statusId }}"
+        hidden>{{ params.text or "Copy link" }}</button>
+<span id="{{ statusId }}" class="govuk-visually-hidden" aria-live="polite"></span>

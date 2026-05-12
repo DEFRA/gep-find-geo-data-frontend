@@ -33,12 +33,18 @@ const viewModel = (rawQuery = {}, responseOverrides = {}) =>
 describe('#search view-model', () => {
   describe('toSearchRequest', () => {
     test('translates a parsed query into a geonetwork search request', () => {
-      expect(toSearchRequest(parseQuery({ q: 'flood', page: '3', size: '50', sort: 'titleAsc' })))
+      expect(toSearchRequest(parseQuery({
+        q: 'flood',
+        page: '3',
+        size: '50',
+        sort: 'titleAsc',
+        keywords: 'ecology'
+      })))
         .toEqual({
           query: 'flood',
           from: 100,
           size: 50,
-          filters: {},
+          filters: { keywords: ['ecology'] },
           facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
           sort: 'titleAsc'
         })
@@ -99,7 +105,20 @@ describe('#search view-model', () => {
       expect(parseQuery({ size: 'abc' }).size).toBe(DEFAULT_PAGE_SIZE)
     })
 
-    test('parses filters from single, repeated, and mixed values', () => {
+    test.each([
+      ['accessLevel', 'true'],
+      ['categories', 'Environment'],
+      ['dataType', 'Vector'],
+      ['owner', 'Natural England'],
+      ['updateFrequency', 'Monthly'],
+      ['keywords', 'ecology']
+    ])('parses supported filter %s', (name, value) => {
+      expect(parseQuery({ [name]: value }).filters).toEqual({
+        [name]: [value]
+      })
+    })
+
+    test('parses filters from repeated and mixed values', () => {
       expect(parseQuery({ owner: 'Natural England' }).filters).toEqual({
         owner: ['Natural England']
       })
@@ -114,6 +133,9 @@ describe('#search view-model', () => {
       })
       expect(parseQuery({ categories: ['Environment', 'Elevation'] }).filters).toEqual({
         categories: ['Environment', 'Elevation']
+      })
+      expect(parseQuery({ keywords: ['ecology', 'ecology', 'landscape'] }).filters).toEqual({
+        keywords: ['ecology', 'landscape']
       })
     })
 
@@ -400,6 +422,22 @@ describe('#search view-model', () => {
       test('produces separate groups per facet in sidebar order', () => {
         const vm = viewModel({ dataType: 'Vector', owner: 'Natural England' })
         expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['dataType', 'owner'])
+      })
+
+      test('adds keyword chips without adding a sidebar facet', () => {
+        const vm = viewModel({ keywords: ['ecology', 'landscape'] })
+        const group = vm.activeFilterGroups.find((g) => g.name === 'keywords')
+
+        expect(group.legend).toBe('Keywords')
+        expect(group.items.map((item) => item.label)).toEqual(['ecology', 'landscape'])
+        expect(vm.sidebarItems.some((item) => item.name === 'keywords')).toBe(false)
+      })
+
+      test('adds keyword values as hidden filters for form serialisation', () => {
+        expect(viewModel({ keywords: ['ecology', 'landscape'] }).hiddenFilters).toEqual([
+          { name: 'keywords', value: 'ecology' },
+          { name: 'keywords', value: 'landscape' }
+        ])
       })
 
       test('chip removeHref drops only the targeted value and always drops page', () => {
@@ -699,6 +737,8 @@ describe('#search view-model', () => {
 
       test('appends repeated filter values', () => {
         expect(viewModel({ owner: ['A', 'B'] }).currentUrl).toBe('/?owner=A&owner=B')
+        expect(viewModel({ keywords: ['ecology', 'landscape'] }).currentUrl)
+          .toBe('/?keywords=ecology&keywords=landscape')
       })
 
       test('encodes special characters in filter values', () => {
