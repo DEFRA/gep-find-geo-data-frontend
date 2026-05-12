@@ -30,6 +30,7 @@ const SIDEBAR_ORDER = [
 
 const FACET_CONFIGS = SIDEBAR_ORDER.filter((item) => item.type === 'facet')
 const FACETS = FACET_CONFIGS.map((cfg) => cfg.name)
+const KEYWORD_FILTER = 'keywords'
 
 const ABSTRACT_WORD_LIMIT = 50
 const QUERY_MAX_LENGTH = 500
@@ -74,6 +75,10 @@ function parseFacetFilters (rawQuery) {
     if (values.length > 0) {
       filters[key] = values
     }
+  }
+  const keywords = toArray(rawQuery[KEYWORD_FILTER])
+  if (keywords.length > 0) {
+    filters[KEYWORD_FILTER] = keywords
   }
   return filters
 }
@@ -130,6 +135,17 @@ export function toSearchRequest (parsed) {
   }
 }
 
+function appendFilterParams (params, filters) {
+  for (const key of FACETS) {
+    for (const value of filters[key] ?? []) {
+      params.append(key, value)
+    }
+  }
+  for (const value of filters[KEYWORD_FILTER] ?? []) {
+    params.append(KEYWORD_FILTER, value)
+  }
+}
+
 function buildParams (parsed, overrides = {}) {
   const merged = { ...parsed, ...overrides }
   const params = new URLSearchParams()
@@ -141,11 +157,7 @@ function buildParams (parsed, overrides = {}) {
     params.set('sort', merged.sort)
   }
 
-  for (const key of FACETS) {
-    for (const value of merged.filters[key] ?? []) {
-      params.append(key, value)
-    }
-  }
+  appendFilterParams(params, merged.filters)
 
   dateFilter.appendToParams(params, merged.dateInput)
   locationFilter.appendToParams(params, merged.locationInput)
@@ -246,6 +258,24 @@ function buildActiveFilterGroups (parsed, basePath) {
   const chipHref = (overrides) => buildHref(basePath, parsed, overrides)
   const groups = buildFacetChipGroups(parsed, chipHref)
 
+  const keywordValues = parsed.filters[KEYWORD_FILTER] ?? []
+  if (keywordValues.length > 0) {
+    const items = keywordValues.map((value) => {
+      const remaining = keywordValues.filter((v) => v !== value)
+      const filters = { ...parsed.filters }
+      if (remaining.length === 0) {
+        delete filters[KEYWORD_FILTER]
+      } else {
+        filters[KEYWORD_FILTER] = remaining
+      }
+      return {
+        label: value,
+        removeHref: chipHref({ filters, page: 1 })
+      }
+    })
+    groups.push({ name: KEYWORD_FILTER, legend: 'Keywords', items })
+  }
+
   const dateChips = dateFilter.toChipItems(parsed, chipHref)
   if (dateChips.length > 0) {
     groups.push({ ...dateFilter.chipGroup, items: dateChips })
@@ -265,6 +295,13 @@ function buildErrorSummary (parsed) {
     ...locationFilter.toErrorItems(parsed.locationErrors ?? {})
   ]
   return items.length > 0 ? { titleText: 'There is a problem', errorList: items } : null
+}
+
+function buildHiddenFilters (parsed) {
+  return (parsed.filters[KEYWORD_FILTER] ?? []).map((value) => ({
+    name: KEYWORD_FILTER,
+    value
+  }))
 }
 
 /**
@@ -308,6 +345,7 @@ export function buildViewModel ({ parsed, response, basePath }) {
     totalResults: response.total,
     results: mapResults(response.results),
     sidebarItems,
+    hiddenFilters: buildHiddenFilters(parsed),
     dateFilter: dateFilter.toFormViewModel(parsed),
     locationFilter: locationFilter.toFormViewModel(parsed),
     errorSummary: buildErrorSummary(parsed),

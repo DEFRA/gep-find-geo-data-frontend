@@ -19,7 +19,8 @@ function exampleRecord (overrides = {}) {
     dataType: 'Vector',
     accessLevel: 'Open data',
     updateFrequency: 'Monthly',
-    category: 'Habitats and biotopes',
+    categories: ['Environment'],
+    keywords: ['Habitats and biotopes', 'landscape', 'Habitats', 'Natural England', 'Open Data', 'ecology'],
     owner: 'Environment Agency',
     updatedAt: '2026-04-10T00:00:00Z',
     ...overrides
@@ -61,6 +62,79 @@ describe('#datasetController', () => {
     expect(statusCode).toBe(statusCodes.ok)
     expect(result).toMatch(/<h1[^>]*>\s*Flood Extents\s*<\/h1>/)
     expect(result).toMatch(/<title>[^<]*Flood Extents[^<]*<\/title>/)
+  })
+
+  test('renders service and download links from the dataset view model', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      links: [
+        { url: 'https://example.com/service/wms', name: 'WMS service', description: '' },
+        { url: 'https://example.com/files/flood-extents.zip', name: 'Flood extents', description: '' }
+      ]
+    }))
+
+    const { result, statusCode } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+    })
+
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(result).toContain('Data services and download by area of interest')
+    expect(result).toContain('Full downloads and supporting documentation')
+    expect(result).toContain('href="https://example.com/service/wms"')
+    expect(result).toContain('href="https://example.com/files/flood-extents.zip"')
+    expect(result).toContain('ZIP')
+  })
+
+  test('renders category and keyword links as search filters', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord())
+
+    const { result, statusCode } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+    })
+
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(result).toContain('href="/?categories=Environment"')
+    expect(result).toContain('>Environment</a>')
+    expect(result).toContain('href="/?keywords=Habitats+and+biotopes"')
+    expect(result).toContain('href="/?keywords=landscape"')
+  })
+
+  test('does not render metadata links with unsafe URL schemes', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      links: [
+        { url: 'https://example.com/service/wms', name: 'WMS service', description: '' },
+        { url: 'javascript:alert(1)', name: 'Unsafe script', description: '' },
+        { url: 'data:text/html,<script>alert(1)</script>', name: 'Unsafe data', description: '' }
+      ]
+    }))
+
+    const { result, statusCode } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+    })
+
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(result).toContain('href="https://example.com/service/wms"')
+    expect(result).not.toContain('javascript:alert(1)')
+    expect(result).not.toContain('data:text/html')
+    expect(result).not.toContain('Unsafe script')
+    expect(result).not.toContain('Unsafe data')
+  })
+
+  test('renders unsafe coordinate reference system URLs as text only', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      coordinateReferenceSystem: 'javascript:alert(1)'
+    }))
+
+    const { result, statusCode } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+    })
+
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(result).toContain('javascript:alert(1)')
+    expect(result).not.toContain('href="javascript:alert(1)"')
   })
 
   test('returns 404 when the record is missing', async () => {

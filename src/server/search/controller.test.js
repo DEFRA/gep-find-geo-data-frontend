@@ -54,7 +54,7 @@ describe('#searchController', () => {
     test('forwards the parsed query to the client', async () => {
       await server.inject({
         method: 'GET',
-        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&page=3&sort=titleAsc'
+        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&keywords=ecology&page=3&sort=titleAsc'
       })
 
       expect(mockSearch).toHaveBeenCalledWith({
@@ -63,7 +63,8 @@ describe('#searchController', () => {
         size: 20,
         filters: {
           owner: ['Natural England', 'Environment Agency'],
-          dataType: ['Grid']
+          dataType: ['Grid'],
+          keywords: ['ecology']
         },
         facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
         sort: 'titleAsc'
@@ -140,6 +141,16 @@ describe('#searchController', () => {
       expect(result).toContain('app-active-filters__row')
       expect(result).toContain('Data owner')
       expect(result).toContain('Natural England')
+    })
+
+    test('renders keyword filters as hidden inputs', async () => {
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/?keywords=ecology&keywords=landscape'
+      })
+
+      expect(result).toContain('type="hidden" name="keywords" value="ecology"')
+      expect(result).toContain('type="hidden" name="keywords" value="landscape"')
     })
 
     test('renders an empty-state message when no results match', async () => {

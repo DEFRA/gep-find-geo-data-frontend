@@ -1,5 +1,6 @@
 import {
   createAll,
+  Accordion,
   Button,
   Checkboxes,
   ErrorSummary,
@@ -8,8 +9,10 @@ import {
 } from 'govuk-frontend'
 
 import { initCookieBanner, initCookiesPage } from './cookie-consent.js'
+import { initCopyLinks } from './copy-link.js'
 import { initSearch } from './search.js'
 
+createAll(Accordion)
 createAll(Button)
 createAll(Checkboxes)
 createAll(ErrorSummary)
@@ -18,4 +21,5 @@ createAll(SkipLink)
 
 initCookieBanner()
 initCookiesPage()
+initCopyLinks()
 initSearch()

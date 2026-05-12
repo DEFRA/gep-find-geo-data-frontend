@@ -1,13 +1,222 @@
 {% extends 'layouts/page.njk' %}
 
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "copy-link/macro.njk" import appCopyLink %}
+
 {% block content %}
   <div class="defra-width-container govuk-!-margin-top-5">
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">{{ heading }}</h1>
 
-        <pre class="govuk-body" style="white-space: pre-wrap; word-break: break-word; background: #f3f2f1; padding: 15px;">{{ record | dump(2) }}</pre>
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">{{ heading }}</h1>
+
+        <h2 class="govuk-heading-m">Summary</h2>
+        {% for para in record.abstract | paragraphs %}
+          <p class="govuk-body">{{ para }}</p>
+        {% endfor %}
+
+        {% if categoryLinks.length %}
+          <h2 class="govuk-heading-m">Categories</h2>
+          <ul class="app-tag-list">
+            {% for link in categoryLinks %}
+              <li><a class="app-tag-list__tag" href="{{ link.href }}">{{ link.text }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if keywordLinks.length %}
+          <h2 class="govuk-heading-m">Keywords</h2>
+          <ul class="app-tag-list">
+            {% for link in keywordLinks %}
+              <li><a class="app-tag-list__tag" href="{{ link.href }}">{{ link.text }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if record.useLimitation %}
+          <h2 class="govuk-heading-m">Use limitation statement</h2>
+          <p class="govuk-body">{{ record.useLimitation }}</p>
+        {% endif %}
+
+        {% if record.licence %}
+          <h2 class="govuk-heading-m">Licence</h2>
+          <p class="govuk-body">{{ record.licence }}</p>
+        {% endif %}
+
+        {% set technicalHtml %}
+          <dl class="app-dataset-dl">
+            <div class="app-dataset-dl__row">
+              <dt>Update frequency</dt>
+              <dd>{{ record.updateFrequency or "Not available" }}</dd>
+            </div>
+            {% if record.lineage %}
+              <div class="app-dataset-dl__row">
+                <dt>Lineage</dt>
+                <dd>{{ record.lineage }}</dd>
+              </div>
+            {% endif %}
+          </dl>
+        {% endset %}
+
+        {% set spatialHtml %}
+          {% if record.coordinateReferenceSystem %}
+            <h3 class="govuk-heading-s">Coordinate reference system</h3>
+            <p class="govuk-body">
+              {% if coordinateReferenceSystemHref %}
+                <a class="govuk-link" href="{{ coordinateReferenceSystemHref }}">{{ record.coordinateReferenceSystem }}</a>
+              {% else %}
+                {{ record.coordinateReferenceSystem }}
+              {% endif %}
+            </p>
+          {% endif %}
+
+          {% if record.geographicExtent %}
+            <h3 class="govuk-heading-s govuk-!-margin-top-4">Geographic extent</h3>
+            <ul class="govuk-list">
+              <li>Latitude from: {{ record.geographicExtent.south }} to {{ record.geographicExtent.north }}</li>
+              <li>Longitude from: {{ record.geographicExtent.west }} to {{ record.geographicExtent.east }}</li>
+            </ul>
+          {% endif %}
+        {% endset %}
+
+        {% set metadataHtml %}
+          {% if record.language %}
+            <h3 class="govuk-heading-s">Language</h3>
+            <p class="govuk-body">{{ record.language | displayLanguage }}</p>
+          {% endif %}
+
+          <h3 class="govuk-heading-s">Metadata identifier</h3>
+          <p class="govuk-body">{{ record.id }}</p>
+        {% endset %}
+
+        {{ govukAccordion({
+          id: "accordion-default",
+          items: [
+            {
+              heading: { text: "Technical Information" },
+              content: { html: technicalHtml }
+            },
+            {
+              heading: { text: "Spatial Information" },
+              content: { html: spatialHtml }
+            },
+            {
+              heading: { text: "Metadata Information" },
+              content: { html: metadataHtml }
+            }
+          ]
+        }) }}
       </div>
+
+      <div class="govuk-grid-column-one-third">
+        <div class="app-dataset-sidebar">
+          {% if record.owner %}
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Published by</h2>
+            <p class="govuk-body">{{ record.owner }}</p>
+          {% endif %}
+
+          {% if record.contactPoint %}
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Contact publisher</h2>
+            <p class="govuk-body">
+              <a href="mailto:{{ record.contactPoint }}" class="govuk-link">{{ record.contactPoint }}</a>
+            </p>
+          {% endif %}
+
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Dataset reference dates</h2>
+
+          <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Creation date</h3>
+          <p class="govuk-body">{{ record.creationDate | formatDate if record.creationDate else "N/A" }}</p>
+
+          <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Revision date</h3>
+          <p class="govuk-body">{{ record.updatedAt | formatDate if record.updatedAt else "N/A" }}</p>
+
+          <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Publication date</h3>
+          <p class="govuk-body">{{ record.publicationDate | formatDate if record.publicationDate else "N/A" }}</p>
+
+          {% if record.temporalExtent %}
+            <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Period</h3>
+            <ul class="govuk-list">
+              {% if record.temporalExtent.start %}
+                <li>From: {{ record.temporalExtent.start | formatDate }}</li>
+              {% endif %}
+              {% if record.temporalExtent.end %}
+                <li>To: {{ record.temporalExtent.end | formatDate }}</li>
+              {% endif %}
+            </ul>
+          {% endif %}
+
+        </div>
+      </div>
+
     </div>
+
+    {% if serviceLinks.length or downloadLinks.length %}
+      {% set dataHtml %}
+        {% if serviceLinks.length %}
+          {% set serviceRows = [] %}
+          {% for link in serviceLinks %}
+            {% set copyHtml %}
+              {{ appCopyLink({
+                id: "copy-link-" + loop.index,
+                url: link.url
+              }) }}
+            {% endset %}
+            {% set openHtml %}<a href="{{ link.url }}" class="govuk-link">Open link</a>{% endset %}
+            {% set serviceRows = (serviceRows.push([
+              { text: link.name },
+              { html: copyHtml, classes: "app-copy-link-table-cell" },
+              { html: openHtml }
+            ]), serviceRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            head: [
+              { text: "Data services and download by area of interest" },
+              { text: "Link", classes: "app-dataset-data__col--narrow app-copy-link-table-cell" },
+              { text: "Action", classes: "app-dataset-data__col--narrow" }
+            ],
+            rows: serviceRows
+          }) }}
+        {% endif %}
+
+        {% if downloadLinks.length %}
+          {% set downloadRows = [] %}
+          {% for link in downloadLinks %}
+            {% set dlHtml %}<a href="{{ link.url }}" class="govuk-link" download>Download</a>{% endset %}
+            {% set downloadRows = (downloadRows.push([
+              { text: link.name },
+              { text: link.format },
+              { html: dlHtml }
+            ]), downloadRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            head: [
+              { text: "Full downloads and supporting documentation" },
+              { text: "Format", classes: "app-dataset-data__col--narrow" },
+              { text: "Action", classes: "app-dataset-data__col--narrow" }
+            ],
+            rows: downloadRows
+          }) }}
+        {% endif %}
+      {% endset %}
+
+      <div class="app-dataset-data">
+        {{ govukAccordion({
+          id: "accordion-data",
+          items: [
+            {
+              heading: { text: "Data and Supporting Information" },
+              content: { html: dataHtml },
+              expanded: true
+            }
+          ]
+        }) }}
+      </div>
+    {% endif %}
+
   </div>
 {% endblock %}

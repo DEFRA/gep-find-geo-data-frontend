@@ -1,6 +1,10 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
+{% for filter in hiddenFilters %}
+  <input type="hidden" name="{{ filter.name }}" value="{{ filter.value }}">
+{% endfor %}
+
 {% for item in sidebarItems %}
   {% if item.type == 'facet' %}
     <details class="govuk-details app-filter-group" data-module="govuk-details" data-filter-group="{{ item.name }}">
