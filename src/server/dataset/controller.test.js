@@ -94,10 +94,10 @@ describe('#datasetController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toContain('href="/?categories=Environment"')
+    expect(result).toContain('href="/?category=Environment"')
     expect(result).toContain('>Environment</a>')
-    expect(result).toContain('href="/?keywords=Habitats+and+biotopes"')
-    expect(result).toContain('href="/?keywords=landscape"')
+    expect(result).toContain('href="/?keyword=Habitats+and+biotopes"')
+    expect(result).toContain('href="/?keyword=landscape"')
   })
 
   test('does not render metadata links with unsafe URL schemes', async () => {

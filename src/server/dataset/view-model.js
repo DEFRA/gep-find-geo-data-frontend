@@ -121,8 +121,8 @@ function buildViewModel (record) {
     serviceLinks,
     downloadLinks,
     coordinateReferenceSystemHref: safeUrl(record.coordinateReferenceSystem),
-    categoryLinks: tagLinks(record.categories ?? [], 'categories'),
-    keywordLinks: tagLinks(record.keywords ?? [], 'keywords'),
+    categoryLinks: tagLinks(record.categories ?? [], 'category'),
+    keywordLinks: tagLinks(record.keywords ?? [], 'keyword'),
     breadcrumbs: [
       { text: 'Search', href: '/' },
       { text: record.title }

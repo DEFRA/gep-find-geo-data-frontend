@@ -20,7 +20,7 @@ const VALID_PAGE_SIZES = new Set(PAGE_SIZE_OPTIONS)
 
 const SIDEBAR_ORDER = [
   { type: 'facet', name: 'accessLevel', legend: 'Access level' },
-  { type: 'facet', name: 'categories', legend: 'Categories' },
+  { type: 'facet', name: 'categories', legend: 'Category' },
   { type: 'date' },
   { type: 'facet', name: 'dataType', legend: 'Data type' },
   { type: 'facet', name: 'owner', legend: 'Data owner' },
@@ -31,6 +31,10 @@ const SIDEBAR_ORDER = [
 const FACET_CONFIGS = SIDEBAR_ORDER.filter((item) => item.type === 'facet')
 const FACETS = FACET_CONFIGS.map((cfg) => cfg.name)
 const KEYWORD_FILTER = 'keywords'
+const FILTER_PARAMS = {
+  categories: 'category',
+  keywords: 'keyword'
+}
 
 const ABSTRACT_WORD_LIMIT = 50
 const QUERY_MAX_LENGTH = 500
@@ -67,18 +71,22 @@ function parsePagination (rawQuery) {
   return { page, size }
 }
 
+function filterParamName (name) {
+  return FILTER_PARAMS[name] ?? name
+}
+
 function parseFacetFilters (rawQuery) {
   /** @type {Record<string, string[]>} */
   const filters = {}
   for (const key of FACETS) {
-    const values = toArray(rawQuery[key])
+    const values = toArray(rawQuery[filterParamName(key)])
     if (values.length > 0) {
       filters[key] = values
     }
   }
-  const keywords = toArray(rawQuery[KEYWORD_FILTER])
-  if (keywords.length > 0) {
-    filters[KEYWORD_FILTER] = keywords
+  const keywordValues = toArray(rawQuery[filterParamName(KEYWORD_FILTER)])
+  if (keywordValues.length > 0) {
+    filters[KEYWORD_FILTER] = keywordValues
   }
   return filters
 }
@@ -138,11 +146,11 @@ export function toSearchRequest (parsed) {
 function appendFilterParams (params, filters) {
   for (const key of FACETS) {
     for (const value of filters[key] ?? []) {
-      params.append(key, value)
+      params.append(filterParamName(key), value)
     }
   }
   for (const value of filters[KEYWORD_FILTER] ?? []) {
-    params.append(KEYWORD_FILTER, value)
+    params.append(filterParamName(KEYWORD_FILTER), value)
   }
 }
 
@@ -222,6 +230,7 @@ function buildFacetGroups (response, parsed) {
 
     return {
       name: cfg.name,
+      paramName: filterParamName(cfg.name),
       legend: cfg.legend,
       items,
       selectedCount: selected.size
@@ -273,7 +282,7 @@ function buildActiveFilterGroups (parsed, basePath) {
         removeHref: chipHref({ filters, page: 1 })
       }
     })
-    groups.push({ name: KEYWORD_FILTER, legend: 'Keywords', items })
+    groups.push({ name: KEYWORD_FILTER, legend: 'Keyword', items })
   }
 
   const dateChips = dateFilter.toChipItems(parsed, chipHref)
@@ -299,7 +308,7 @@ function buildErrorSummary (parsed) {
 
 function buildHiddenFilters (parsed) {
   return (parsed.filters[KEYWORD_FILTER] ?? []).map((value) => ({
-    name: KEYWORD_FILTER,
+    name: filterParamName(KEYWORD_FILTER),
     value
   }))
 }
