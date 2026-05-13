@@ -54,7 +54,7 @@ describe('#searchController', () => {
     test('forwards the parsed query to the client', async () => {
       await server.inject({
         method: 'GET',
-        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&keywords=ecology&page=3&sort=titleAsc'
+        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&category=Environment&category=Elevation&keyword=ecology&keyword=landscape&page=3&sort=titleAsc'
       })
 
       expect(mockSearch).toHaveBeenCalledWith({
@@ -64,9 +64,10 @@ describe('#searchController', () => {
         filters: {
           owner: ['Natural England', 'Environment Agency'],
           dataType: ['Grid'],
-          keywords: ['ecology']
+          categories: ['Environment', 'Elevation'],
+          keywords: ['ecology', 'landscape']
         },
-        facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
+        facets: ['accessLevel', 'categories', 'owner', 'dataType', 'updateFrequency'],
         sort: 'titleAsc'
       })
     })
@@ -110,6 +111,7 @@ describe('#searchController', () => {
         emptyResponse({
           facets: {
             owner: [{ value: 'Natural England', count: 4 }],
+            categories: [{ value: 'Environment', count: 3 }],
             dataType: [{ value: 'Vector', count: 2 }]
           }
         })
@@ -118,6 +120,8 @@ describe('#searchController', () => {
       const { result } = await server.inject({ method: 'GET', url: '/' })
 
       expect(result).toContain('Natural England')
+      expect(result).toContain('Category')
+      expect(result).toContain('name="category"')
       expect(result).toContain('Vector')
       expect(result).toContain('value="Vector"')
     })
@@ -146,11 +150,11 @@ describe('#searchController', () => {
     test('renders keyword filters as hidden inputs', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?keywords=ecology&keywords=landscape'
+        url: '/?keyword=ecology&keyword=landscape'
       })
 
-      expect(result).toContain('type="hidden" name="keywords" value="ecology"')
-      expect(result).toContain('type="hidden" name="keywords" value="landscape"')
+      expect(result).toContain('type="hidden" name="keyword" value="ecology"')
+      expect(result).toContain('type="hidden" name="keyword" value="landscape"')
     })
 
     test('renders an empty-state message when no results match', async () => {

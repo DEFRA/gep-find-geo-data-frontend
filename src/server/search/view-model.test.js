@@ -38,14 +38,15 @@ describe('#search view-model', () => {
         page: '3',
         size: '50',
         sort: 'titleAsc',
-        keywords: 'ecology'
+        category: 'Environment',
+        keyword: 'ecology'
       })))
         .toEqual({
           query: 'flood',
           from: 100,
           size: 50,
-          filters: { keywords: ['ecology'] },
-          facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
+          filters: { categories: ['Environment'], keywords: ['ecology'] },
+          facets: ['accessLevel', 'categories', 'owner', 'dataType', 'updateFrequency'],
           sort: 'titleAsc'
         })
     })
@@ -107,14 +108,14 @@ describe('#search view-model', () => {
 
     test.each([
       ['accessLevel', 'true'],
-      ['categories', 'Environment'],
+      ['category', 'Environment', 'categories'],
       ['dataType', 'Vector'],
       ['owner', 'Natural England'],
       ['updateFrequency', 'Monthly'],
-      ['keywords', 'ecology']
-    ])('parses supported filter %s', (name, value) => {
+      ['keyword', 'ecology', 'keywords']
+    ])('parses supported filter %s', (name, value, filterName = name) => {
       expect(parseQuery({ [name]: value }).filters).toEqual({
-        [name]: [value]
+        [filterName]: [value]
       })
     })
 
@@ -131,17 +132,16 @@ describe('#search view-model', () => {
       expect(parseQuery({ owner: ['A', ''] }).filters).toEqual({
         owner: ['A']
       })
-      expect(parseQuery({ categories: ['Environment', 'Elevation'] }).filters).toEqual({
+      expect(parseQuery({ category: ['Environment', 'Elevation'] }).filters).toEqual({
         categories: ['Environment', 'Elevation']
       })
-      expect(parseQuery({ keywords: ['ecology', 'ecology', 'landscape'] }).filters).toEqual({
+      expect(parseQuery({ keyword: ['ecology', 'ecology', 'landscape'] }).filters).toEqual({
         keywords: ['ecology', 'landscape']
       })
     })
 
     test('omits unknown and empty filter keys', () => {
       expect(parseQuery({ owner: '' }).filters).toEqual({})
-      expect(parseQuery({ category: 'Environment' }).filters).toEqual({})
       expect(parseQuery({ madeUp: 'x' }).filters).toEqual({})
     })
 
@@ -297,7 +297,7 @@ describe('#search view-model', () => {
       test('sidebarItems contains facets and filters in declared order', () => {
         const items = viewModel().sidebarItems.map((i) => i.type === 'facet' ? i.name : i.type)
         expect(items).toEqual([
-          'accessLevel', 'categories', 'date', 'dataType', 'owner', 'location', 'updateFrequency'
+          'accessLevel', 'categories', 'owner', 'dataType', 'date', 'location', 'updateFrequency'
         ])
       })
     })
@@ -421,22 +421,22 @@ describe('#search view-model', () => {
 
       test('produces separate groups per facet in sidebar order', () => {
         const vm = viewModel({ dataType: 'Vector', owner: 'Natural England' })
-        expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['dataType', 'owner'])
+        expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['owner', 'dataType'])
       })
 
       test('adds keyword chips without adding a sidebar facet', () => {
-        const vm = viewModel({ keywords: ['ecology', 'landscape'] })
+        const vm = viewModel({ keyword: ['ecology', 'landscape'] })
         const group = vm.activeFilterGroups.find((g) => g.name === 'keywords')
 
-        expect(group.legend).toBe('Keywords')
+        expect(group.legend).toBe('Keyword')
         expect(group.items.map((item) => item.label)).toEqual(['ecology', 'landscape'])
         expect(vm.sidebarItems.some((item) => item.name === 'keywords')).toBe(false)
       })
 
       test('adds keyword values as hidden filters for form serialisation', () => {
-        expect(viewModel({ keywords: ['ecology', 'landscape'] }).hiddenFilters).toEqual([
-          { name: 'keywords', value: 'ecology' },
-          { name: 'keywords', value: 'landscape' }
+        expect(viewModel({ keyword: ['ecology', 'landscape'] }).hiddenFilters).toEqual([
+          { name: 'keyword', value: 'ecology' },
+          { name: 'keyword', value: 'landscape' }
         ])
       })
 
@@ -737,8 +737,10 @@ describe('#search view-model', () => {
 
       test('appends repeated filter values', () => {
         expect(viewModel({ owner: ['A', 'B'] }).currentUrl).toBe('/?owner=A&owner=B')
-        expect(viewModel({ keywords: ['ecology', 'landscape'] }).currentUrl)
-          .toBe('/?keywords=ecology&keywords=landscape')
+        expect(viewModel({ category: ['Environment', 'Elevation'] }).currentUrl)
+          .toBe('/?category=Environment&category=Elevation')
+        expect(viewModel({ keyword: ['ecology', 'landscape'] }).currentUrl)
+          .toBe('/?keyword=ecology&keyword=landscape')
       })
 
       test('encodes special characters in filter values', () => {

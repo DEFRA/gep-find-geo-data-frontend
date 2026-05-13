@@ -124,12 +124,12 @@ describe('#dataset view-model', () => {
 
     const { categoryLinks, keywordLinks } = buildViewModel(record)
     expect(categoryLinks).toEqual([
-      { text: 'Environment', href: '/?categories=Environment' },
-      { text: 'Elevation', href: '/?categories=Elevation' }
+      { text: 'Environment', href: '/?category=Environment' },
+      { text: 'Elevation', href: '/?category=Elevation' }
     ])
     expect(keywordLinks).toEqual([
-      { text: 'Habitats and biotopes', href: '/?keywords=Habitats+and+biotopes' },
-      { text: 'landscape', href: '/?keywords=landscape' }
+      { text: 'Habitats and biotopes', href: '/?keyword=Habitats+and+biotopes' },
+      { text: 'landscape', href: '/?keyword=landscape' }
     ])
   })
 })
