@@ -46,7 +46,7 @@ describe('#search view-model', () => {
           from: 100,
           size: 50,
           filters: { categories: ['Environment'], keywords: ['ecology'] },
-          facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
+          facets: ['accessLevel', 'categories', 'owner', 'dataType', 'updateFrequency'],
           sort: 'titleAsc'
         })
     })
@@ -297,7 +297,7 @@ describe('#search view-model', () => {
       test('sidebarItems contains facets and filters in declared order', () => {
         const items = viewModel().sidebarItems.map((i) => i.type === 'facet' ? i.name : i.type)
         expect(items).toEqual([
-          'accessLevel', 'categories', 'date', 'dataType', 'owner', 'location', 'updateFrequency'
+          'accessLevel', 'categories', 'owner', 'dataType', 'date', 'location', 'updateFrequency'
         ])
       })
     })
@@ -421,7 +421,7 @@ describe('#search view-model', () => {
 
       test('produces separate groups per facet in sidebar order', () => {
         const vm = viewModel({ dataType: 'Vector', owner: 'Natural England' })
-        expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['dataType', 'owner'])
+        expect(vm.activeFilterGroups.map((g) => g.name)).toEqual(['owner', 'dataType'])
       })
 
       test('adds keyword chips without adding a sidebar facet', () => {

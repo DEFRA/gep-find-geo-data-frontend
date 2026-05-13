@@ -67,7 +67,7 @@ describe('#searchController', () => {
           categories: ['Environment', 'Elevation'],
           keywords: ['ecology', 'landscape']
         },
-        facets: ['accessLevel', 'categories', 'dataType', 'owner', 'updateFrequency'],
+        facets: ['accessLevel', 'categories', 'owner', 'dataType', 'updateFrequency'],
         sort: 'titleAsc'
       })
     })
