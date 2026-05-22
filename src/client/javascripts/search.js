@@ -10,6 +10,13 @@ import { createSessionStore } from '../common/helpers/session-store.js'
 
 const GOVUK_PARTIAL_COMPONENTS = [Button, Checkboxes, ErrorSummary, Radios]
 
+class FetchError extends Error {
+  constructor (status) {
+    super(`Search failed: ${status}`)
+    this.status = status
+  }
+}
+
 const openFiltersStore = createSessionStore('gep:search:openFilters')
 
 const readOpenFilters = () => new Set(openFiltersStore.read() ?? [])
@@ -69,7 +76,7 @@ function createPartialsLoader ({ resultsEl }) {
         signal
       })
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.status}`)
+        throw new FetchError(response.status)
       }
       return await response.json()
     } finally {
@@ -99,7 +106,13 @@ function createPartialsLoader ({ resultsEl }) {
       swapPartials(data)
       globalThis.history.pushState({}, '', data.url || url)
     } catch (error) {
-      if (error.name !== 'AbortError') {
+      if (error.name === 'AbortError') {
+        return
+      }
+
+      if (error instanceof FetchError && error.status === 401) {
+        globalThis.location.reload()
+      } else {
         onFailure()
       }
     }

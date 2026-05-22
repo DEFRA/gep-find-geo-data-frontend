@@ -2,6 +2,7 @@ import { vi } from 'vitest'
 
 import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
+import { mockAuthCredentials } from '../common/test-helpers/auth.js'
 
 const { mockSearch } = vi.hoisted(() => ({
   mockSearch: vi.fn()
@@ -54,7 +55,8 @@ describe('#searchController', () => {
     test('forwards the parsed query to the client', async () => {
       await server.inject({
         method: 'GET',
-        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&category=Environment&category=Elevation&keyword=ecology&keyword=landscape&page=3&sort=titleAsc'
+        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&category=Environment&category=Elevation&keyword=ecology&keyword=landscape&page=3&sort=titleAsc',
+        auth: mockAuthCredentials
       })
 
       expect(mockSearch).toHaveBeenCalledWith({
@@ -73,7 +75,11 @@ describe('#searchController', () => {
     })
 
     test('skips the backend when the query has validation errors', async () => {
-      await server.inject({ method: 'GET', url: INVALID_DATE_URL })
+      await server.inject({
+        method: 'GET',
+        url: INVALID_DATE_URL,
+        auth: mockAuthCredentials
+      })
 
       expect(mockSearch).not.toHaveBeenCalled()
     })
@@ -83,7 +89,8 @@ describe('#searchController', () => {
     test('renders the page heading and search form', async () => {
       const { result, statusCode } = await server.inject({
         method: 'GET',
-        url: '/'
+        url: '/',
+        auth: mockAuthCredentials
       })
 
       expect(statusCode).toBe(statusCodes.ok)
@@ -98,7 +105,8 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?q=flood'
+        url: '/?q=flood',
+        auth: mockAuthCredentials
       })
 
       expect(result).toContain('1 result')
@@ -117,7 +125,11 @@ describe('#searchController', () => {
         })
       )
 
-      const { result } = await server.inject({ method: 'GET', url: '/' })
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/',
+        auth: mockAuthCredentials
+      })
 
       expect(result).toContain('Natural England')
       expect(result).toContain('Category')
@@ -138,7 +150,8 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?owner=Natural%20England'
+        url: '/?owner=Natural%20England',
+        auth: mockAuthCredentials
       })
 
       expect(result).toContain('checked')
@@ -150,7 +163,8 @@ describe('#searchController', () => {
     test('renders keyword filters as hidden inputs', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?keyword=ecology&keyword=landscape'
+        url: '/?keyword=ecology&keyword=landscape',
+        auth: mockAuthCredentials
       })
 
       expect(result).toContain('type="hidden" name="keyword" value="ecology"')
@@ -160,14 +174,19 @@ describe('#searchController', () => {
     test('renders an empty-state message when no results match', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?q=zzznomatch'
+        url: '/?q=zzznomatch',
+        auth: mockAuthCredentials
       })
 
       expect(result).toContain('No results found')
     })
 
     test('renders the Date filter with both radio options', async () => {
-      const { result } = await server.inject({ method: 'GET', url: '/' })
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/',
+        auth: mockAuthCredentials
+      })
 
       expect(result).toContain('data-filter-group="date"')
       expect(result).toContain('Select exact date')
@@ -175,7 +194,11 @@ describe('#searchController', () => {
     })
 
     test('renders the Location filter section and coordinate inputs', async () => {
-      const { result } = await server.inject({ method: 'GET', url: '/' })
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/',
+        auth: mockAuthCredentials
+      })
 
       expect(result).toContain('data-filter-group="location"')
       expect(result).toContain('name="latitude"')
@@ -185,7 +208,8 @@ describe('#searchController', () => {
     test('pre-selects the exact date radio, preserves day/month/year and renders its chip', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?dateMode=exact&exactDate-day=14&exactDate-month=4&exactDate-year=2024'
+        url: '/?dateMode=exact&exactDate-day=14&exactDate-month=4&exactDate-year=2024',
+        auth: mockAuthCredentials
       })
 
       expect(result).toMatch(/value="exact"[^>]*checked/)
@@ -198,7 +222,8 @@ describe('#searchController', () => {
     test('renders the error summary and suppresses the results column on validation errors', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: INVALID_DATE_URL
+        url: INVALID_DATE_URL,
+        auth: mockAuthCredentials
       })
 
       expect(result).toContain('There is a problem')
@@ -218,7 +243,8 @@ describe('#searchController', () => {
       const response = await server.inject({
         method: 'GET',
         url: '/?q=flood',
-        headers: { accept: 'application/json' }
+        headers: { accept: 'application/json' },
+        auth: mockAuthCredentials
       })
 
       expect(response.statusCode).toBe(statusCodes.ok)
@@ -236,7 +262,8 @@ describe('#searchController', () => {
       const response = await server.inject({
         method: 'GET',
         url: INVALID_DATE_URL,
-        headers: { accept: 'application/json' }
+        headers: { accept: 'application/json' },
+        auth: mockAuthCredentials
       })
 
       const body = JSON.parse(response.payload)
@@ -249,7 +276,11 @@ describe('#searchController', () => {
     test('returns 500 when the client throws', async () => {
       mockSearch.mockRejectedValueOnce(new Error('GeoNetwork unavailable'))
 
-      const response = await server.inject({ method: 'GET', url: '/' })
+      const response = await server.inject({
+        method: 'GET',
+        url: '/',
+        auth: mockAuthCredentials
+      })
 
       expect(response.statusCode).toBe(statusCodes.internalServerError)
     })

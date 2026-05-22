@@ -2,6 +2,7 @@ import { vi } from 'vitest'
 
 import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
+import { mockAuthCredentials } from '../common/test-helpers/auth.js'
 
 const { mockGetRecord } = vi.hoisted(() => ({
   mockGetRecord: vi.fn()
@@ -46,7 +47,11 @@ describe('#datasetController', () => {
   test('forwards the id from the URL to the client', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord())
 
-    await server.inject({ method: 'GET', url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0' })
+    await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
 
     expect(mockGetRecord).toHaveBeenCalledWith('92b43165-0dd0-4e69-a712-1e49bb5aa0d0')
   })
@@ -56,7 +61,8 @@ describe('#datasetController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(statusCode).toBe(statusCodes.ok)
@@ -74,7 +80,8 @@ describe('#datasetController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(statusCode).toBe(statusCodes.ok)
@@ -90,7 +97,8 @@ describe('#datasetController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(statusCode).toBe(statusCodes.ok)
@@ -111,7 +119,8 @@ describe('#datasetController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(statusCode).toBe(statusCodes.ok)
@@ -129,7 +138,8 @@ describe('#datasetController', () => {
 
     const { result, statusCode } = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(statusCode).toBe(statusCodes.ok)
@@ -142,7 +152,8 @@ describe('#datasetController', () => {
 
     const response = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(response.statusCode).toBe(statusCodes.notFound)
@@ -152,7 +163,8 @@ describe('#datasetController', () => {
   test('returns 404 when the id is not a uuid', async () => {
     const response = await server.inject({
       method: 'GET',
-      url: '/dataset/not-a-uuid'
+      url: '/dataset/not-a-uuid',
+      auth: mockAuthCredentials
     })
 
     expect(response.statusCode).toBe(statusCodes.notFound)
@@ -165,7 +177,8 @@ describe('#datasetController', () => {
 
     const response = await server.inject({
       method: 'GET',
-      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0'
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
     })
 
     expect(response.statusCode).toBe(statusCodes.internalServerError)
