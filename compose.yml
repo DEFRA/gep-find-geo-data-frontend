@@ -43,6 +43,19 @@ services:
     networks:
       - cdp-tenant
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.2
+    command: start-dev --import-realm --http-port=8081
+    ports:
+      - '8081:8081'
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    volumes:
+      - ./compose/keycloak/defra-local-realm.json:/opt/keycloak/data/import/defra-local-realm.json
+    networks:
+      - cdp-tenant
+
 networks:
   cdp-tenant:
     driver: bridge

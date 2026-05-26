@@ -33,7 +33,7 @@ describe('#catchAll', () => {
   const mockErrorLogger = vi.fn()
   const mockStack = 'Mock error stack'
   const errorPage = 'error/index'
-  const mockRequest = (statusCode) => ({
+  const mockRequest = (statusCode, headers = {}) => ({
     response: {
       isBoom: true,
       stack: mockStack,
@@ -41,6 +41,7 @@ describe('#catchAll', () => {
         statusCode
       }
     },
+    headers,
     logger: { error: mockErrorLogger }
   })
   const mockToolkitView = vi.fn()
@@ -122,5 +123,27 @@ describe('#catchAll', () => {
     expect(mockToolkitCode).toHaveBeenCalledWith(
       statusCodes.internalServerError
     )
+  })
+
+  test('Should return JSON for requests with Accept application/json', () => {
+    const mockResponse = vi.fn()
+    const mockType = vi.fn()
+    const jsonToolkit = {
+      response: mockResponse.mockReturnValue({
+        code: mockToolkitCode.mockReturnValue({ type: mockType })
+      })
+    }
+
+    catchAll(
+      mockRequest(statusCodes.unauthorized, { accept: 'application/json' }),
+      jsonToolkit
+    )
+
+    expect(mockResponse).toHaveBeenCalledWith({
+      statusCode: statusCodes.unauthorized,
+      error: 'Unauthorized'
+    })
+    expect(mockToolkitCode).toHaveBeenCalledWith(statusCodes.unauthorized)
+    expect(mockType).toHaveBeenCalledWith('application/json')
   })
 })
