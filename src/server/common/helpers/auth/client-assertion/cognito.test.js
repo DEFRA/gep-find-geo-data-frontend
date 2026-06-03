@@ -12,10 +12,6 @@ vi.mock('@aws-sdk/client-cognito-identity', () => ({
   GetOpenIdTokenForDeveloperIdentityCommand: class { constructor (input) { Object.assign(this, input) } }
 }))
 
-vi.mock('@smithy/node-http-handler', () => ({
-  NodeHttpHandler: class {}
-}))
-
 vi.mock('../../../../../config/config.js', () => ({
   config: {
     get: vi.fn((key) => {
