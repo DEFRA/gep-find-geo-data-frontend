@@ -118,14 +118,22 @@ describe('#api', () => {
         expect(lastRequestBody()).toMatchSnapshot()
       })
 
-      test('combined query, filters, facets and sort', async () => {
+      test('combined query, every filter, facets and sort', async () => {
         mockEmptyResponse()
         await search({
           query: 'flood',
           filters: {
             owner: ['Environment Agency', 'Natural England'],
             dataType: ['Grid'],
-            location: { latitude: 51.501, longitude: -0.142 }
+            accessLevel: ['true'],
+            updateFrequency: ['asNeeded'],
+            categories: ['Environment'],
+            keywords: ['Habitats and biotopes'],
+            location: { latitude: 51.501, longitude: -0.142 },
+            updatedAtBetween: {
+              from: '2002-01-01T00:00:00.000Z',
+              to: '2005-01-01T00:00:00.000Z'
+            }
           },
           facets: ['owner', 'dataType'],
           sort: 'newest'
@@ -171,7 +179,7 @@ describe('#api', () => {
       await expect(search({ sort: 'unknown' })).rejects.toThrow('Unknown sort')
     })
 
-    test('updatedAtBetween emits an ES range clause', async () => {
+    test('updatedAtBetween filters on the latest resourceDate (must >= from, must_not >= to)', async () => {
       mockEmptyResponse()
       await search({
         filters: {
@@ -182,20 +190,19 @@ describe('#api', () => {
         }
       })
       const body = lastRequestBody()
+      const nestedGte = (value) => ({
+        nested: {
+          path: 'resourceDate',
+          query: { range: { 'resourceDate.date': { gte: value } } }
+        }
+      })
       expect(body.query).toEqual({
         bool: {
           filter: [
             {
-              nested: {
-                path: 'resourceDate',
-                query: {
-                  range: {
-                    'resourceDate.date': {
-                      gte: '2024-01-01T00:00:00.000Z',
-                      lt: '2024-02-01T00:00:00.000Z'
-                    }
-                  }
-                }
+              bool: {
+                must: [nestedGte('2024-01-01T00:00:00.000Z')],
+                must_not: [nestedGte('2024-02-01T00:00:00.000Z')]
               }
             }
           ]
@@ -216,9 +223,15 @@ describe('#api', () => {
       expect(body.query.bool.must).toHaveLength(1)
       expect(body.query.bool.filter).toEqual([
         {
-          nested: {
-            path: 'resourceDate',
-            query: { range: { 'resourceDate.date': { gte: '2024-01-01T00:00:00.000Z' } } }
+          bool: {
+            must: [
+              {
+                nested: {
+                  path: 'resourceDate',
+                  query: { range: { 'resourceDate.date': { gte: '2024-01-01T00:00:00.000Z' } } }
+                }
+              }
+            ]
           }
         }
       ])
@@ -226,6 +239,38 @@ describe('#api', () => {
         bool: {
           filter: [
             { terms: { 'OrgForResourceObject.default': ['Environment Agency'] } }
+          ]
+        }
+      })
+    })
+
+    test('a to-only updatedAtBetween requires a date and keeps the latest below it', async () => {
+      mockEmptyResponse()
+      await search({ filters: { updatedAtBetween: { to: '2026-01-01T00:00:00.000Z' } } })
+      const body = lastRequestBody()
+      expect(body.query).toEqual({
+        bool: {
+          filter: [
+            {
+              bool: {
+                must: [
+                  {
+                    nested: {
+                      path: 'resourceDate',
+                      query: { exists: { field: 'resourceDate.date' } }
+                    }
+                  }
+                ],
+                must_not: [
+                  {
+                    nested: {
+                      path: 'resourceDate',
+                      query: { range: { 'resourceDate.date': { gte: '2026-01-01T00:00:00.000Z' } } }
+                    }
+                  }
+                ]
+              }
+            }
           ]
         }
       })

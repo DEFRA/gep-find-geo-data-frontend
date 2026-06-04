@@ -256,7 +256,7 @@ describe('search live-enhancement', () => {
   it('skips fetch on radios that reveal further inputs', async () => {
     setupDom()
     document.querySelector('#search-filters').insertAdjacentHTML('beforeend', `
-      <input type="radio" name="dateMode" value="exact" aria-controls="conditional-dateMode">
+      <input type="radio" name="dateMode" value="since" aria-controls="conditional-dateMode">
     `)
     const fetchSpy = mockFetchOk(jsonResponse())
     vi.stubGlobal('fetch', fetchSpy)

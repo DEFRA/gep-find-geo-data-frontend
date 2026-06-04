@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`#api > #search Elasticsearch query generation > query body snapshots > combined query, filters, facets and sort 1`] = `
+exports[`#api > #search Elasticsearch query generation > query body snapshots > combined query, every filter, facets and sort 1`] = `
 {
   "_source": [
     "resourceTitleObject.default",
@@ -29,6 +29,48 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
                 ],
               },
             },
+            {
+              "terms": {
+                "isOpenData": [
+                  "true",
+                ],
+              },
+            },
+            {
+              "terms": {
+                "cl_maintenanceAndUpdateFrequency.default": [
+                  "asNeeded",
+                ],
+              },
+            },
+            {
+              "terms": {
+                "cl_topic.default": [
+                  "Environment",
+                ],
+              },
+            },
+            {
+              "bool": {
+                "minimum_should_match": 1,
+                "should": [
+                  {
+                    "terms": {
+                      "th_httpinspireeceuropaeutheme-theme.default": [
+                        "Habitats and biotopes",
+                      ],
+                    },
+                  },
+                  {
+                    "terms": {
+                      "th_otherKeywords-theme.default": [
+                        "Habitats and biotopes",
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
           ],
         },
       },
@@ -49,6 +91,48 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
               "terms": {
                 "cl_spatialRepresentationType.default": [
                   "Grid",
+                ],
+              },
+            },
+            {
+              "terms": {
+                "isOpenData": [
+                  "true",
+                ],
+              },
+            },
+            {
+              "terms": {
+                "cl_maintenanceAndUpdateFrequency.default": [
+                  "asNeeded",
+                ],
+              },
+            },
+            {
+              "terms": {
+                "cl_topic.default": [
+                  "Environment",
+                ],
+              },
+            },
+            {
+              "bool": {
+                "minimum_should_match": 1,
+                "should": [
+                  {
+                    "terms": {
+                      "th_httpinspireeceuropaeutheme-theme.default": [
+                        "Habitats and biotopes",
+                      ],
+                    },
+                  },
+                  {
+                    "terms": {
+                      "th_otherKeywords-theme.default": [
+                        "Habitats and biotopes",
+                      ],
+                    },
+                  },
                 ],
               },
             },
@@ -76,12 +160,86 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
             ],
           },
         },
+        {
+          "terms": {
+            "isOpenData": [
+              "true",
+            ],
+          },
+        },
+        {
+          "terms": {
+            "cl_maintenanceAndUpdateFrequency.default": [
+              "asNeeded",
+            ],
+          },
+        },
+        {
+          "terms": {
+            "cl_topic.default": [
+              "Environment",
+            ],
+          },
+        },
+        {
+          "bool": {
+            "minimum_should_match": 1,
+            "should": [
+              {
+                "terms": {
+                  "th_httpinspireeceuropaeutheme-theme.default": [
+                    "Habitats and biotopes",
+                  ],
+                },
+              },
+              {
+                "terms": {
+                  "th_otherKeywords-theme.default": [
+                    "Habitats and biotopes",
+                  ],
+                },
+              },
+            ],
+          },
+        },
       ],
     },
   },
   "query": {
     "bool": {
       "filter": [
+        {
+          "bool": {
+            "must": [
+              {
+                "nested": {
+                  "path": "resourceDate",
+                  "query": {
+                    "range": {
+                      "resourceDate.date": {
+                        "gte": "2002-01-01T00:00:00.000Z",
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+            "must_not": [
+              {
+                "nested": {
+                  "path": "resourceDate",
+                  "query": {
+                    "range": {
+                      "resourceDate.date": {
+                        "gte": "2005-01-01T00:00:00.000Z",
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
         {
           "geo_shape": {
             "geom": {

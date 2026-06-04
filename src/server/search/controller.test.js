@@ -32,7 +32,7 @@ function exampleResult (overrides = {}) {
   }
 }
 
-const INVALID_DATE_URL = '/?dateMode=exact&exactDate-day=14&exactDate-month=4'
+const INVALID_DATE_URL = '/?dateMode=since&sinceDate-day=14&sinceDate-month=4'
 
 describe('#searchController', () => {
   let server
@@ -181,7 +181,7 @@ describe('#searchController', () => {
       expect(result).toContain('No results found')
     })
 
-    test('renders the Date filter with both radio options', async () => {
+    test('renders the Date filter with options', async () => {
       const { result } = await server.inject({
         method: 'GET',
         url: '/',
@@ -189,8 +189,11 @@ describe('#searchController', () => {
       })
 
       expect(result).toContain('data-filter-group="date"')
-      expect(result).toContain('Select exact date')
-      expect(result).toContain('Select date range')
+      expect(result).toContain('Filter by when the dataset was last updated.')
+      expect(result).toContain('Last 30 days')
+      expect(result).toContain('Last 12 months')
+      expect(result).toContain('Since date')
+      expect(result).toContain('Time period')
     })
 
     test('renders the Location filter section and coordinate inputs', async () => {
@@ -205,18 +208,32 @@ describe('#searchController', () => {
       expect(result).toContain('name="longitude"')
     })
 
-    test('pre-selects the exact date radio, preserves day/month/year and renders its chip', async () => {
+    test('pre-selects the since radio, preserves day/month/year and renders its chip', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?dateMode=exact&exactDate-day=14&exactDate-month=4&exactDate-year=2024',
+        url: '/?dateMode=since&sinceDate-day=14&sinceDate-month=4&sinceDate-year=2024',
         auth: mockAuthCredentials
       })
 
-      expect(result).toMatch(/value="exact"[^>]*checked/)
+      expect(result).toMatch(/value="since"[^>]*checked/)
       expect(result).toContain('value="14"')
       expect(result).toContain('value="4"')
       expect(result).toContain('value="2024"')
-      expect(result).toContain('14 April 2024')
+      expect(result).toContain('Since 14 April 2024')
+    })
+
+    test('pre-selects the time period radio, preserves years and renders both chips', async () => {
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/?dateMode=period&fromYear=2002&toYear=2004',
+        auth: mockAuthCredentials
+      })
+
+      expect(result).toMatch(/value="period"[^>]*checked/)
+      expect(result).toContain('value="2002"')
+      expect(result).toContain('value="2004"')
+      expect(result).toContain('From 2002')
+      expect(result).toContain('To 2004')
     })
 
     test('renders the error summary and suppresses the results column on validation errors', async () => {

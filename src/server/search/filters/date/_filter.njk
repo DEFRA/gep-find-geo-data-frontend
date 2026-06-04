@@ -1,13 +1,35 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set exactDateHtml %}
-  {{ govukDateInput(dateFilter.exactDateInput) }}
+{% set sinceDateHtml %}
+  {{ govukDateInput(dateFilter.sinceDateInput) }}
 {% endset %}
 
-{% set rangeDateHtml %}
-  {{ govukDateInput(dateFilter.afterDateInput) }}
-  {{ govukDateInput(dateFilter.beforeDateInput) }}
+{% set periodHtml %}
+  <p class="govuk-hint govuk-!-margin-bottom-2">For example, 2002 to 2004</p>
+  <div class="govuk-date-input">
+    <div class="govuk-date-input__item">
+      {{ govukInput({
+        id: "fromYear",
+        name: "fromYear",
+        label: { text: "From year" },
+        classes: "govuk-input--width-3",
+        value: dateFilter.fromYear,
+        errorMessage: { text: dateFilter.fromYearError } if dateFilter.fromYearError else null
+      }) }}
+    </div>
+    <div class="govuk-date-input__item">
+      {{ govukInput({
+        id: "toYear",
+        name: "toYear",
+        label: { text: "To year" },
+        classes: "govuk-input--width-3",
+        value: dateFilter.toYear,
+        errorMessage: { text: dateFilter.toYearError } if dateFilter.toYearError else null
+      }) }}
+    </div>
+  </div>
 {% endset %}
 
 <details class="govuk-details app-filter-group" data-module="govuk-details" data-filter-group="date"{% if dateFilter.hasErrors %} open{% endif %}>
@@ -19,24 +41,25 @@
     {% include "search/_filter-chevron.njk" %}
   </summary>
   <div class="govuk-details__text">
+    <p class="govuk-hint">Filter by when the dataset was last updated.</p>
     {{ govukRadios({
       name: "dateMode",
       classes: "govuk-radios--small",
       fieldset: { legend: { text: "Date", classes: "govuk-visually-hidden" } },
-      items: [
+      items: dateFilter.relativeOptions.concat([
         {
-          value: "exact",
-          text: "Select exact date",
-          checked: dateFilter.mode === "exact",
-          conditional: { html: exactDateHtml }
+          value: "since",
+          text: "Since date",
+          checked: dateFilter.mode === "since",
+          conditional: { html: sinceDateHtml }
         },
         {
-          value: "range",
-          text: "Select date range",
-          checked: dateFilter.mode === "range",
-          conditional: { html: rangeDateHtml }
+          value: "period",
+          text: "Time period",
+          checked: dateFilter.mode === "period",
+          conditional: { html: periodHtml }
         }
-      ]
+      ])
     }) }}
   </div>
 </details>
