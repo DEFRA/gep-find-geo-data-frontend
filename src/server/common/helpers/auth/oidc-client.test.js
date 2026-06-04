@@ -79,6 +79,27 @@ describe('#oidcClient', () => {
     )
   })
 
+  test('requests base scope when cognito is disabled', () => {
+    const server = createMockServer()
+    const { scope } = getOidcMethods(server)
+
+    expect(scope).toBe('openid profile email offline_access')
+  })
+
+  test('adds Graph user.read when cognito is enabled', () => {
+    config.get.mockImplementation((key) => {
+      if (key === 'cognito.enabled') {
+        return true
+      }
+      return configValues[key]
+    })
+
+    const server = createMockServer()
+    const { scope } = getOidcMethods(server)
+
+    expect(scope).toBe('openid profile email offline_access user.read')
+  })
+
   describe('getConfig', () => {
     test('calls discovery on first request, uses cache on second', async () => {
       const server = createMockServer()
