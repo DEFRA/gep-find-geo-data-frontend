@@ -23,7 +23,7 @@ const oidcClient = {
 
       const baseScope = 'openid profile email offline_access'
       const scope = useCognito
-        ? `api://${clientId}/cdp.user ${baseScope} user.read`
+        ? `${baseScope} user.read`
         : baseScope
 
       let cachedMetadata = null
