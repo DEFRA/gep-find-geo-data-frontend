@@ -1,4 +1,4 @@
-import { addDays } from 'date-fns'
+import { subDays, subMonths } from 'date-fns'
 
 import { formatDate } from '../../../../config/nunjucks/filters/format-date.js'
 
@@ -6,23 +6,33 @@ import { formatDate } from '../../../../config/nunjucks/filters/format-date.js'
  * @typedef {{ day: string, month: string, year: string }} DateParts
  *
  * @typedef DateInput
- * @property {'exact' | 'range' | null} mode
- * @property {DateParts} exactDate
- * @property {DateParts} afterDate
- * @property {DateParts} beforeDate
+ * @property {'last30Days' | 'last12Months' | 'since' | 'period' | null} mode
+ * @property {DateParts} sinceDate
+ * @property {string} fromYear
+ * @property {string} toYear
  *
  * @typedef {{ message: string, missing: string[] }} DateFieldError
- * @typedef {Partial<Record<'exactDate'|'afterDate'|'beforeDate', DateFieldError>>} DateErrors
+ * @typedef {Partial<Record<'sinceDate'|'fromYear'|'toYear', DateFieldError>>} DateErrors
  */
 
-const MODE_EXACT = 'exact'
-const MODE_RANGE = 'range'
-const VALID_DATE_MODES = new Set([MODE_EXACT, MODE_RANGE])
+const MODE_SINCE = 'since'
+const MODE_PERIOD = 'period'
 
-const EXACT_DATE = 'exactDate'
-const AFTER_DATE = 'afterDate'
-const BEFORE_DATE = 'beforeDate'
-const DATE_PREFIXES = [EXACT_DATE, AFTER_DATE, BEFORE_DATE]
+const RELATIVE_RANGES = [
+  { value: 'last30Days', label: 'Last 30 days', from: (now) => subDays(now, 30) },
+  { value: 'last12Months', label: 'Last 12 months', from: (now) => subMonths(now, 12) }
+]
+const relativeRange = (mode) => RELATIVE_RANGES.find((r) => r.value === mode)
+
+const VALID_DATE_MODES = new Set([
+  ...RELATIVE_RANGES.map((r) => r.value),
+  MODE_SINCE,
+  MODE_PERIOD
+])
+
+const SINCE_DATE = 'sinceDate'
+const FROM_YEAR = 'fromYear'
+const TO_YEAR = 'toYear'
 
 const DAY = 'day'
 const MONTH = 'month'
@@ -30,12 +40,19 @@ const YEAR = 'year'
 const DATE_PART_NAMES = [DAY, MONTH, YEAR]
 const EMPTY_PARTS = { day: '', month: '', year: '' }
 
+const MIN_YEAR = 1900
+
 function readDateParts (rawQuery, prefix) {
   const read = (part) => {
     const v = rawQuery[`${prefix}-${part}`]
     return typeof v === 'string' ? v : ''
   }
   return { day: read(DAY), month: read(MONTH), year: read(YEAR) }
+}
+
+function readString (rawQuery, name) {
+  const v = rawQuery[name]
+  return typeof v === 'string' ? v.trim() : ''
 }
 
 function partsToDate (parts) {
@@ -62,9 +79,19 @@ function formatParts (parts) {
   return date ? formatDate(date) : null
 }
 
+function isValidYear (value) {
+  if (!/^\d{4}$/.test(value)) {
+    return false
+  }
+  return Number.parseInt(value, 10) >= MIN_YEAR
+}
+
+function parseOptionalYear (value) {
+  return value === '' ? null : Number.parseInt(value, 10)
+}
+
 const hasAnyParts = (parts) => Object.values(parts).some((v) => v !== '')
-const hasAnyRangeParts = (input) =>
-  hasAnyParts(input.afterDate) || hasAnyParts(input.beforeDate)
+const hasAnyPeriodParts = (input) => input.fromYear !== '' || input.toYear !== ''
 
 /**
  * @param {DateParts} parts
@@ -93,72 +120,101 @@ function validateSingleDate (parts, { label, required, emptyMessage, invalidMess
   return null
 }
 
-function validateExactDate (input) {
-  const err = validateSingleDate(input.exactDate, {
+function validateSinceDate (input) {
+  const err = validateSingleDate(input.sinceDate, {
     label: 'Date',
     required: true,
     emptyMessage: 'Enter a date',
-    invalidMessage: 'Enter a valid date'
+    invalidMessage: 'Date must be a real date'
   })
-  return err ? { exactDate: err } : {}
-}
+  if (err) {
+    return { sinceDate: err }
+  }
 
-function validateDateOrder (input) {
-  const after = partsToDate(input.afterDate)
-  const before = partsToDate(input.beforeDate)
-  if (after && before && after > before) {
+  const date = partsToDate(input.sinceDate)
+  if (date.getTime() > Date.now()) {
     return {
-      message: '"Updated before" must be on or after "Updated after"',
-      missing: []
+      sinceDate: { message: 'Date must be today or in the past', missing: [...DATE_PART_NAMES] }
     }
   }
-  return null
+  return {}
 }
 
-function validateRangeDates (input) {
+function validatePeriod (input) {
   const errors = {}
-  const afterErr = validateSingleDate(input.afterDate, {
-    label: '"Updated after"',
-    required: false,
-    invalidMessage: '"Updated after" must be a valid date'
-  })
-  const beforeErr = validateSingleDate(input.beforeDate, {
-    label: '"Updated before"',
-    required: false,
-    invalidMessage: '"Updated before" must be a valid date'
-  })
-  if (afterErr) {
-    errors.afterDate = afterErr
+  const fromYear = parseOptionalYear(input.fromYear)
+  const toYear = parseOptionalYear(input.toYear)
+
+  if (input.fromYear !== '' && !isValidYear(input.fromYear)) {
+    errors.fromYear = { message: `From year must be a 4-digit year from ${MIN_YEAR} onwards`, missing: [] }
   }
-  if (beforeErr) {
-    errors.beforeDate = beforeErr
+  if (input.toYear !== '' && !isValidYear(input.toYear)) {
+    errors.toYear = { message: `To year must be a 4-digit year from ${MIN_YEAR} onwards`, missing: [] }
   }
 
-  if (!afterErr && !beforeErr) {
-    const orderErr = validateDateOrder(input)
-    if (orderErr) {
-      errors.beforeDate = orderErr
+  const bothYearsValid =
+    !errors.fromYear && !errors.toYear &&
+    fromYear !== null && toYear !== null
+
+  if (bothYearsValid && fromYear > toYear) {
+    errors.toYear = {
+      message: 'To year must be the same as or after from year',
+      missing: []
     }
   }
   return errors
 }
 
+function yearStartIso (year) {
+  return new Date(Date.UTC(year, 0, 1)).toISOString()
+}
+
+/**
+ * Converts an inclusive toYear into the exclusive upper query bound.
+ *
+ * Period filters treat toYear as a whole year, but the search query uses a
+ * date < to range, so the upper bound must be the start of the following year.
+ *
+ * @param {number} year
+ * @returns {string} ISO date string
+ */
+function yearEndExclusiveIso (year) {
+  return yearStartIso(year + 1)
+}
+
+function periodRange (input) {
+  const fromYear = parseOptionalYear(input.fromYear)
+  const toYear = parseOptionalYear(input.toYear)
+
+  if (fromYear === null && toYear === null) {
+    return null
+  }
+
+  if (fromYear === null) {
+    return { to: yearEndExclusiveIso(toYear) }
+  }
+
+  if (toYear === null) {
+    return { from: yearStartIso(fromYear) }
+  }
+
+  return { from: yearStartIso(fromYear), to: yearEndExclusiveIso(toYear) }
+}
+
 function buildUpdatedAtBetween (input) {
-  if (input.mode === MODE_EXACT) {
-    const date = partsToDate(input.exactDate)
+  const relative = relativeRange(input.mode)
+  if (relative) {
+    return { from: relative.from(new Date()).toISOString() }
+  }
+  if (input.mode === MODE_SINCE) {
+    const date = partsToDate(input.sinceDate)
     if (!date) {
       return null
     }
-    return { from: date.toISOString(), to: addDays(date, 1).toISOString() }
+    return { from: date.toISOString() }
   }
-  if (input.mode === MODE_RANGE) {
-    const from = partsToDate(input.afterDate)?.toISOString()
-    const beforeDate = partsToDate(input.beforeDate)
-    const to = beforeDate && addDays(beforeDate, 1).toISOString()
-    if (!from && !to) {
-      return null
-    }
-    return { ...(from && { from }), ...(to && { to }) }
+  if (input.mode === MODE_PERIOD) {
+    return periodRange(input)
   }
   return null
 }
@@ -173,7 +229,7 @@ function appendDateParts (params, parts, prefix) {
 
 function dateInputItems (parts, error) {
   const missing = new Set(error?.missing ?? [])
-  const widthClass = (name) => name === YEAR ? 'govuk-input--width-4' : 'govuk-input--width-2'
+  const widthClass = (name) => name === YEAR ? 'govuk-input--width-3' : 'govuk-input--width-2'
   const errorSuffix = (name) => missing.has(name) ? ' govuk-input--error' : ''
   return DATE_PART_NAMES.map((name) => ({
     classes: widthClass(name) + errorSuffix(name),
@@ -198,30 +254,30 @@ function buildDateInputParams (namePrefix, parts, legend, error) {
 }
 
 function parse (rawQuery) {
-  const exactDate = readDateParts(rawQuery, EXACT_DATE)
-  const afterDate = readDateParts(rawQuery, AFTER_DATE)
-  const beforeDate = readDateParts(rawQuery, BEFORE_DATE)
+  const sinceDate = readDateParts(rawQuery, SINCE_DATE)
+  const fromYear = readString(rawQuery, FROM_YEAR)
+  const toYear = readString(rawQuery, TO_YEAR)
 
   let mode = VALID_DATE_MODES.has(rawQuery.dateMode) ? rawQuery.dateMode : null
   if (!mode) {
-    if (hasAnyParts(exactDate)) {
-      mode = MODE_EXACT
-    } else if (hasAnyParts(afterDate) || hasAnyParts(beforeDate)) {
-      mode = MODE_RANGE
+    if (hasAnyParts(sinceDate)) {
+      mode = MODE_SINCE
+    } else if (fromYear !== '' || toYear !== '') {
+      mode = MODE_PERIOD
     } else {
       mode = null
     }
   }
 
-  return { mode, exactDate, afterDate, beforeDate }
+  return { mode, sinceDate, fromYear, toYear }
 }
 
 function validate (input) {
-  if (input.mode === MODE_EXACT) {
-    return validateExactDate(input)
+  if (input.mode === MODE_SINCE) {
+    return validateSinceDate(input)
   }
-  if (input.mode === MODE_RANGE) {
-    return validateRangeDates(input)
+  if (input.mode === MODE_PERIOD) {
+    return validatePeriod(input)
   }
   return {}
 }
@@ -240,47 +296,58 @@ function appendToParams (params, input) {
   if (!input.mode) {
     return
   }
-  if (input.mode === MODE_EXACT) {
+  if (relativeRange(input.mode)) {
     params.set('dateMode', input.mode)
-    appendDateParts(params, input.exactDate, EXACT_DATE)
+  } else if (input.mode === MODE_SINCE) {
+    params.set('dateMode', input.mode)
+    appendDateParts(params, input.sinceDate, SINCE_DATE)
   } else {
-    if (!hasAnyRangeParts(input)) {
+    if (!hasAnyPeriodParts(input)) {
       return
     }
     params.set('dateMode', input.mode)
-    appendDateParts(params, input.afterDate, AFTER_DATE)
-    appendDateParts(params, input.beforeDate, BEFORE_DATE)
+    if (input.fromYear !== '') {
+      params.set(FROM_YEAR, input.fromYear)
+    }
+    if (input.toYear !== '') {
+      params.set(TO_YEAR, input.toYear)
+    }
   }
 }
 
 function toFormViewModel (parsed) {
   const { dateInput, dateErrors = {} } = parsed
-  const selected = dateInput.mode === MODE_EXACT ||
-    (dateInput.mode === MODE_RANGE && hasAnyRangeParts(dateInput))
+  const selected = Boolean(relativeRange(dateInput.mode)) ||
+    dateInput.mode === MODE_SINCE ||
+    (dateInput.mode === MODE_PERIOD && hasAnyPeriodParts(dateInput))
 
   return {
     mode: dateInput.mode,
     selected,
     hasErrors: Object.keys(dateErrors).length > 0,
-    exactDateInput: buildDateInputParams(
-      EXACT_DATE,
-      dateInput.exactDate,
-      { text: 'Exact date', classes: 'govuk-visually-hidden' },
-      dateErrors.exactDate
+    relativeOptions: RELATIVE_RANGES.map((r) => ({
+      value: r.value,
+      text: r.label,
+      checked: dateInput.mode === r.value
+    })),
+    sinceDateInput: buildDateInputParams(
+      SINCE_DATE,
+      dateInput.sinceDate,
+      { text: 'Since date', classes: 'govuk-visually-hidden' },
+      dateErrors.sinceDate
     ),
-    afterDateInput: buildDateInputParams(
-      AFTER_DATE,
-      dateInput.afterDate,
-      { text: 'Updated after', classes: 'govuk-fieldset__legend--s' },
-      dateErrors.afterDate
-    ),
-    beforeDateInput: buildDateInputParams(
-      BEFORE_DATE,
-      dateInput.beforeDate,
-      { text: 'Updated before', classes: 'govuk-fieldset__legend--s' },
-      dateErrors.beforeDate
-    )
+    fromYear: dateInput.fromYear,
+    toYear: dateInput.toYear,
+    fromYearError: dateErrors.fromYear?.message ?? null,
+    toYearError: dateErrors.toYear?.message ?? null
   }
+}
+
+const clearedDateInput = {
+  mode: null,
+  sinceDate: EMPTY_PARTS,
+  fromYear: '',
+  toYear: ''
 }
 
 function toChipItems (parsed, chipHref) {
@@ -289,31 +356,36 @@ function toChipItems (parsed, chipHref) {
     return []
   }
 
-  if (dateInput.mode === MODE_EXACT) {
-    const label = formatParts(dateInput.exactDate)
+  const relative = relativeRange(dateInput.mode)
+  if (relative) {
+    return [{
+      label: relative.label,
+      removeHref: chipHref({ dateInput: clearedDateInput, page: 1 })
+    }]
+  }
+
+  if (dateInput.mode === MODE_SINCE) {
+    const label = formatParts(dateInput.sinceDate)
     if (!label) {
       return []
     }
-    const removeHref = chipHref({
-      dateInput: { mode: null, exactDate: EMPTY_PARTS, afterDate: EMPTY_PARTS, beforeDate: EMPTY_PARTS },
-      page: 1
-    })
-    return [{ label, removeHref }]
+    return [{
+      label: `Since ${label}`,
+      removeHref: chipHref({ dateInput: clearedDateInput, page: 1 })
+    }]
   }
 
   const items = []
-  const afterLabel = formatParts(dateInput.afterDate)
-  const beforeLabel = formatParts(dateInput.beforeDate)
-  if (afterLabel) {
+  if (dateInput.fromYear !== '') {
     items.push({
-      label: `After ${afterLabel}`,
-      removeHref: chipHref({ dateInput: { ...dateInput, afterDate: EMPTY_PARTS }, page: 1 })
+      label: `From ${dateInput.fromYear}`,
+      removeHref: chipHref({ dateInput: { ...dateInput, fromYear: '' }, page: 1 })
     })
   }
-  if (beforeLabel) {
+  if (dateInput.toYear !== '') {
     items.push({
-      label: `Before ${beforeLabel}`,
-      removeHref: chipHref({ dateInput: { ...dateInput, beforeDate: EMPTY_PARTS }, page: 1 })
+      label: `To ${dateInput.toYear}`,
+      removeHref: chipHref({ dateInput: { ...dateInput, toYear: '' }, page: 1 })
     })
   }
   return items
@@ -321,13 +393,15 @@ function toChipItems (parsed, chipHref) {
 
 function toErrorItems (errors) {
   const items = []
-  for (const prefix of DATE_PREFIXES) {
-    const err = errors[prefix]
-    if (!err) {
-      continue
-    }
-    const firstMissing = err.missing[0] ?? DAY
-    items.push({ text: err.message, href: `#${prefix}-${firstMissing}` })
+  if (errors.sinceDate) {
+    const firstMissing = errors.sinceDate.missing[0] ?? DAY
+    items.push({ text: errors.sinceDate.message, href: `#${SINCE_DATE}-${firstMissing}` })
+  }
+  if (errors.fromYear) {
+    items.push({ text: errors.fromYear.message, href: `#${FROM_YEAR}` })
+  }
+  if (errors.toYear) {
+    items.push({ text: errors.toYear.message, href: `#${TO_YEAR}` })
   }
   return items
 }

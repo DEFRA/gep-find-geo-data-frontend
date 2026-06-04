@@ -64,9 +64,9 @@ describe('#search view-model', () => {
   describe('parseQuery', () => {
     const emptyDateInput = {
       mode: null,
-      exactDate: { day: '', month: '', year: '' },
-      afterDate: { day: '', month: '', year: '' },
-      beforeDate: { day: '', month: '', year: '' }
+      sinceDate: { day: '', month: '', year: '' },
+      fromYear: '',
+      toYear: ''
     }
     const emptyLocationInput = { latitude: '', longitude: '' }
 
@@ -145,65 +145,59 @@ describe('#search view-model', () => {
       expect(parseQuery({ madeUp: 'x' }).filters).toEqual({})
     })
 
-    test('parses an exact date into a from/to range inclusive of that day', () => {
+    test('parses a since date into an open-ended from range', () => {
       const parsed = parseQuery({
-        dateMode: 'exact',
-        'exactDate-day': '14',
-        'exactDate-month': '4',
-        'exactDate-year': '2024'
+        dateMode: 'since',
+        'sinceDate-day': '14',
+        'sinceDate-month': '4',
+        'sinceDate-year': '2024'
       })
-      expect(parsed.filters.updatedAtBetween).toEqual({
-        from: '2024-04-14T00:00:00.000Z',
-        to: '2024-04-15T00:00:00.000Z'
-      })
-      expect(parsed.dateInput.exactDate).toEqual({ day: '14', month: '4', year: '2024' })
+      expect(parsed.filters.updatedAtBetween).toEqual({ from: '2024-04-14T00:00:00.000Z' })
+      expect(parsed.dateInput.sinceDate).toEqual({ day: '14', month: '4', year: '2024' })
     })
 
-    test('parses a range into from/to inclusive of both endpoints', () => {
-      const parsed = parseQuery({
-        dateMode: 'range',
-        'afterDate-day': '1',
-        'afterDate-month': '1',
-        'afterDate-year': '2024',
-        'beforeDate-day': '31',
-        'beforeDate-month': '12',
-        'beforeDate-year': '2024'
-      })
+    test('parses a period into year boundaries inclusive of both years', () => {
+      const parsed = parseQuery({ dateMode: 'period', fromYear: '2002', toYear: '2004' })
       expect(parsed.filters.updatedAtBetween).toEqual({
-        from: '2024-01-01T00:00:00.000Z',
-        to: '2025-01-01T00:00:00.000Z'
+        from: '2002-01-01T00:00:00.000Z',
+        to: '2005-01-01T00:00:00.000Z'
       })
     })
 
-    test('parses a range with only after or only before', () => {
-      expect(parseQuery({
-        dateMode: 'range',
-        'afterDate-day': '1',
-        'afterDate-month': '1',
-        'afterDate-year': '2024'
-      }).filters.updatedAtBetween).toEqual({
-        from: '2024-01-01T00:00:00.000Z'
+    test('parses a period with only a from or only a to year', () => {
+      expect(parseQuery({ fromYear: '2002' }).filters.updatedAtBetween).toEqual({
+        from: '2002-01-01T00:00:00.000Z'
       })
-      expect(parseQuery({
-        dateMode: 'range',
-        'beforeDate-day': '31',
-        'beforeDate-month': '12',
-        'beforeDate-year': '2024'
-      }).filters.updatedAtBetween).toEqual({
-        to: '2025-01-01T00:00:00.000Z'
+      expect(parseQuery({ toYear: '2004' }).filters.updatedAtBetween).toEqual({
+        to: '2005-01-01T00:00:00.000Z'
       })
+    })
+
+    test('parses relative modes against the current clock', () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2024-06-15T12:00:00.000Z'))
+      try {
+        expect(parseQuery({ dateMode: 'last30Days' }).filters.updatedAtBetween).toEqual({
+          from: '2024-05-16T12:00:00.000Z'
+        })
+        expect(parseQuery({ dateMode: 'last12Months' }).filters.updatedAtBetween).toEqual({
+          from: '2023-06-15T12:00:00.000Z'
+        })
+      } finally {
+        vi.useRealTimers()
+      }
     })
 
     test('rejects an invalid calendar date but preserves raw parts', () => {
       const parsed = parseQuery({
-        dateMode: 'exact',
-        'exactDate-day': '30',
-        'exactDate-month': '2',
-        'exactDate-year': '2024'
+        dateMode: 'since',
+        'sinceDate-day': '30',
+        'sinceDate-month': '2',
+        'sinceDate-year': '2024'
       })
       expect(parsed.filters.updatedAtBetween).toBeUndefined()
-      expect(parsed.dateInput.exactDate).toEqual({ day: '30', month: '2', year: '2024' })
-      expect(parsed.dateErrors.exactDate.message).toBe('Enter a valid date')
+      expect(parsed.dateInput.sinceDate).toEqual({ day: '30', month: '2', year: '2024' })
+      expect(parsed.dateErrors.sinceDate.message).toBe('Date must be a real date')
     })
 
     test('ignores an unknown dateMode', () => {
@@ -212,39 +206,28 @@ describe('#search view-model', () => {
       expect(parsed.filters.updatedAtBetween).toBeUndefined()
     })
 
-    test('flags partial and empty exact dates', () => {
+    test('flags partial and empty since dates', () => {
       const partial = parseQuery({
-        dateMode: 'exact',
-        'exactDate-day': '14',
-        'exactDate-month': '4'
+        dateMode: 'since',
+        'sinceDate-day': '14',
+        'sinceDate-month': '4'
       })
-      expect(partial.dateErrors.exactDate.missing).toEqual(['year'])
+      expect(partial.dateErrors.sinceDate.missing).toEqual(['year'])
       expect(partial.filters.updatedAtBetween).toBeUndefined()
 
-      expect(parseQuery({ dateMode: 'exact' }).dateErrors.exactDate.message).toBe('Enter a date')
+      expect(parseQuery({ dateMode: 'since' }).dateErrors.sinceDate.message).toBe('Enter a date')
     })
 
-    test('does not flag an empty range but flags partial endpoints', () => {
-      expect(parseQuery({ dateMode: 'range' }).dateErrors).toEqual({})
+    test('does not flag an empty period but flags an invalid year', () => {
+      expect(parseQuery({ dateMode: 'period' }).dateErrors).toEqual({})
 
-      const partial = parseQuery({
-        dateMode: 'range',
-        'afterDate-day': '1'
-      })
-      expect(partial.dateErrors.afterDate.missing).toEqual(['month', 'year'])
+      const invalid = parseQuery({ fromYear: '20x4' })
+      expect(invalid.dateErrors.fromYear.message).toContain('from 1900 onwards')
     })
 
-    test('flags a range where after is later than before', () => {
-      const parsed = parseQuery({
-        dateMode: 'range',
-        'afterDate-day': '1',
-        'afterDate-month': '6',
-        'afterDate-year': '2024',
-        'beforeDate-day': '1',
-        'beforeDate-month': '1',
-        'beforeDate-year': '2024'
-      })
-      expect(parsed.dateErrors.beforeDate.message).toContain('on or after')
+    test('flags a period where the from year is later than the to year', () => {
+      const parsed = parseQuery({ dateMode: 'period', fromYear: '2024', toYear: '2020' })
+      expect(parsed.dateErrors.toYear.message).toContain('same as or after')
       expect(parsed.filters.updatedAtBetween).toBeUndefined()
     })
 
@@ -456,89 +439,68 @@ describe('#search view-model', () => {
         expect(vm.activeFilterGroups[0].items[0].removeHref).toBe('/?q=flood')
       })
 
-      test('adds a Date group for an exact date and omits when invalid', () => {
+      test('adds a Date group for a since date and omits when invalid', () => {
         const valid = viewModel({
-          dateMode: 'exact',
-          'exactDate-day': '14',
-          'exactDate-month': '4',
-          'exactDate-year': '2024'
+          dateMode: 'since',
+          'sinceDate-day': '14',
+          'sinceDate-month': '4',
+          'sinceDate-year': '2024'
         })
         const dateGroup = valid.activeFilterGroups.find((g) => g.name === 'updatedAt')
         expect(dateGroup.legend).toBe('Date')
-        expect(dateGroup.items[0].label).toBe('14 April 2024')
+        expect(dateGroup.items[0].label).toBe('Since 14 April 2024')
 
         const invalid = viewModel({
-          dateMode: 'exact',
-          'exactDate-day': '30',
-          'exactDate-month': '2',
-          'exactDate-year': '2024'
+          dateMode: 'since',
+          'sinceDate-day': '30',
+          'sinceDate-month': '2',
+          'sinceDate-year': '2024'
         })
         expect(invalid.activeFilterGroups.find((g) => g.name === 'updatedAt')).toBeUndefined()
       })
 
-      test('adds two chips for a range with both endpoints', () => {
-        const vm = viewModel({
-          dateMode: 'range',
-          'afterDate-day': '1',
-          'afterDate-month': '1',
-          'afterDate-year': '2024',
-          'beforeDate-day': '31',
-          'beforeDate-month': '12',
-          'beforeDate-year': '2024'
-        })
+      test('adds a single chip for a relative mode', () => {
+        const vm = viewModel({ dateMode: 'last30Days' })
         const dateGroup = vm.activeFilterGroups.find((g) => g.name === 'updatedAt')
-        expect(dateGroup.items.map((i) => i.label)).toEqual([
-          'After 1 January 2024',
-          'Before 31 December 2024'
-        ])
+        expect(dateGroup.items.map((i) => i.label)).toEqual(['Last 30 days'])
       })
 
-      test('omits Date chips when a range endpoint is invalid', () => {
-        const vm = viewModel({
-          dateMode: 'range',
-          'afterDate-day': '10',
-          'afterDate-month': '1',
-          'afterDate-year': '2024',
-          'beforeDate-day': '5',
-          'beforeDate-month': '1',
-          'beforeDate-year': '2024'
-        })
+      test('adds two chips for a period with both years', () => {
+        const vm = viewModel({ dateMode: 'period', fromYear: '2002', toYear: '2004' })
+        const dateGroup = vm.activeFilterGroups.find((g) => g.name === 'updatedAt')
+        expect(dateGroup.items.map((i) => i.label)).toEqual(['From 2002', 'To 2004'])
+      })
+
+      test('omits Date chips when a period year is invalid', () => {
+        const vm = viewModel({ dateMode: 'period', fromYear: '20x2', toYear: '2004' })
         expect(vm.activeFilterGroups.find((g) => g.name === 'updatedAt')).toBeUndefined()
       })
 
-      test('range chips clear only their own endpoint', () => {
-        const vm = viewModel({
-          dateMode: 'range',
-          'afterDate-day': '1',
-          'afterDate-month': '1',
-          'afterDate-year': '2024',
-          'beforeDate-day': '31',
-          'beforeDate-month': '12',
-          'beforeDate-year': '2024'
-        })
+      test('period chips clear only their own endpoint', () => {
+        const vm = viewModel({ dateMode: 'period', fromYear: '2002', toYear: '2004' })
         const dateGroup = vm.activeFilterGroups.find((g) => g.name === 'updatedAt')
-        const [after, before] = dateGroup.items
-        expect(after.removeHref).toContain('beforeDate-year=2024')
-        expect(after.removeHref).not.toContain('afterDate')
-        expect(before.removeHref).toContain('afterDate-year=2024')
-        expect(before.removeHref).not.toContain('beforeDate')
+        const [from, to] = dateGroup.items
+        expect(from.removeHref).toContain('toYear=2004')
+        expect(from.removeHref).not.toContain('fromYear')
+        expect(to.removeHref).toContain('fromYear=2002')
+        expect(to.removeHref).not.toContain('toYear')
       })
 
       test('date chip removeHref preserves q and other filters', () => {
         const vm = viewModel({
           q: 'flood',
           owner: 'Natural England',
-          dateMode: 'exact',
-          'exactDate-day': '14',
-          'exactDate-month': '4',
-          'exactDate-year': '2024'
+          dateMode: 'since',
+          'sinceDate-day': '14',
+          'sinceDate-month': '4',
+          'sinceDate-year': '2024'
         })
         const dateGroup = vm.activeFilterGroups.find((g) => g.name === 'updatedAt')
         const href = dateGroup.items[0].removeHref
         expect(href).toContain('q=flood')
         expect(href).toContain('owner=Natural+England')
         expect(href).not.toContain('dateMode')
-        expect(href).not.toContain('exactDate')
+        expect(href).not.toContain('sinceDate')
       })
 
       test('adds a Location group with valid coordinates and omits when invalid', () => {
@@ -633,46 +595,40 @@ describe('#search view-model', () => {
         })
       })
 
-      test('exposes exact date input params with current values', () => {
+      test('exposes since date input params with current values', () => {
         const vm = viewModel({
-          dateMode: 'exact',
-          'exactDate-day': '14',
-          'exactDate-month': '4',
-          'exactDate-year': '2024'
+          dateMode: 'since',
+          'sinceDate-day': '14',
+          'sinceDate-month': '4',
+          'sinceDate-year': '2024'
         })
-        expect(vm.dateFilter.mode).toBe('exact')
+        expect(vm.dateFilter.mode).toBe('since')
         expect(vm.dateFilter.selected).toBe(true)
-        expect(vm.dateFilter.exactDateInput.items.map((i) => i.value))
+        expect(vm.dateFilter.sinceDateInput.items.map((i) => i.value))
           .toEqual(['14', '4', '2024'])
       })
 
       test('marks error class on only the missing parts', () => {
         const vm = viewModel({
-          dateMode: 'exact',
-          'exactDate-day': '14',
-          'exactDate-month': '4'
+          dateMode: 'since',
+          'sinceDate-day': '14',
+          'sinceDate-month': '4'
         })
         expect(vm.dateFilter.hasErrors).toBe(true)
-        const items = vm.dateFilter.exactDateInput.items
+        const items = vm.dateFilter.sinceDateInput.items
         expect(items.find((i) => i.name === 'day').classes).not.toContain('govuk-input--error')
         expect(items.find((i) => i.name === 'year').classes).toContain('govuk-input--error')
       })
 
-      test('exposes after/before input params for range mode', () => {
-        const vm = viewModel({
-          dateMode: 'range',
-          'afterDate-day': '1',
-          'afterDate-month': '1',
-          'afterDate-year': '2024'
-        })
-        expect(vm.dateFilter.afterDateInput.items.map((i) => i.value))
-          .toEqual(['1', '1', '2024'])
-        expect(vm.dateFilter.beforeDateInput.items.map((i) => i.value))
-          .toEqual(['', '', ''])
+      test('exposes year values and error for period mode', () => {
+        const vm = viewModel({ dateMode: 'period', fromYear: '2002', toYear: '20x4' })
+        expect(vm.dateFilter.fromYear).toBe('2002')
+        expect(vm.dateFilter.toYear).toBe('20x4')
+        expect(vm.dateFilter.toYearError).toContain('from 1900 onwards')
       })
 
-      test('does not count an empty range as selected', () => {
-        const vm = viewModel({ dateMode: 'range' })
+      test('does not count an empty period as selected', () => {
+        const vm = viewModel({ dateMode: 'period' })
         expect(vm.dateFilter.selected).toBe(false)
         expect(vm.currentUrl).toBe('/')
         expect(vm.activeFilterGroups.find((g) => g.name === 'updatedAt')).toBeUndefined()
@@ -705,12 +661,12 @@ describe('#search view-model', () => {
     describe('errorSummary', () => {
       test('lists date errors anchored to the first missing field', () => {
         const vm = viewModel({
-          dateMode: 'exact',
-          'exactDate-day': '14',
-          'exactDate-month': '4'
+          dateMode: 'since',
+          'sinceDate-day': '14',
+          'sinceDate-month': '4'
         })
         expect(vm.errorSummary.titleText).toBe('There is a problem')
-        expect(vm.errorSummary.errorList[0].href).toBe('#exactDate-year')
+        expect(vm.errorSummary.errorList[0].href).toBe('#sinceDate-year')
       })
 
       test('lists location errors with the correct anchors', () => {
@@ -752,28 +708,20 @@ describe('#search view-model', () => {
         )
       })
 
-      test('serialises an exact date and a date range', () => {
-        const exact = viewModel({
-          dateMode: 'exact',
-          'exactDate-day': '14',
-          'exactDate-month': '4',
-          'exactDate-year': '2024'
+      test('serialises a since date and a time period', () => {
+        const since = viewModel({
+          dateMode: 'since',
+          'sinceDate-day': '14',
+          'sinceDate-month': '4',
+          'sinceDate-year': '2024'
         })
-        expect(exact.currentUrl).toContain('dateMode=exact')
-        expect(exact.currentUrl).toContain('exactDate-day=14')
+        expect(since.currentUrl).toContain('dateMode=since')
+        expect(since.currentUrl).toContain('sinceDate-day=14')
 
-        const range = viewModel({
-          dateMode: 'range',
-          'afterDate-day': '1',
-          'afterDate-month': '1',
-          'afterDate-year': '2024',
-          'beforeDate-day': '31',
-          'beforeDate-month': '12',
-          'beforeDate-year': '2024'
-        })
-        expect(range.currentUrl).toContain('dateMode=range')
-        expect(range.currentUrl).toContain('afterDate-year=2024')
-        expect(range.currentUrl).toContain('beforeDate-year=2024')
+        const period = viewModel({ dateMode: 'period', fromYear: '2002', toYear: '2004' })
+        expect(period.currentUrl).toContain('dateMode=period')
+        expect(period.currentUrl).toContain('fromYear=2002')
+        expect(period.currentUrl).toContain('toYear=2004')
       })
 
       test('serialises location coordinates', () => {
