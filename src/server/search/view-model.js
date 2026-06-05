@@ -1,7 +1,6 @@
 import { buildPagination } from '../common/helpers/pagination.js'
 import { facetValueLabel } from '../common/services/geonetwork/fields.js'
 import { dateFilter } from './filters/date/view-model.js'
-import { locationFilter } from './filters/location/view-model.js'
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 export const DEFAULT_PAGE_SIZE = 20
@@ -24,7 +23,6 @@ const SIDEBAR_ORDER = [
   { type: 'facet', name: 'owner', legend: 'Data owner' },
   { type: 'facet', name: 'dataType', legend: 'Data type' },
   { type: 'date' },
-  { type: 'location' },
   { type: 'facet', name: 'updateFrequency', legend: 'Update frequency' }
 ]
 
@@ -100,8 +98,6 @@ function parseFacetFilters (rawQuery) {
  * @property {import('../common/services/geonetwork/client.js').SearchFilters} filters
  * @property {import('./filters/date/view-model.js').DateInput} dateInput
  * @property {import('./filters/date/view-model.js').DateErrors} dateErrors
- * @property {import('./filters/location/view-model.js').LocationInput} locationInput
- * @property {import('./filters/location/view-model.js').LocationErrors} locationErrors
  * @property {boolean} hasErrors
  */
 
@@ -119,13 +115,9 @@ export function parseQuery (rawQuery = {}) {
   const dateErrors = dateFilter.validate(dateInput)
   dateFilter.applyFilter(filters, dateInput, dateErrors)
 
-  const locationInput = locationFilter.parse(rawQuery)
-  const locationErrors = locationFilter.validate(locationInput)
-  locationFilter.applyFilter(filters, locationInput, locationErrors)
+  const hasErrors = Object.keys(dateErrors).length > 0
 
-  const hasErrors = Object.keys(dateErrors).length > 0 || Object.keys(locationErrors).length > 0
-
-  return { q, sort, page, size, filters, dateInput, dateErrors, locationInput, locationErrors, hasErrors }
+  return { q, sort, page, size, filters, dateInput, dateErrors, hasErrors }
 }
 
 /**
@@ -168,7 +160,6 @@ function buildParams (parsed, overrides = {}) {
   appendFilterParams(params, merged.filters)
 
   dateFilter.appendToParams(params, merged.dateInput)
-  locationFilter.appendToParams(params, merged.locationInput)
 
   if (merged.size !== DEFAULT_PAGE_SIZE) {
     params.set('size', String(merged.size))
@@ -290,18 +281,12 @@ function buildActiveFilterGroups (parsed, basePath) {
     groups.push({ ...dateFilter.chipGroup, items: dateChips })
   }
 
-  const locationChips = locationFilter.toChipItems(parsed, chipHref)
-  if (locationChips.length > 0) {
-    groups.push({ ...locationFilter.chipGroup, items: locationChips })
-  }
-
   return groups
 }
 
 function buildErrorSummary (parsed) {
   const items = [
-    ...dateFilter.toErrorItems(parsed.dateErrors ?? {}),
-    ...locationFilter.toErrorItems(parsed.locationErrors ?? {})
+    ...dateFilter.toErrorItems(parsed.dateErrors)
   ]
   return items.length > 0 ? { titleText: 'There is a problem', errorList: items } : null
 }
@@ -356,7 +341,6 @@ export function buildViewModel ({ parsed, response, basePath }) {
     sidebarItems,
     hiddenFilters: buildHiddenFilters(parsed),
     dateFilter: dateFilter.toFormViewModel(parsed),
-    locationFilter: locationFilter.toFormViewModel(parsed),
     errorSummary: buildErrorSummary(parsed),
     activeFilterGroups: buildActiveFilterGroups(parsed, basePath),
     pagination: buildPagination({

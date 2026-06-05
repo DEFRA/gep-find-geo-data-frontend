@@ -14,46 +14,61 @@
   display: flex;
   align-items: stretch;
   max-width: 540px;
+
+  &:focus-within {
+    outline: 3px solid $govuk-yellow;
+    outline-offset: 0;
+  }
 }
 
 .app-search-box__input {
   flex: 1;
+  min-width: 0;
   margin-bottom: 0;
   border-right: 0;
+
+  &:focus {
+    outline: none;
+    border-right: 2px solid $govuk-black;
+    box-shadow: none;
+  }
 }
 
 .app-search-box__button {
   background-color: $defra-green;
-  border: 2px solid $defra-green;
-  width: 44px;
-  flex-shrink: 0;
+  flex: 0 0 44px;
   padding: 0;
   margin-bottom: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 0;
   color: $govuk-white;
   cursor: pointer;
   box-shadow: none;
 
   &:hover {
     background-color: $defra-green-dark;
-    border-color: $defra-green-dark;
   }
 
-  &:focus {
-    outline: 3px solid $govuk-yellow;
-    outline-offset: 0;
-    background-color: $govuk-yellow;
-    color: $govuk-black;
-    border-color: $govuk-black;
-    box-shadow: inset 0 0 0 1px $govuk-black;
+  &:active {
+    top: 0;
+  }
+
+  &:focus,
+  &:focus:not(:active):not(:hover) {
+    outline: 2px solid $govuk-black;
+    outline-offset: -2px;
+    background-color: $defra-green;
+    color: $govuk-white;
+    box-shadow: none;
   }
 }
 
 .app-search-box__icon {
   width: 20px;
   height: 20px;
+  display: block;
   pointer-events: none;
 }
 

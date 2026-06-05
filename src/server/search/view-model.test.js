@@ -68,7 +68,6 @@ describe('#search view-model', () => {
       fromYear: '',
       toYear: ''
     }
-    const emptyLocationInput = { latitude: '', longitude: '' }
 
     test('defaults for an empty query', () => {
       expect(parseQuery({})).toEqual({
@@ -79,8 +78,6 @@ describe('#search view-model', () => {
         filters: {},
         dateInput: emptyDateInput,
         dateErrors: {},
-        locationInput: emptyLocationInput,
-        locationErrors: {},
         hasErrors: false
       })
     })
@@ -230,32 +227,6 @@ describe('#search view-model', () => {
       expect(parsed.dateErrors.toYear.message).toContain('same as or after')
       expect(parsed.filters.updatedAtBetween).toBeUndefined()
     })
-
-    test('parses valid coordinates into a location filter', () => {
-      const parsed = parseQuery({ latitude: '51.501', longitude: '-0.142' })
-      expect(parsed.filters.location).toEqual({ latitude: 51.501, longitude: -0.142 })
-      expect(parsed.locationInput).toEqual({ latitude: '51.501', longitude: '-0.142' })
-      expect(parsed.locationErrors).toEqual({})
-    })
-
-    test('trims whitespace from coordinate inputs', () => {
-      const parsed = parseQuery({ latitude: '  51.5  ', longitude: '  -0.1  ' })
-      expect(parsed.filters.location).toEqual({ latitude: 51.5, longitude: -0.1 })
-    })
-
-    test('flags missing counterpart when only one coordinate is provided', () => {
-      expect(parseQuery({ latitude: '51.5' }).locationErrors.longitude).toBeDefined()
-      expect(parseQuery({ longitude: '-0.1' }).locationErrors.latitude).toBeDefined()
-    })
-
-    test('flags non-numeric or out-of-range coordinates', () => {
-      expect(parseQuery({ latitude: 'abc', longitude: '-0.1' }).locationErrors.latitude.message)
-        .toContain('number')
-      expect(parseQuery({ latitude: '91', longitude: '-0.1' }).locationErrors.latitude.message)
-        .toContain('-90')
-      expect(parseQuery({ latitude: '51.5', longitude: '181' }).locationErrors.longitude.message)
-        .toContain('-180')
-    })
   })
 
   describe('buildViewModel', () => {
@@ -280,7 +251,7 @@ describe('#search view-model', () => {
       test('sidebarItems contains facets and filters in declared order', () => {
         const items = viewModel().sidebarItems.map((i) => i.type === 'facet' ? i.name : i.type)
         expect(items).toEqual([
-          'accessLevel', 'categories', 'owner', 'dataType', 'date', 'location', 'updateFrequency'
+          'accessLevel', 'categories', 'owner', 'dataType', 'date', 'updateFrequency'
         ])
       })
     })
@@ -502,29 +473,6 @@ describe('#search view-model', () => {
         expect(href).not.toContain('dateMode')
         expect(href).not.toContain('sinceDate')
       })
-
-      test('adds a Location group with valid coordinates and omits when invalid', () => {
-        const valid = viewModel({ latitude: '51.5', longitude: '-0.1' })
-        const locationGroup = valid.activeFilterGroups.find((g) => g.name === 'location')
-        expect(locationGroup.legend).toBe('Location')
-        expect(locationGroup.items[0].label).toBe('51.5, -0.1')
-
-        const invalid = viewModel({ latitude: 'abc', longitude: '-0.1' })
-        expect(invalid.activeFilterGroups.find((g) => g.name === 'location')).toBeUndefined()
-      })
-
-      test('omits Location chips when only one coordinate is provided', () => {
-        const vm = viewModel({ latitude: '51.5' })
-        expect(vm.activeFilterGroups.find((g) => g.name === 'location')).toBeUndefined()
-      })
-
-      test('location chip removeHref clears coordinates and preserves q', () => {
-        const vm = viewModel({ q: 'flood', latitude: '51.5', longitude: '-0.1' })
-        const locationGroup = vm.activeFilterGroups.find((g) => g.name === 'location')
-        const href = locationGroup.items[0].removeHref
-        expect(href).toContain('q=flood')
-        expect(href).not.toContain('latitude')
-      })
     })
 
     describe('pagination', () => {
@@ -635,29 +583,6 @@ describe('#search view-model', () => {
       })
     })
 
-    describe('locationFilter', () => {
-      test('empty by default', () => {
-        expect(viewModel().locationFilter).toMatchObject({
-          selected: false,
-          hasErrors: false
-        })
-      })
-
-      test('exposes input params with the entered values', () => {
-        const vm = viewModel({ latitude: '51.5', longitude: '-0.1' })
-        expect(vm.locationFilter.selected).toBe(true)
-        expect(vm.locationFilter.latitudeInput.value).toBe('51.5')
-        expect(vm.locationFilter.longitudeInput.value).toBe('-0.1')
-      })
-
-      test('sets errorMessage on only the offending input', () => {
-        const vm = viewModel({ latitude: 'abc', longitude: '-0.1' })
-        expect(vm.locationFilter.hasErrors).toBe(true)
-        expect(vm.locationFilter.latitudeInput.errorMessage.text).toContain('number')
-        expect(vm.locationFilter.longitudeInput.errorMessage).toBeUndefined()
-      })
-    })
-
     describe('errorSummary', () => {
       test('lists date errors anchored to the first missing field', () => {
         const vm = viewModel({
@@ -667,13 +592,6 @@ describe('#search view-model', () => {
         })
         expect(vm.errorSummary.titleText).toBe('There is a problem')
         expect(vm.errorSummary.errorList[0].href).toBe('#sinceDate-year')
-      })
-
-      test('lists location errors with the correct anchors', () => {
-        const vm = viewModel({ latitude: 'abc' })
-        const anchors = vm.errorSummary.errorList.map((e) => e.href)
-        expect(anchors).toContain('#latitude')
-        expect(anchors).toContain('#longitude')
       })
     })
 
@@ -722,12 +640,6 @@ describe('#search view-model', () => {
         expect(period.currentUrl).toContain('dateMode=period')
         expect(period.currentUrl).toContain('fromYear=2002')
         expect(period.currentUrl).toContain('toYear=2004')
-      })
-
-      test('serialises location coordinates', () => {
-        const vm = viewModel({ latitude: '51.5', longitude: '-0.1' })
-        expect(vm.currentUrl).toContain('latitude=51.5')
-        expect(vm.currentUrl).toContain('longitude=-0.1')
       })
     })
   })

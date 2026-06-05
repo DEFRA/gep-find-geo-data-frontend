@@ -32,8 +32,6 @@
     </details>
   {% elif item.type == 'date' %}
     {% include "search/filters/date/_filter.njk" %}
-  {% elif item.type == 'location' %}
-    {% include "search/filters/location/_filter.njk" %}
   {% endif %}
 {% endfor %}
 

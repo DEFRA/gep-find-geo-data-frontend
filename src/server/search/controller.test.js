@@ -196,18 +196,6 @@ describe('#searchController', () => {
       expect(result).toContain('Time period')
     })
 
-    test('renders the Location filter section and coordinate inputs', async () => {
-      const { result } = await server.inject({
-        method: 'GET',
-        url: '/',
-        auth: mockAuthCredentials
-      })
-
-      expect(result).toContain('data-filter-group="location"')
-      expect(result).toContain('name="latitude"')
-      expect(result).toContain('name="longitude"')
-    })
-
     test('pre-selects the since radio, preserves day/month/year and renders its chip', async () => {
       const { result } = await server.inject({
         method: 'GET',
