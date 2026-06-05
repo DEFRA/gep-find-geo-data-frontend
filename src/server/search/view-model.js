@@ -7,15 +7,15 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 export const DEFAULT_PAGE_SIZE = 20
 
 const SORT_OPTIONS = [
-  { value: 'relevance', text: 'Best match' },
+  // { value: 'relevance', text: 'Best match', default: true },
   { value: 'titleAsc', text: 'Alphabetical (A-Z)' },
   { value: 'titleDesc', text: 'Alphabetical (Z-A)' },
-  { value: 'newest', text: 'Updated (newest)' },
+  { value: 'newest', text: 'Updated (newest)', default: true },
   { value: 'oldest', text: 'Updated (oldest)' }
 ]
 
 const VALID_SORTS = new Set(SORT_OPTIONS.map((option) => option.value))
-const DEFAULT_SORT = SORT_OPTIONS[0].value
+const DEFAULT_SORT = SORT_OPTIONS.find((option) => option.default).value
 const VALID_PAGE_SIZES = new Set(PAGE_SIZE_OPTIONS)
 
 const SIDEBAR_ORDER = [
@@ -94,7 +94,7 @@ function parseFacetFilters (rawQuery) {
 /**
  * @typedef ParsedQuery
  * @property {string} q
- * @property {'relevance'|'titleAsc'|'titleDesc'|'newest'|'oldest'} sort
+ * @property {'titleAsc'|'titleDesc'|'newest'|'oldest'} sort
  * @property {number} page
  * @property {number} size
  * @property {import('../common/services/geonetwork/client.js').SearchFilters} filters

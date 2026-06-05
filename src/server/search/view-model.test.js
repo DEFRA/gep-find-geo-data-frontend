@@ -56,7 +56,7 @@ describe('#search view-model', () => {
         query: '',
         from: 0,
         size: DEFAULT_PAGE_SIZE,
-        sort: 'relevance'
+        sort: 'newest'
       })
     })
   })
@@ -73,7 +73,7 @@ describe('#search view-model', () => {
     test('defaults for an empty query', () => {
       expect(parseQuery({})).toEqual({
         q: '',
-        sort: 'relevance',
+        sort: 'newest',
         page: 1,
         size: DEFAULT_PAGE_SIZE,
         filters: {},
@@ -90,8 +90,8 @@ describe('#search view-model', () => {
       expect(parsed).toMatchObject({ q: 'flood', sort: 'titleAsc', page: 3 })
     })
 
-    test('clamps invalid sort to relevance', () => {
-      expect(parseQuery({ sort: 'nonsense' }).sort).toBe('relevance')
+    test('clamps invalid sort to newest', () => {
+      expect(parseQuery({ sort: 'nonsense' }).sort).toBe('newest')
     })
 
     test('clamps invalid page to 1', () => {
@@ -265,7 +265,7 @@ describe('#search view-model', () => {
           pageTitle: 'Search Defra Data',
           heading: 'Search Defra Data',
           searchQuery: '',
-          selectedSort: 'relevance',
+          selectedSort: 'newest',
           selectedPageSize: DEFAULT_PAGE_SIZE,
           totalResults: 0,
           results: [],
@@ -686,7 +686,7 @@ describe('#search view-model', () => {
       })
 
       test('omits default sort, size and page 1', () => {
-        expect(viewModel({ sort: 'relevance' }).currentUrl).toBe('/')
+        expect(viewModel({ sort: 'newest' }).currentUrl).toBe('/')
         expect(viewModel({ size: '20' }).currentUrl).toBe('/')
         expect(viewModel({ page: '1' }).currentUrl).toBe('/')
       })
