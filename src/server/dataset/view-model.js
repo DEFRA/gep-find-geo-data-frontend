@@ -95,6 +95,8 @@ function tagLinks (values, filterName) {
   return links
 }
 
+import { licenceUrl } from '../common/constants/licences.js'
+
 /**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
  * @returns {object}
@@ -120,6 +122,7 @@ function buildViewModel (record) {
     record,
     serviceLinks,
     downloadLinks,
+    licenceHref: licenceUrl(record.licence),
     coordinateReferenceSystemHref: safeUrl(record.coordinateReferenceSystem),
     categoryLinks: tagLinks(record.categories ?? [], 'category'),
     keywordLinks: tagLinks(record.keywords ?? [], 'keyword'),

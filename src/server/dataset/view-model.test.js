@@ -116,6 +116,22 @@ describe('#dataset view-model', () => {
     expect(unsafe.coordinateReferenceSystemHref).toBeNull()
   })
 
+  test('builds a licence href for recognised licences', () => {
+    const known = buildViewModel(baseRecord({
+      licence: 'Open Government Licence'
+    }))
+    const unknown = buildViewModel(baseRecord({
+      licence: 'Restricted access - contact publisher'
+    }))
+    const missing = buildViewModel(baseRecord())
+
+    expect(known.licenceHref).toBe(
+      'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'
+    )
+    expect(unknown.licenceHref).toBeNull()
+    expect(missing.licenceHref).toBeNull()
+  })
+
   test('builds category and keyword filter links', () => {
     const record = baseRecord({
       categories: ['Environment', 'Elevation', 'environment'],
