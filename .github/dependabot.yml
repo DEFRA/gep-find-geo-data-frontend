@@ -62,6 +62,7 @@ updates:
 
       server:
         patterns:
+          - '@aws-sdk/*'
           - '@hapi/*'
           - 'blankie'
           - 'convict'
@@ -70,9 +71,12 @@ updates:
           - 'global-agent'
           - 'hapi-*'
           - 'ioredis'
+          - 'iso-639-2'
           - 'lodash'
           - 'node-fetch'
           - 'nunjucks'
+          - 'openid-client'
+          - 'seedrandom'
           - 'semver'
           - 'undici'
 
