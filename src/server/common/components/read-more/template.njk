@@ -1,0 +1,14 @@
+{% set contentId = params.id + "-content" %}
+<div data-module="app-read-more"
+     {% if params.characterLimit %}data-app-read-more-limit="{{ params.characterLimit }}"{% endif %}>
+  <div id="{{ contentId }}">
+    {% for para in params.text | paragraphs %}
+      <p class="govuk-body">{{ para }}</p>
+    {% endfor %}
+  </div>
+  <button type="button"
+          class="app-link-button app-read-more__toggle"
+          aria-expanded="false"
+          aria-controls="{{ contentId }}"
+          hidden>Show more</button>
+</div>

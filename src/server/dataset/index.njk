@@ -3,6 +3,7 @@
 {% from "govuk/components/accordion/macro.njk" import govukAccordion %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "copy-link/macro.njk" import appCopyLink %}
+{% from "read-more/macro.njk" import appReadMore %}
 
 {% block content %}
   <div class="govuk-!-margin-top-5">
@@ -12,9 +13,11 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">{{ heading }}</h1>
 
         <h2 class="govuk-heading-m">Summary</h2>
-        {% for para in record.abstract | paragraphs %}
-          <p class="govuk-body">{{ para }}</p>
-        {% endfor %}
+        {{ appReadMore({
+          id: "dataset-abstract",
+          text: record.abstract,
+          characterLimit: 300
+        }) }}
 
         {% if categoryLinks.length %}
           <h2 class="govuk-heading-m">Categories</h2>
