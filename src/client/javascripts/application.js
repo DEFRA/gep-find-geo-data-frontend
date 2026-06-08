@@ -10,6 +10,7 @@ import {
 
 import { initCookieBanner, initCookiesPage } from './cookie-consent.js'
 import { initCopyLinks } from './copy-link.js'
+import { initReadMore } from './read-more.js'
 import { initSearch } from './search.js'
 
 createAll(Accordion)
@@ -22,4 +23,5 @@ createAll(SkipLink)
 initCookieBanner()
 initCookiesPage()
 initCopyLinks()
+initReadMore()
 initSearch()
