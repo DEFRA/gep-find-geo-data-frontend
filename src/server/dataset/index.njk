@@ -44,7 +44,13 @@
 
         {% if record.licence %}
           <h2 class="govuk-heading-m">Licence</h2>
-          <p class="govuk-body">{{ record.licence }}</p>
+          <p class="govuk-body">
+            {% if licenceHref %}
+              <a class="govuk-link" href="{{ licenceHref }}">{{ record.licence }}</a>
+            {% else %}
+              {{ record.licence }}
+            {% endif %}
+          </p>
         {% endif %}
 
         {% set technicalHtml %}
