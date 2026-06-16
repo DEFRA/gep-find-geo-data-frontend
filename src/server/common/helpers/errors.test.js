@@ -23,7 +23,7 @@ describe('#errors', () => {
     })
 
     expect(result).toEqual(
-      expect.stringContaining('Page not found | Data Search Catalogue')
+      expect.stringContaining('Page not found | Defra Group Land Model - Search and Find')
     )
     expect(statusCode).toBe(statusCodes.notFound)
   })
