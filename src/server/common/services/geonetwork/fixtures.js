@@ -1,146 +1,96 @@
 const curatedRecords = [
-  // https://environment.data.gov.uk/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0
+  // https://environment.data.gov.uk/dataset/6232eb53-0573-4183-bce2-0de344cd3820
   {
-    id: '92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
-    title: 'Priority Habitats Inventory (England)',
-    abstract: `The Priority Habitat Inventory is a spatial dataset that maps priority habitats identified in the UK Biodiversity Action Plan and listed as being of principal importance for the purpose of conserving or enhancing biodiversity, under Section 41 of the Natural Environment and Rural Communities Act (2006).
+    id: '6232eb53-0573-4183-bce2-0de344cd3820',
+    title: 'AIMS Structure',
+    abstract: `An asset used to control the flow of water
 
-The PHI is updated twice a year and where possible habitats are mapped to polygons in OS Mastermap. These polygons are merged or split where necessary to create resulting habitat patches.
+Asset Sub-Types include: Control Gate, Draw Off Tower, Fish Pass, Hydrobrake, In Channel Stoplogs, Inspection Chamber, Jetty, Outfall, Screen, Spillway, Stilling Basin, Weir
 
-The PHI currently maps 27 terrestrial and freshwater priority habitats across England.
-These being: Blanket bog (BLBOG), Calaminarian grassland (CALAM), Coastal & floodplain grazing marsh (CFPGM), Coastal saltmarsh (SALTM), Coastal sand dunes (CSDUN), Coastal vegetated shingle (CVSHI), Deciduous woodland (DWOOD), Limestone pavements (LPAVE), Lowland calcareous grassland (LCGRA), Lowland dry acid grassland (LDAGR), Lowland Fens (LFENS), Lowland heathland (LHEAT), Lowland meadows (LMEAD), Lowland raised bog (LRBOG), Maritime cliff & slope (MCSLP), Mountain heath & willow scrub (MHWSC), Mudflats (MUDFL), Purple moor grass & rush pastures (PMGRP), Reedbeds (RBEDS), Saline lagoons (SLAGO), Traditional orchards (TORCH), Upland calcareous grassland (UCGRA), Upland hay meadows (UHMEA), Upland heathland (UHEAT), Upland flushes, fens & swamps (UFFSW), Lakes (LAKES), Ponds (PONDS).
+See the Data Requirements Library for more detail: https://environment.data.gov.uk/asset-management/drl-app/asset-types
 
-The PHI also includes four habitat classes which are not priority habitats, but which hold potential importance for conservation of biodiversity in England. These can indicate a mosaic of habitat which may contain priority habitats, have restoration potential and/or contribute to ecological networks. Where evidence indicates the presence of unmapped or fragmented priority habitats within such polygons, these are attributed as additional habitats.
-These being: Fragmented heath (FHEAT), Grass moorland (GMOOR), Good quality semi-improved grassland (GQSIG), No main habitat (NMHAB).
-
-For some polygons the PHI contains additional information about the main habitats in the form of feature descriptions and corresponding feature codes.
-These being:
-Priority Ponds and lakes - Oligotrophic lakes (OLIGO), Dystrophic lakes (DYSTR), Mesotrophic lakes (MESOT), Eutrophic standing waters (EUTRO), Ice age pond (ICEAG), Pond with floating mats (PWFLM)
-Deciduous woodland – Upland Oakwood (UPOWD), Lowland beech and yew woodland (LBYWD), Upland mixed ashwoods (UMAWD), Wet Woodland (WETWD), Lowland mixed deciduous woodland (ASNWD), Plantations on ancient woodland (PAWDS)
-Grassland – Countryside Stewardship Option (CSOPT), Waxcap grassland (WAXCP)
-Heathland – Dry Heathland (DRYHL), Wet heathland (WETHL)
-Coastal sand dunes – Dunes under coniferous woodland (CWDUN), Dunes under deciduous woodland (DWDUN)
-General – Degraded (DEGRD)
- Attribution statement: © Natural England copyright. Contains Ordnance Survey data © Crown copyright and database right [year].`,
-    owner: 'Natural England',
-    dataType: 'Vector',
-    accessLevel: 'Restricted access',
-    updateFrequency: 'Not planned',
-    categories: ['Environment'],
-    updatedAt: '2025-10-23T00:00:00.000Z',
-    lineage: 'All data is captured to the British National Grid using the OS MasterMap Topographic Layer.',
-    contactPoint: 'data.services@naturalengland.org.uk',
-    licence: 'Custom licence terms: There are no public access constraints to this data. Use of this data is subject to the Open Government Licence - https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/. Contains data created and provided by Cumbria Biodiversity Data Centre on behalf of Cumbria Wildlife Trust. The data has been extracted from Cumbria Wildlife Trust\'s Grassland Inventory and is used under the CC BY 4.0 International licence terms - https://creativecommons.org/licenses/by/4.0/ (https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)',
-    useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
-    language: 'eng',
-    keywords: ['Habitats and biotopes', 'landscape', 'Natural England', 'ecology', 'habitats'],
-    format: [
-      'Proprietary format | ESRI File based Geodatabase (GDB)',
-      'Open format | GeoPackage (GPKG)',
-      'Open format | Comma Separated Values file (CSV)',
-      'Proprietary format | MS Excel (XLS)',
-      'OGC Web Services | JavaScript Object Notation (JSON)',
-      'Open format | Shapefile (SHP)'
-    ],
-    links: [
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=PHI V3 Datasets.xlsx', name: 'PHI V3 Datasets.xlsx', description: 'PHI V3 Datasets.xlsx download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=Priority_Habitats_Inventory_Attribute_Metadata.pdf', name: 'Priority_Habitats_Inventory_Attribute_Metadata.pdf', description: 'Priority_Habitats_Inventory_Attribute_Metadata.pdf download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=Priority_Habitats_Inventory_England.gdb.zip', name: 'Priority_Habitats_Inventory_England.gdb.zip', description: 'Priority_Habitats_Inventory_England.gdb.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=Priority_Habitats_Inventory_England.geojson.zip', name: 'Priority_Habitats_Inventory_England.geojson.zip', description: 'Priority_Habitats_Inventory_England.geojson.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=Priority_Habitats_Inventory_England.gpkg.zip', name: 'Priority_Habitats_Inventory_England.gpkg.zip', description: 'Priority_Habitats_Inventory_England.gpkg.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=Priority_Habitats_Inventory_England.lyrx', name: 'Priority_Habitats_Inventory_England.lyrx', description: 'Priority_Habitats_Inventory_England.lyrx download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=d30e3fa2-5ca6-4851-b19d-1429ad9d84e0&fileName=Priority_Habitats_Inventory_Spatial_Metadata.pdf', name: 'Priority_Habitats_Inventory_Spatial_Metadata.pdf', description: 'Priority_Habitats_Inventory_Spatial_Metadata.pdf download on Defra Data Services Platform' },
-      { url: 'https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::priority-habitats-inventory-england/about', name: 'Priority Habitats Inventory (England) - Natural England Open Data Geoportal page', description: 'Priority Habitats Inventory (England) - Natural England Open Data Geoportal page' },
-      { url: 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Priority_Habitats_Inventory_England/FeatureServer', name: 'Priority Habitats Inventory (England) - ESRI REST Feature Service API', description: 'Priority Habitats Inventory (England) - ESRI REST Feature Service API' },
-      { url: 'https://environment.data.gov.uk/explore/92b43165-0dd0-4e69-a712-1e49bb5aa0d0?download=true', name: 'Priority Habitats Inventory (England) Download', description: 'Download data by area of interest' },
-      { url: 'https://environment.data.gov.uk/spatialdata/priority-habitat-inventory-england/wms', name: 'Priority Habitats Inventory (England) WMS', description: 'Priority Habitats Inventory (England) Web Map Service' },
-      { url: 'https://environment.data.gov.uk/spatialdata/priority-habitat-inventory-england/wfs', name: 'Priority Habitats Inventory (England) WFS', description: 'Priority Habitats Inventory (England) Web Feature Service' },
-      { url: 'https://environment.data.gov.uk/spatialdata/priority-habitat-inventory-england/ogc/features/v1', name: 'OGC API - Features service', description: 'OGC API - Features service' }
-    ],
-    temporalExtent: { start: '2014-11-24', end: '2099-12-31' },
-    coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
-    geographicExtent: { west: -8.655, south: 49.9, east: 1.79, north: 60.85 },
-    publicationDate: null,
-    creationDate: '2014-11-24T00:00:00.000Z'
-  },
-  // https://environment.data.gov.uk/dataset/2c8553c9-aa45-4666-9824-8ce0c7faf6a9
-  {
-    id: '2c8553c9-aa45-4666-9824-8ce0c7faf6a9',
-    title: 'Reservoir Flood Extents (Individual)',
-    abstract: `The data consists of separate packages of data for each large raised reservoir showing the flood extents for two scenarios; a "dry-day" and "wet-day".
-
-The dry day scenario shows the flood extent in the event that the reservoir were to fail and release the water held on a "dry day" when local rivers are at normal levels.
-
-This wet day scenario shows the flood extent in the event that the reservoir were to fail and release the water held on a "wet day" when local rivers had already overflowed their banks.
-
-Each scenario represents a prediction of a credible worst case scenario, however it's unlikely that any actual flood would be this large. The data gives no indication of the likelihood or probability of reservoir flooding.
-
-Flood extents are not included for smaller reservoirs or for reservoirs commissioned after the reservoir modelling programme began in October 2016. Attribution statement: © Environment Agency copyright and/or database right 2025. All rights reserved.`,
+PLEASE NOTE: This data is updated daily. Attribution statement: © Environment Agency copyright and/or database right 2016. All rights reserved.`,
     owner: 'Environment Agency',
     dataType: 'Vector',
     accessLevel: 'Restricted access',
-    updateFrequency: 'As needed',
-    categories: ['Environment'],
-    updatedAt: '2026-03-10T00:00:00.000Z',
-    lineage: 'In 2010 the Environment Agency published the National Reservoir Inundation Maps. The maps provided an indication of the flooding that would occur if a failure of a reservoir embankment or structure led to an uncontrolled release of water.\nThe Environment Agency has reviewed, updated and improved the reservoir flood maps as part of the Reservoir Flood Mapping Project. These maps show the extent of flooding for 1865 large-raised reservoirs that were in operation in October 2016. New reservoirs after that date will be modelled under the next review of the flood maps, which is due in by 2025.',
+    updateFrequency: 'Daily',
+    categories: [
+      'Environment'
+    ],
+    updatedAt: '2025-10-16T00:00:00.000Z',
+    lineage: 'Data is generated from the Asset Information Management System which holds records of assets associated with flood defences.',
     contactPoint: 'DSPcustomerforum@environment-agency.gov.uk',
     licence: 'Open Government Licence',
     useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
     language: 'eng',
-    keywords: ['ESDA', 'Flood Risk', 'Flood risk assessment', 'Reservoirs'],
+    keywords: [
+      'AIMS',
+      'Asset',
+      'Structure'
+    ],
     format: [
-      'Open format | Shapefile (SHP)',
-      'Open format | Portable Document Format - Standardized (PDF)'
+      'Open format | Shapefile (SHP)'
     ],
     links: [
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=c2edb379-05b0-4e4b-8c1f-dde09e3d0bba&fileName=Data Version.txt', name: 'Data Version.txt', description: 'Data Version.txt download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=c2edb379-05b0-4e4b-8c1f-dde09e3d0bba&fileName=Reservoir_Flood_Maps_Data_Guide.pdf', name: 'Reservoir_Flood_Maps_Data_Guide.pdf', description: 'Reservoir_Flood_Maps_Data_Guide.pdf download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/reservoir-flood-maps', name: 'Reservoir Flood Map Search Facility', description: 'External version on Defra Data Services Platform' }
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=5e1a2961-b383-4f8f-9ce3-94e122136e41&fileName=AIMS_Structure.gdb.zip',
+        name: 'AIMS_Structure.gdb.zip',
+        description: 'AIMS_Structure.gdb.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=5e1a2961-b383-4f8f-9ce3-94e122136e41&fileName=AIMS_Structure.geojson.zip',
+        name: 'AIMS_Structure.geojson.zip',
+        description: 'AIMS_Structure.geojson.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=5e1a2961-b383-4f8f-9ce3-94e122136e41&fileName=AIMS_Structure.gpkg.zip',
+        name: 'AIMS_Structure.gpkg.zip',
+        description: 'AIMS_Structure.gpkg.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=5e1a2961-b383-4f8f-9ce3-94e122136e41&fileName=AIMS_Structure.shp.zip',
+        name: 'AIMS_Structure.shp.zip',
+        description: 'AIMS_Structure.shp.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=5e1a2961-b383-4f8f-9ce3-94e122136e41&fileName=AIMS_Structure_product_description.pdf',
+        name: 'AIMS_Structure_product_description.pdf',
+        description: 'AIMS_Structure_product_description.pdf download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/6232eb53-0573-4183-bce2-0de344cd3820?download=true',
+        name: 'AIMSStructure_Download',
+        description: 'Download data by area of interest'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/aims-structure/wms',
+        name: 'AIMSStructure_WMS',
+        description: 'AIMS Structure WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/aims-structure/wfs',
+        name: 'AIMSStructure_WFS',
+        description: 'AIMS Structure WFS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/aims-structure/ogc/features/v1',
+        name: 'OGC API - Features service',
+        description: 'OGC API - Features service'
+      }
     ],
-    temporalExtent: { start: '2021-09-02', end: '2099-12-31' },
+    temporalExtent: {
+      start: '2024-06-19',
+      end: '2024-06-19'
+    },
     coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
-    geographicExtent: { west: -6.236, south: 49.943, east: 2.072, north: 55.816 },
+    geographicExtent: {
+      west: -6.236,
+      south: 49.943,
+      east: 2.072,
+      north: 55.816
+    },
     publicationDate: null,
-    creationDate: '2021-09-02T00:00:00.000Z'
-  },
-  // https://environment.data.gov.uk/dataset/ba8dc201-66ef-4983-9d46-7378af21027e
-  {
-    id: 'ba8dc201-66ef-4983-9d46-7378af21027e',
-    title: 'Sites of Special Scientific Interest (England)',
-    abstract: 'A Site of Special Scientific Interest (SSSI) is the land notified as an SSSI under the Wildlife and Countryside Act (1981), as amended. Sites notified under the 1949 Act only are not included in the Data set. SSSI are the finest sites for wildlife and natural features in England, supporting many characteristic, rare and endangered species, habitats and natural features. The data do not include "proposed" sites. Boundaries are generally mapped against Ordnance Survey MasterMap. Attribution statement: © Natural England copyright. Contains Ordnance Survey data © Crown copyright and database right [year].',
-    owner: 'Natural England',
-    dataType: 'Vector',
-    accessLevel: 'Restricted access',
-    updateFrequency: 'Monthly',
-    categories: ['Environment'],
-    updatedAt: '2025-04-15T00:00:00.000Z',
-    lineage: 'All data is captured to the Ordnance Survey National Grid sometimes called the British National Grid. OS MasterMap Topographic Layer - produced and supplied by Ordnance Survey from data at 1:1250, 1:2500 and 1:10000 surveying and mapping standards - is used as the primary source. Other sources - acquired internally and from external suppliers - may include aerial imagery at resolutions ranging from 25cm to 2m, Ordnance Survey 1:10000 raster images, historical OS mapping, charts and chart data from UK Hydrographic Office and other sources, scanned images of paper designation mapping (mostly originally produced at 1:10560 or 1:10000 scales), GPS and other surveyed data, and absolute coordinates. The data was first captured against an August 2002 cut of OS MasterMap Topography. Natural England has successfully uploaded an up-to-date version of OS MasterMap Topographic Layer. However, we have not yet updated our designated data holding to this new version of MasterMap. This should occur in the near future, when we will simultaneously apply positional accuracy improvement (PAI) to our data.',
-    contactPoint: 'data.services@naturalengland.org.uk',
-    licence: 'Open Government Licence',
-    useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
-    language: 'eng',
-    keywords: ['Protected sites', 'landscape', 'Designations', 'ESDA', 'ecology'],
-    format: [
-      'Open format | Shapefile (SHP)',
-      'Open format | Keyhole Markup Language (KML)'
-    ],
-    links: [
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.gdb.zip', name: 'Sites_of_Special_Scientific_Interest_England.gdb.zip', description: 'Sites_of_Special_Scientific_Interest_England.gdb.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.geojson.zip', name: 'Sites_of_Special_Scientific_Interest_England.geojson.zip', description: 'Sites_of_Special_Scientific_Interest_England.geojson.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.gpkg.zip', name: 'Sites_of_Special_Scientific_Interest_England.gpkg.zip', description: 'Sites_of_Special_Scientific_Interest_England.gpkg.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.lyr', name: 'Sites_of_Special_Scientific_Interest_England.lyr', description: 'Sites_of_Special_Scientific_Interest_England.lyr download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.shp.zip', name: 'Sites_of_Special_Scientific_Interest_England.shp.zip', description: 'Sites_of_Special_Scientific_Interest_England.shp.zip download on Defra Data Services Platform' },
-      { url: 'https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::sites-of-special-scientific-interest-england/about', name: 'Natural England Open Data Geoportal Page', description: 'Natural England Open Data Geoportal Page' },
-      { url: 'https://environment.data.gov.uk/explore/ba8dc201-66ef-4983-9d46-7378af21027e?download=true', name: 'SitesOfSpecialScientificInterestEngland_Download', description: 'Download data by area of interest' },
-      { url: 'https://environment.data.gov.uk/spatialdata/sites-of-special-scientific-interest-england/wfs', name: 'SitesOfSpecialScientificInterestEngland_WFS', description: 'Sites of Special Scientific Interest (England) WFS' },
-      { url: 'https://environment.data.gov.uk/spatialdata/sites-of-special-scientific-interest-england/wms', name: 'SitesOfSpecialScientificInterestEngland_WMS', description: 'Sites of Special Scientific Interest (England) WMS' },
-      { url: 'https://environment.data.gov.uk/spatialdata/sites-of-special-scientific-interest-england/ogc/features/v1', name: 'OGC API - Features service', description: 'OGC API - Features service' }
-    ],
-    temporalExtent: { start: '1970-01-01', end: '2099-12-31' },
-    coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
-    geographicExtent: { west: -6.41736, south: 49.8625, east: 2.05827, north: 55.7447 },
-    publicationDate: '2017-09-14T00:00:00.000Z',
-    creationDate: '2024-11-15T00:00:00.000Z'
+    creationDate: '2020-05-18T00:00:00.000Z'
   },
   // https://environment.data.gov.uk/dataset/f425f1e1-fc18-4b5a-88d8-76934125627c
   {
@@ -157,85 +107,628 @@ Our guidance document can be accessed below.
     dataType: 'Vector',
     accessLevel: 'Open data',
     updateFrequency: 'Monthly',
-    categories: ['Environment'],
+    categories: [
+      'Environment'
+    ],
     updatedAt: '2026-03-15T00:00:00.000Z',
-    lineage: 'Between 1981 and 1982 the Nature Conservancy Council began to compile an inventory of ancient woodland for England and Wales. This Ancient Woodland Inventory (AWI) was originally produced on a county basis with reports and paper maps published as they became available. It has since been digitised to create a national dataset which has been administered by the NCC\'s successor bodies, English Nature and now Natural England.The majority of the south east counties were updated in a pilot project (2006 - 2014) and this area includes smaller woods for the first time, dropping the threshold to 0.25 hectares from the previously mapped two hectares threshold.Datasets used include:National Forest Index - Forest Commission, OS MasterMap (PSGA), Historic Ordnance Survey data including Ordnance Surveyor\'s Drawings, County Maps and First Series 1 inch maps to current editions - Landmark (bespoke licence), Priority Habitat Inventory - Natural England (OGL), Ancient Tree Inventory - Woodland Trust Aerial Photography (APGB agreement)',
+    lineage: 'Between 1981 and 1982 the Nature Conservancy Council began to compile an inventory of ancient woodland for England and Wales. This Ancient Woodland Inventory (AWI) was originally produced on a county basis with reports and paper maps published as they became available. It has since been digitised to create a national dataset which has been administered by the NCC’s successor bodies, English Nature and now Natural England.The majority of the south east counties were updated in a pilot project (2006 - 2014) and this area includes smaller woods for the first time, dropping the threshold to 0.25 hectares from the previously mapped two hectares threshold.Datasets used include:National Forest Index - Forest Commission, OS MasterMap (PSGA), Historic Ordnance Survey data including Ordnance Surveyor\'s Drawings, County Maps and First Series 1 inch maps to current editions - Landmark (bespoke licence), Priority Habitat Inventory - Natural England (OGL), Ancient Tree Inventory - Woodland Trust Aerial Photography (APGB agreement)',
     contactPoint: 'data.services@naturalengland.org.uk',
     licence: 'Open Government Licence',
     useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
     language: 'eng',
-    keywords: ['Habitats and biotopes', 'landscape', 'Habitats', 'Natural England', 'Open Data', 'ecology'],
+    keywords: [
+      'Habitats and biotopes',
+      'landscape',
+      'Habitats',
+      'Natural England',
+      'Open Data',
+      'ecology'
+    ],
     format: [
       'Proprietary format | ESRI File based Geodatabase (GDB)',
       'Open format | Shapefile (SHP)'
     ],
     links: [
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland.lyr', name: 'Ancient_Woodland.lyr', description: 'Ancient_Woodland.lyr download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland.lyrx', name: 'Ancient_Woodland.lyrx', description: 'Ancient_Woodland.lyrx download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England-Attribute_Metadata.pdf', name: 'Ancient_Woodland_England-Attribute_Metadata.pdf', description: 'Ancient_Woodland_England-Attribute_Metadata.pdf download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England-Spatial_Metadata.pdf', name: 'Ancient_Woodland_England-Spatial_Metadata.pdf', description: 'Ancient_Woodland_England-Spatial_Metadata.pdf download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.gdb.zip', name: 'Ancient_Woodland_England.gdb.zip', description: 'Ancient_Woodland_England.gdb.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.geojson.zip', name: 'Ancient_Woodland_England.geojson.zip', description: 'Ancient_Woodland_England.geojson.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.gpkg.zip', name: 'Ancient_Woodland_England.gpkg.zip', description: 'Ancient_Woodland_England.gpkg.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.shp.zip', name: 'Ancient_Woodland_England.shp.zip', description: 'Ancient_Woodland_England.shp.zip download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_Inventory_Handbook.url', name: 'Ancient_Woodland_Inventory_Handbook.url', description: 'Ancient_Woodland_Inventory_Handbook.url download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Open_Government_Licence.url', name: 'Open_Government_Licence.url', description: 'Open_Government_Licence.url download on Defra Data Services Platform' },
-      { url: 'https://environment.data.gov.uk/spatialdata/ancient-woodland-england/wms', name: 'Ancient Woodland (England) - WMS', description: 'Ancient Woodland (England) - WMS' },
-      { url: 'https://environment.data.gov.uk/explore/f425f1e1-fc18-4b5a-88d8-76934125627c?download=true', name: 'Ancient Woodland (England) - Download by area of interest', description: 'Ancient Woodland (England) - Download by area of interest' },
-      { url: 'https://environment.data.gov.uk/spatialdata/ancient-woodland-england/wfs', name: 'Ancient Woodland (England) - WFS', description: 'Ancient Woodland (England) - WFS' },
-      { url: 'https://naturalengland-defra.opendata.arcgis.com/datasets/ancient-woodland-england', name: 'Ancient Woodland (England) - Natural England Open Data Geoportal page', description: 'Ancient Woodland (England) - Natural England Open Data Geoportal page' },
-      { url: 'https://s3-eu-west-1.amazonaws.com/data.defra.gov.uk/Natural_England/Habitat_Species/Habitats/Ancient_Woodland_England_NE/Ancient_Woodland_England_Docs.zip', name: 'Ancient Woodland (England) - Guidance documents', description: 'Ancient Woodland (England) - Guidance documents' },
-      { url: 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Ancient_Woodland_England/FeatureServer', name: 'Ancient Woodland (England) - ESRI REST Feature Service API', description: 'Ancient Woodland (England) - ESRI REST Feature Service API' },
-      { url: 'https://environment.data.gov.uk/spatialdata/ancient-woodland-england/ogc/features/v1', name: 'Ancient Woodland (England) - OGC API - Features service', description: 'Ancient Woodland (England) - OGC API - Features service' }
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland.lyr',
+        name: 'Ancient_Woodland.lyr',
+        description: 'Ancient_Woodland.lyr download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland.lyrx',
+        name: 'Ancient_Woodland.lyrx',
+        description: 'Ancient_Woodland.lyrx download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England-Attribute_Metadata.pdf',
+        name: 'Ancient_Woodland_England-Attribute_Metadata.pdf',
+        description: 'Ancient_Woodland_England-Attribute_Metadata.pdf download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England-Spatial_Metadata.pdf',
+        name: 'Ancient_Woodland_England-Spatial_Metadata.pdf',
+        description: 'Ancient_Woodland_England-Spatial_Metadata.pdf download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.gdb.zip',
+        name: 'Ancient_Woodland_England.gdb.zip',
+        description: 'Ancient_Woodland_England.gdb.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.geojson.zip',
+        name: 'Ancient_Woodland_England.geojson.zip',
+        description: 'Ancient_Woodland_England.geojson.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.gpkg.zip',
+        name: 'Ancient_Woodland_England.gpkg.zip',
+        description: 'Ancient_Woodland_England.gpkg.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_England.shp.zip',
+        name: 'Ancient_Woodland_England.shp.zip',
+        description: 'Ancient_Woodland_England.shp.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Ancient_Woodland_Inventory_Handbook.url',
+        name: 'Ancient_Woodland_Inventory_Handbook.url',
+        description: 'Ancient_Woodland_Inventory_Handbook.url download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=008cdfcf-893b-48f6-937a-3891a2a698c9&fileName=Open_Government_Licence.url',
+        name: 'Open_Government_Licence.url',
+        description: 'Open_Government_Licence.url download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/ancient-woodland-england/wms',
+        name: 'Ancient Woodland (England) - WMS',
+        description: 'Ancient Woodland (England) - WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/f425f1e1-fc18-4b5a-88d8-76934125627c?download=true',
+        name: 'Ancient Woodland (England) - Download by area of interest',
+        description: 'Ancient Woodland (England) - Download by area of interest'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/ancient-woodland-england/wfs',
+        name: 'Ancient Woodland (England) - WFS',
+        description: 'Ancient Woodland (England) - WFS'
+      },
+      {
+        url: 'https://naturalengland-defra.opendata.arcgis.com/datasets/ancient-woodland-england',
+        name: 'Ancient Woodland (England) - Natural England Open Data Geoportal page',
+        description: 'Ancient Woodland (England) - Natural England Open Data Geoportal page'
+      },
+      {
+        url: 'https://s3-eu-west-1.amazonaws.com/data.defra.gov.uk/Natural_England/Habitat_Species/Habitats/Ancient_Woodland_England_NE/Ancient_Woodland_England_Docs.zip',
+        name: 'Ancient Woodland (England) - Guidance documents',
+        description: 'Ancient Woodland (England) - Guidance documents'
+      },
+      {
+        url: 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Ancient_Woodland_England/FeatureServer',
+        name: 'Ancient Woodland (England) - ESRI REST Feature Service API',
+        description: 'Ancient Woodland (England) - ESRI REST Feature Service API'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/ancient-woodland-england/ogc/features/v1',
+        name: 'Ancient Woodland (England) - OGC API - Features service',
+        description: 'Ancient Woodland (England) - OGC API - Features service'
+      }
     ],
-    temporalExtent: { start: '2013-01-01', end: '2099-12-31' },
+    temporalExtent: {
+      start: '2013-01-01',
+      end: '2099-12-31'
+    },
     coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
-    geographicExtent: { west: -6.375, south: 49.9, east: 1.79, north: 55.82 },
+    geographicExtent: {
+      west: -6.375,
+      south: 49.9,
+      east: 1.79,
+      north: 55.82
+    },
     publicationDate: null,
     creationDate: '2013-01-01T00:00:00.000Z'
   },
-  // https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc
+  // https://environment.data.gov.uk/dataset/04dc895b-e25d-485d-9b0c-d912a0259da8
   {
-    id: '13787b9a-26a4-4775-8523-806d13af58fc',
-    title: 'LIDAR Composite Digital Terrain Model (DTM) - 1m',
-    abstract: `The LIDAR Composite DTM (Digital Terrain Model) is a raster elevation model covering ~99% of England at 1m spatial resolution. The DTM (Digital Terrain Model) is produced from the last or only laser pulse returned to the sensor. We remove surface objects from the Digital Surface Model (DSM), using bespoke algorithms and manual editing of the data, to produce a terrain model of just the surface.
-
-Produced by the Environment Agency in 2022, the DTM is derived from a combination of our Time Stamped archive and National LIDAR Programme surveys, which have been merged and re-sampled to give the best possible coverage. Where repeat surveys have been undertaken the newest, best resolution data is used. Where data was resampled a bilinear interpolation was used before being merged.
-
-The 2022 LIDAR Composite contains surveys undertaken between 6th June 2000 and 2nd April 2022. Please refer to the metadata index catalgoues which show for any location which survey was used in the production of the LIDAR composite.
-
-The data is available to download as GeoTiff rasters in 5km tiles aligned to the OS National grid. The data is presented in metres, referenced to Ordinance Survey Newlyn and using the OSTN'15 transformation method. All individual LIDAR surveys going into the production of the composite had a vertical accuracy of +/-15cm RMSE. Attribution statement: © Environment Agency copyright and/or database right 2022. All rights reserved.`,
-    owner: 'Environment Agency',
-    dataType: 'Grid',
+    id: '04dc895b-e25d-485d-9b0c-d912a0259da8',
+    title: 'Crop Map of England (CROME) 2025',
+    abstract: 'The Crop Map of England (CROME) is a polygon vector dataset mainly containing the crop types of England. The dataset contains approximately 32 million hexagonal cells classifying England into over 15 main crop types, grassland, and non-agricultural land covers, such as Woodland, Water Bodies, Fallow Land and other non-agricultural land covers. The classification was created automatically using supervised classification (Random Forest Classification) from the combination of Sentinel-1 Radar Satellite time series images during the period January 2025 – August 2025. The dataset was created to aid the classification of crop types from optical imagery, which can be affected by cloud cover. The results were checked against survey data collected by field inspectors and visually validated. The data has been split into the Ordnance Survey Ceremonial Counties and each county is given a three letter code. Please refer to the CROME specification document to see which county each CODE label represents. Attribution statement: © Rural Payments Agency copyright and/or database right 2024. All rights reserved.',
+    owner: 'Rural Payments Agency',
+    dataType: 'Vector',
     accessLevel: 'Restricted access',
     updateFrequency: 'Annually',
-    categories: ['Environment', 'Elevation'],
-    updatedAt: '2023-12-15T00:00:00.000Z',
-    lineage: 'Light Detection and Ranging (LIDAR) is an airborne mapping technique, which uses a laser to measure the height of the terrain and surface objects on the ground such as trees and buildings. Hundreds of thousands of measurements per second are made of the ground allowing highly detailed terrain models to be generated at spatial resolutions of between 25cm and 2 metres. The vertical accuracy of the LIDAR dataset is +/-15cm RMSE.',
+    categories: [
+      'Environment'
+    ],
+    updatedAt: '2026-04-17T00:00:00.000Z',
+    lineage: 'The sources for crop classification are satellite images from the Sentinel constellation and Planet Fusion. A combination of radar and multispectral imagery from Sentinel sensors was used for automatic crop classification based on ground truth observation on crop types. The classification was also validated using independent ground observation points.',
+    contactPoint: 'open.data@rpa.gov.uk',
+    licence: 'Open Government Licence',
+    useLimitation: 'N/A',
+    language: 'eng',
+    keywords: [
+      'Land cover',
+      'Land use',
+      'Crop Map',
+      'RPA crop map',
+      'crop types'
+    ],
+    format: [
+      'Open format | Shapefile (SHP)'
+    ],
+    links: [
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=dc01d521-c1dc-410b-a575-09b58f9404b7&fileName=CROME_LUCODE_LOOKUP.XLSX',
+        name: 'CROME_LUCODE_LOOKUP.XLSX',
+        description: 'CROME_LUCODE_LOOKUP.XLSX download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=dc01d521-c1dc-410b-a575-09b58f9404b7&fileName=Crop_Map_Of_England_2025.lyr',
+        name: 'Crop_Map_Of_England_2025.lyr',
+        description: 'Crop_Map_Of_England_2025.lyr download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=dc01d521-c1dc-410b-a575-09b58f9404b7&fileName=Crop_Map_of_England_CROME_2025.gdb.zip',
+        name: 'Crop_Map_of_England_CROME_2025.gdb.zip',
+        description: 'Crop_Map_of_England_CROME_2025.gdb.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=dc01d521-c1dc-410b-a575-09b58f9404b7&fileName=Crop_Map_of_England_CROME_2025.geojson.zip',
+        name: 'Crop_Map_of_England_CROME_2025.geojson.zip',
+        description: 'Crop_Map_of_England_CROME_2025.geojson.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=dc01d521-c1dc-410b-a575-09b58f9404b7&fileName=Crop_Map_of_England_CROME_2025.gpkg.zip',
+        name: 'Crop_Map_of_England_CROME_2025.gpkg.zip',
+        description: 'Crop_Map_of_England_CROME_2025.gpkg.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=dc01d521-c1dc-410b-a575-09b58f9404b7&fileName=RPA CROME_Specification_v17.pdf',
+        name: 'RPA CROME_Specification_v17.pdf',
+        description: 'RPA CROME_Specification_v17.pdf download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/04dc895b-e25d-485d-9b0c-d912a0259da8?download=true',
+        name: 'CropMapOfEngland2025_Download',
+        description: 'Download data by area of interest'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/crop-map-of-england-2025/wms',
+        name: 'CropMapOfEngland2025_WMS',
+        description: 'Crop_Map_of_England_2025 - WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/crop-map-of-england-2025/wfs',
+        name: 'CropMapOfEngland2025_WFS',
+        description: 'Crop_Map_of_England_2025 - WFS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/crop-map-of-england-2025/ogc/features/v1',
+        name: 'OGC API - Features service',
+        description: 'OGC API - Features service'
+      }
+    ],
+    temporalExtent: {
+      start: null,
+      end: '2099-12-31'
+    },
+    coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
+    geographicExtent: {
+      west: -6.236,
+      south: 49.943,
+      east: 2.072,
+      north: 55.816
+    },
+    publicationDate: null,
+    creationDate: '2026-02-02T00:00:00.000Z'
+  },
+  // https://environment.data.gov.uk/dataset/04532375-a198-476e-985e-0579a0a11b47
+  {
+    id: '04532375-a198-476e-985e-0579a0a11b47',
+    title: 'Flood Map for Planning - Flood Zones',
+    abstract: `The Flood Map for Planning Service includes several layers of information. This includes the Flood Zones data which shows the extent of land at present day risk of flooding from rivers and the sea, ignoring the benefits of defences, for the following scenarios:
+
+•\tFlood Zone 1 – Land having a less than 0.1% (1 in 1000) annual probability of flooding.
+•\tFlood Zone 2 – Land having between 0.1% - 1% (1 in 100 to 1 in 1000) annual probability of flooding from rivers or between 0.1% - 0.5% (1 in 200 to 1 in 1000) annual probability of flooding from the sea, and accepted recorded flood outlines .
+•\tFlood Zone 3 – Areas shown to be at a 1% (1 in 100) or greater annual probability of flooding from rivers or, 0.5% (1 in 200) or greater annual probability of flooding from the sea.
+
+Flood Zone 1 is not shown in this dataset, but covers all areas not contained within Flood Zones 2 and 3.
+Local Planning Authorities (LPAs) use the Flood Zones to determine if they must consult the Environment Agency on planning applications. They are also used to determine if development is incompatible and whether development is subject to the exception test. The Flood Zones are one of several flood risk datasets used to determine the need for planning applications to be supported by a Flood Risk Assessment (FRA) and subject to the sequential test.
+
+The Flood Zones are a composite dataset including national and local modelled data, and information from past floods.
+
+The Flood Zones are designed to only give an indication of flood risk to an area of land and are not suitable for showing whether an individual property is at risk of flooding. This is because we cannot know all the details about each property.
+
+Users of these datasets should always check they are suitable for the intended use.
+
+Please note, if downloading data for an area of interest, all polygons that intersect this area will be provided. Some polygons may be quite large and extend beyond the drawn area of interest. Any polygons that do not intersect the area of interest will not be provided. Please check your area of interest is sufficient or use the data feeds (e.g. WMS) to view the latest available data for all of England. Attribution statement: © Environment Agency copyright and/or database right 2025. All rights reserved.`,
+    owner: 'Environment Agency',
+    dataType: 'Vector',
+    accessLevel: 'Restricted access',
+    updateFrequency: 'As needed',
+    categories: [
+      'Environment',
+      'Inland waters',
+      'Oceans'
+    ],
+    updatedAt: '2026-05-20T00:00:00.000Z',
+    lineage: 'The Flood Zones are created using local flood model outputs, recorded flood outlines and national flood model information. These are combined by our new National Flood Risk Assessment (NaFRA2) system to generate extents of land at flood risk, with the aim of using the best available flood risk information in any one location.',
     contactPoint: 'DSPcustomerforum@environment-agency.gov.uk',
     licence: 'Open Government Licence',
     useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
     language: 'eng',
-    keywords: ['LIDAR'],
+    keywords: [
+      'Natural risk zones',
+      'Area management/restriction/regulation zones and reporting units',
+      'Development planning',
+      'Flood Risk Management',
+      'Flood Zones',
+      'Spatial Planning',
+      'rivers',
+      'sea'
+    ],
     format: [
-      'Open format | Geo Tagged Image File Format (GeoTIFF)'
+      'OGC Web Services | JavaScript Object Notation (JSON)',
+      'Proprietary format | ESRI File based Geodatabase (GDB)',
+      'Open format | Shapefile (SHP)',
+      'Open format | JavaScript Object Notation (GeoJSON)',
+      'Open format | Keyhole Markup Language (KML)',
+      'Open format | Geography Markup Language (GML)',
+      'Proprietary format | MapInfo (TAB)',
+      'Proprietary format | MapInfo MIF/MID (MIF)'
     ],
     links: [
-      { url: 'https://environment.data.gov.uk/DefraDataDownload/?Mode=survey', name: 'Survey Data - Download', description: 'Download the survey data' },
-      { url: 'https://environment.data.gov.uk/explore/9f0fa3fc-a860-4729-adc9-47fe53f658d0?download=true', name: 'Metadata Survey Index Catalogues - Download', description: 'Download the survey coverage metadata files' },
-      { url: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-1m/wms?request=GetCapabilities&service=WMS&version=1.3.0', name: 'LIDAR Composite Digital Terrain Model (DTM) - 1m - WMS', description: 'LIDAR Composite Digital Terrain Model (DTM) - 1m - WMS' },
-      { url: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-1m/wcs?request=GetCapabilities&service=WCS&version=2.0.1', name: 'LIDAR Composite Digital Terrain Model (DTM) - 1m - WCS', description: 'LIDAR Composite Digital Terrain Model (DTM) - 1m - WCS' },
-      { url: 'https://environment.data.gov.uk/spatialdata/survey-index-files/wms?request=GetCapabilities&service=WMS', name: 'Metadata Survey Index Catalogues - WMS', description: 'Metadata Survey Index Catalogues - WMS' },
-      { url: 'https://environment.data.gov.uk/spatialdata/survey-index-files/wfs?request=GetCapabilities&service=WFS', name: 'Metadata Survey Index Catalogues - WFS', description: 'Metadata Survey Index Catalogues - WFS' },
-      { url: 'https://environment.data.gov.uk/support/faqs/275879146', name: 'Survey Data FAQs', description: 'Survey Data FAQs' },
-      { url: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-1m/wmts?request=GetCapabilities&service=WMTS&version=2.0.1', name: 'LIDAR Composite Digital Terrain Model (DTM) - 1m - WMTS', description: 'LIDAR Composite Digital Terrain Model (DTM) - 1m - WMTS' },
-      { url: 'https://environment.data.gov.uk/spatialdata/survey-index-files/ogc/features/v1', name: 'OGC API - Features service', description: 'OGC API - Features service' }
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood Zones Product Description.pdf',
+        name: 'Flood Zones Product Description.pdf',
+        description: 'Flood Zones Product Description.pdf download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gdb.zip',
+        name: 'Flood_Map_for_Planning_Flood_Zones.gdb.zip',
+        description: 'Flood_Map_for_Planning_Flood_Zones.gdb.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.geojson.zip',
+        name: 'Flood_Map_for_Planning_Flood_Zones.geojson.zip',
+        description: 'Flood_Map_for_Planning_Flood_Zones.geojson.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gpkg.zip',
+        name: 'Flood_Map_for_Planning_Flood_Zones.gpkg.zip',
+        description: 'Flood_Map_for_Planning_Flood_Zones.gpkg.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Zones_2_3_Rivers_and_Sea.lyr',
+        name: 'Flood_Zones_2_3_Rivers_and_Sea.lyr',
+        description: 'Flood_Zones_2_3_Rivers_and_Sea.lyr download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/04532375-a198-476e-985e-0579a0a11b47?download=true',
+        name: 'Flood-Map-for-Planning-Flood-Zones_Download',
+        description: 'Download data by area of interest'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/flood-map-for-planning-flood-zones/wms',
+        name: 'Flood-Map-for-Planning-Flood-Zones_WMS',
+        description: 'Flood Map for Planning Flood Zones - WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/flood-map-for-planning-flood-zones/wfs',
+        name: 'Flood-Map-for-Planning-Flood-Zones_WFS',
+        description: 'Flood Map for Planning Flood Zones - WFS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/flood-map-for-planning-flood-zones/ogc/features/v1',
+        name: 'OGC API - Features service',
+        description: 'OGC API - Features service'
+      }
     ],
-    temporalExtent: { start: '2000-06-06', end: '2022-04-02' },
+    temporalExtent: {
+      start: null,
+      end: '2099-12-31'
+    },
     coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
-    geographicExtent: { west: -6.236, south: 49.943, east: 2.072, north: 55.816 },
-    publicationDate: null,
-    creationDate: '2023-02-08T00:00:00.000Z'
+    geographicExtent: {
+      west: -6.236,
+      south: 49.943,
+      east: 2.072,
+      north: 55.816
+    },
+    publicationDate: '2025-03-25T00:00:00.000Z',
+    creationDate: '2025-01-29T00:00:00.000Z'
+  },
+  // https://environment.data.gov.uk/dataset/042f14b2-3076-420d-b604-9657c0398fae
+  {
+    id: '042f14b2-3076-420d-b604-9657c0398fae',
+    title: 'Living England 2022-23',
+    abstract: 'Living England is a multi-year project which delivers a broad habitat map for the whole of England, created using satellite imagery, field data records and other geospatial data in a machine learning framework. The Living England habitat map shows the extent and distribution of broad habitats across England aligned to the UKBAP classification, providing a valuable insight into our natural capital assets and helping to inform land management decisions. Living England is a project within Natural England, funded by and supports the Defra Natural Capital and Ecosystem Assessment (NCEA) Programme and Environmental Land Management (ELM) Schemes to provide an openly available national map of broad habitats across England. Attribution statement: © Natural England 2024. Contains: OS data © Crown copyright and database rights 2023 OS AC0000851168; Natural England Licence No. 2011/052 British Geological Survey © NERC. All rights reserved; © Environment Agency 2023. All rights reserved; © Rural Payments Agency 2022; NERC EDS Environmental Information Data Centre; National Plant Monitoring Scheme and survey data (2015-2023) organised and funded by the UKCEH, BSBI, Plantlife and JNCC, indebted to all volunteers who contribute data to the scheme; Modified Copernicus Sentinel data 2023; © Forestry Commission 2022; Soils Data © Cranfield University (NSRI) and for the Controller of HMSO 2005; © Carlos Bedson & Manchester Metropolitan University 2019; British Geological Survey materials © UKRI 2016; HadUK-Grid data © Met Office 2018; Modified Copernicus Climate Change Service information 2023; © Bluesky International Ltd 2024; Map services and data available from U.S. Geological Survey, National Geospatial Program; © Department for Energy Security and Net Zero; © OpenStreetMap 2024.',
+    owner: 'Natural England',
+    dataType: 'Vector',
+    accessLevel: 'Restricted access',
+    updateFrequency: 'As needed',
+    categories: [
+      'Environment'
+    ],
+    updatedAt: '2024-09-16T00:00:00.000Z',
+    lineage: `Process Description: A number of data layers are used to develop a ground dataset of habitat reference data, which are then used to inform a machine-learning model and spatial analyses to generate a map of the likely locations and distributions of habitats across England. The main source data layers underpinning the spatial framework and models are Sentinel-2 and Sentinel-1 satellite data from the ESA Copernicus programme, Lidar from the EA's national Lidar Programme and collected data through the project's national survey programme. Additional datasets informing the approach as detailed below and outlined in the accompanying technical user guide. 
+
+Datasets used:
+OS MasterMap® Topography Layer; Geology aka BGS Bedrock Mapping 1:50k; Long Term Monitoring Network; Uplands Inventory; Coastal Dune Geomatics Mapping Ground Truthing; Crop Map of England (RPA) CROME; Lowland Heathland Survey; National Grassland Survey; National Plant Monitoring Scheme; NE field Unit Surveys; Northumberland Border Mires Survey; Sentinel-2 multispectral imagery; Sentinel-1 backscatter imagery; Sentinel-1 single look complex (SLC) imagery; National forest inventory (NFI); Cranfield NATMAP; Agri-Environment HLS Monitoring; Living England desktop validation; Priority Habitat Inventory; Space2 Eye Lens: Ainsdale NNR, State of the Bog Bowland Survey, State of the Bog Dark Peak Condition Survey, State of the Bog Manchester Metropolitan University (MMU) Mountain Hare Habitat Survey Dark Peak, State of the Bog; Moors for the Future Dark Peak Survey; West Pennines Designation NVC Survey; Wetland Annex 1 inventory; Soils-BGS Soil Parent Material; Met Office HadUK gridded climate product; Saltmarsh Extent and Zonation; EA LiDAR DSM & DTM; New Forest Mires Wetland Survey; New Forest Mires Wetland Survey; West Cumbria Mires Survey; England Peat Map Vegetation Surveys; NE protected sites monitoring; ERA5; OS Open Built-up Areas; OS Boundaries dataset; EA IHM (Integrated height model) DTM; OS VectorMap District; EA Coastal Flood Boundary: Extreme Sea Levels; AIMS Spatial Sea Defences; LIDAR Sand Dunes 2022; EA Coastal saltmarsh species surveys; Aerial Photography GB (APGB); NASA SRT (Shuttle Radar Topography Mission) M30; Provisional Agricultural Land Classification; Renewable Energy Planning Database (REPD); Open Street Map 2024.`,
+    contactPoint: 'data.services@naturalengland.org.uk',
+    licence: 'Open Government Licence',
+    useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
+    language: 'eng',
+    keywords: [
+      'landscape',
+      'Living England',
+      'NCEA',
+      'Natural England',
+      'ecology',
+      'habitats'
+    ],
+    format: [
+      'Open format | GeoPackage (GPKG)',
+      'Proprietary format | ESRI File based Geodatabase (GDB)',
+      'Proprietary format | MS Excel (XLS)',
+      'Open format | Shapefile (SHP)',
+      'Open format | Keyhole Markup Language (KML)',
+      'Open format | Comma Separated Values file (CSV)',
+      'Open format | JavaScript Object Notation (GeoJSON)'
+    ],
+    links: [
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=8d772293-943d-4842-bec5-8ccf708744b9&fileName=Living_England_2022_23.gdb.zip',
+        name: 'Living_England_2022_23.gdb.zip',
+        description: 'Living_England_2022_23.gdb.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=8d772293-943d-4842-bec5-8ccf708744b9&fileName=Living_England_2022_23.geojson.zip',
+        name: 'Living_England_2022_23.geojson.zip',
+        description: 'Living_England_2022_23.geojson.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=8d772293-943d-4842-bec5-8ccf708744b9&fileName=Living_England_2022_23.gpkg.zip',
+        name: 'Living_England_2022_23.gpkg.zip',
+        description: 'Living_England_2022_23.gpkg.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=8d772293-943d-4842-bec5-8ccf708744b9&fileName=Living_England_2022_23.shp.zip',
+        name: 'Living_England_2022_23.shp.zip',
+        description: 'Living_England_2022_23.shp.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/042f14b2-3076-420d-b604-9657c0398fae?download=true',
+        name: 'LivingEngland2022-23_Download',
+        description: 'Download data by area of interest'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/living-england-2022-23/wms',
+        name: 'LivingEngland2022-23_WMS',
+        description: 'Living England 2022-23 - WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/living-england-2022-23/wfs',
+        name: 'LivingEngland2022-23_WFS',
+        description: 'Living England 2022-23 - WFS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/living-england-2022-23/ogc/features/v1',
+        name: 'OGC API - Features service',
+        description: 'OGC API - Features service'
+      },
+      {
+        url: 'https://naturalengland-defra.opendata.arcgis.com/maps/Defra::living-england-2022-2023/about',
+        name: 'Natural England Open Data Geoportal dataset page',
+        description: 'Natural England Open Data Geoportal dataset page'
+      },
+      {
+        url: 'https://publications.naturalengland.org.uk/publication/5260859937652736',
+        name: 'NERR141 Edition 1 Living England 2022-23 Technical User Guide (NERR141)',
+        description: 'NERR141 Edition 1 Living England 2022-23 Technical User Guide (NERR141)'
+      },
+      {
+        url: 'https://s3.eu-west-1.amazonaws.com/data.defra.gov.uk/Natural_England/Habitat_Species/Habitats/Living_England/Living_England_2022_2023/Living_England_2022_2023_NE_FileGDB.zip',
+        name: 'Living England 2022-23 (Full dataset all 13 Zones) - File GDB Download',
+        description: 'Living England 2022-23 (Full dataset all 13 Zones) - ESRI File Geodatabase Download'
+      },
+      {
+        url: 'https://s3.eu-west-1.amazonaws.com/data.defra.gov.uk/Natural_England/Habitat_Species/Habitats/Living_England/Living_England_2022_2023/Living_England_2022_2023_NE_GPKG.zip',
+        name: 'Living England 2022-23 (Full Dataset all 13 Zones) - GPKG Download',
+        description: 'Living England 2022-23 (Full Dataset all 13 Zones) - GeoPackage Download'
+      }
+    ],
+    temporalExtent: {
+      start: null,
+      end: '2099-12-31'
+    },
+    coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
+    geographicExtent: {
+      west: -6.236,
+      south: 49.943,
+      east: 2.072,
+      north: 55.816
+    },
+    publicationDate: '2024-09-16T00:00:00.000Z',
+    creationDate: '2024-04-23T00:00:00.000Z'
+  },
+  // https://environment.data.gov.uk/dataset/b5aaa28d-6eb9-460e-8d6f-43caa71fbe0e
+  {
+    id: 'b5aaa28d-6eb9-460e-8d6f-43caa71fbe0e',
+    title: 'Risk of Flooding from Surface Water',
+    abstract: `Risk of Flooding from Surface Water (RoFSW) map is an assessment of where surface water flooding may occur when rainwater does not drain away through the normal drainage systems or soak into the ground, but lies on or flows over the ground instead. It is produced using national scale modelling and enhanced with compatible, locally produced modelling from lead local flood authorities (LLFAs). The RoFSW datasets include information about flooding extents, depths, speed and hazards.
+
+This dataset shows information about flooding extents and depths. The depth of water during a flood is an important factor in how dangerous a flood might be.
+
+RoFSW is a probabilistic product, meaning that it shows the overall risk, rather than the risk associated with a specific event or scenario. In externally published versions of this dataset, risk is displayed as one of three likelihood bandings:
+
+High - greater than or equal to 3.3% (1 in 30) chance in any given year;
+Medium - less than 3.3% (1 in 30) but greater than or equal to 1% (1 in 100) chance in any given year;
+Low - less than 1% (1 in 100) but greater than or equal to 0.1% (1 in 1000) chance in any given year.
+
+This dataset shows the likelihood of a flood occurring with water at a given depth (or higher). There are separate layers with thresholds for depths of 0m (i.e. flooding extent), 0.2m, 0.3m, 0.6m, 0.9m, and 1.2m.
+
+NB. This is a complex dataset, with preview available only on certain zoom levels. The Web Mapping service has been set to 1:50 000 in the <MaxScaleDenominator> attribute. The services are set to be visible from the 1:50 000 scale range. There may be some variation, since end client software may interpret the request differently. Attribution statement: © Environment Agency copyright and/or database right 2025. All rights reserved.`,
+    owner: 'Environment Agency',
+    dataType: 'Vector',
+    accessLevel: 'Restricted access',
+    updateFrequency: 'As needed',
+    categories: [
+      'Environment',
+      'Inland waters'
+    ],
+    updatedAt: '2025-09-17T00:00:00.000Z',
+    lineage: 'RoFSW is created using a combination of local flood model information and national flood modelling. These are used to generate the probabilities of flood risk for each 2m grid square of land, with the aim of using the best available flood risk information in any one location.',
+    contactPoint: 'DSPcustomerforum@environment-agency.gov.uk',
+    licence: 'Open Government Licence',
+    useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
+    language: 'eng',
+    keywords: [
+      'Natural risk zones',
+      'Flood Risk Management',
+      'surface waters'
+    ],
+    format: [
+      'OGC Web Services | JavaScript Object Notation (JSON)',
+      'Proprietary format | ESRI File based Geodatabase (GDB)',
+      'Open format | Shapefile (SHP)',
+      'Open format | JavaScript Object Notation (GeoJSON)',
+      'Open format | Keyhole Markup Language (KML)',
+      'Open format | Geography Markup Language (GML)',
+      'Proprietary format | MapInfo (TAB)',
+      'Proprietary format | MapInfo MIF/MID (MIF)'
+    ],
+    links: [
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=cc656e03-b60c-4ed3-987c-77e2d39343bf&fileName=RoFSW.lyr',
+        name: 'RoFSW.lyr',
+        description: 'RoFSW.lyr download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=cc656e03-b60c-4ed3-987c-77e2d39343bf&fileName=RoFSW_Product_Description.pdf',
+        name: 'RoFSW_Product_Description.pdf',
+        description: 'RoFSW_Product_Description.pdf download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/nafra2-risk-of-flooding-from-surface-water/wms',
+        name: 'Risk of Flooding from Surface Water - WMS',
+        description: 'Risk of Flooding from Surface Water - WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/b5aaa28d-6eb9-460e-8d6f-43caa71fbe0e?download=true',
+        name: 'Download data by area of interest and format',
+        description: 'Download data by area of interest and format'
+      }
+    ],
+    temporalExtent: {
+      start: null,
+      end: '2099-12-31'
+    },
+    coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
+    geographicExtent: {
+      west: -6.236,
+      south: 49.943,
+      east: 2.072,
+      north: 55.816
+    },
+    publicationDate: '2025-01-28T00:00:00.000Z',
+    creationDate: '2024-10-30T00:00:00.000Z'
+  },
+  // https://environment.data.gov.uk/dataset/ba8dc201-66ef-4983-9d46-7378af21027e
+  {
+    id: 'ba8dc201-66ef-4983-9d46-7378af21027e',
+    title: 'Sites of Special Scientific Interest (England)',
+    abstract: 'A Site of Special Scientific Interest (SSSI) is the land notified as an SSSI under the Wildlife and Countryside Act (1981), as amended. Sites notified under the 1949 Act only are not included in the Data set. SSSI are the finest sites for wildlife and natural features in England, supporting many characteristic, rare and endangered species, habitats and natural features. The data do not include "proposed" sites. Boundaries are generally mapped against Ordnance Survey MasterMap. Attribution statement: © Natural England copyright. Contains Ordnance Survey data © Crown copyright and database right [year].',
+    owner: 'Natural England',
+    dataType: 'Vector',
+    accessLevel: 'Restricted access',
+    updateFrequency: 'Monthly',
+    categories: [
+      'Environment'
+    ],
+    updatedAt: '2025-04-15T00:00:00.000Z',
+    lineage: 'All data is captured to the Ordnance Survey National Grid sometimes called the British National Grid. OS MasterMap Topographic Layer ? produced and supplied by Ordnance Survey from data at 1:1250, 1:2500 and 1:10000 surveying and mapping standards - is used as the primary source. Other sources ? acquired internally and from external suppliers - may include aerial imagery at resolutions ranging from 25cm to 2m, Ordnance Survey 1:10000 raster images, historical OS mapping, charts and chart data from UK Hydrographic Office and other sources, scanned images of paper designation mapping (mostly originally produced at 1:10560 or 1:10000 scales), GPS and other surveyed data, and absolute coordinates. The data was first captured against an August 2002 cut of OS MasterMap Topography. Natural England has successfully uploaded an up-to-date version of OS MasterMap Topographic Layer. However, we have not yet updated our designated data holding to this new version of MasterMap. This should occur in the near future, when we will simultaneously apply positional accuracy improvement (PAI) to our data.',
+    contactPoint: 'data.services@naturalengland.org.uk',
+    licence: 'Open Government Licence',
+    useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
+    language: 'eng',
+    keywords: [
+      'Protected sites',
+      'landscape',
+      'Designations',
+      'ESDA',
+      'ecology'
+    ],
+    format: [
+      'Open format | Shapefile (SHP)',
+      'Open format | Keyhole Markup Language (KML)'
+    ],
+    links: [
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.gdb.zip',
+        name: 'Sites_of_Special_Scientific_Interest_England.gdb.zip',
+        description: 'Sites_of_Special_Scientific_Interest_England.gdb.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.geojson.zip',
+        name: 'Sites_of_Special_Scientific_Interest_England.geojson.zip',
+        description: 'Sites_of_Special_Scientific_Interest_England.geojson.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.gpkg.zip',
+        name: 'Sites_of_Special_Scientific_Interest_England.gpkg.zip',
+        description: 'Sites_of_Special_Scientific_Interest_England.gpkg.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.lyr',
+        name: 'Sites_of_Special_Scientific_Interest_England.lyr',
+        description: 'Sites_of_Special_Scientific_Interest_England.lyr download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://environment.data.gov.uk/api/file/download?fileDataSetId=2e2d1185-1acb-469d-9f88-9f54e2506a5d&fileName=Sites_of_Special_Scientific_Interest_England.shp.zip',
+        name: 'Sites_of_Special_Scientific_Interest_England.shp.zip',
+        description: 'Sites_of_Special_Scientific_Interest_England.shp.zip download on Defra Data Services Platform'
+      },
+      {
+        url: 'https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::sites-of-special-scientific-interest-england/about',
+        name: 'Natural England Open Data Geoportal Page',
+        description: 'Natural England Open Data Geoportal Page'
+      },
+      {
+        url: 'https://environment.data.gov.uk/explore/ba8dc201-66ef-4983-9d46-7378af21027e?download=true',
+        name: 'SitesOfSpecialScientificInterestEngland_Download',
+        description: 'Download data by area of interest'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/sites-of-special-scientific-interest-england/wfs',
+        name: 'SitesOfSpecialScientificInterestEngland_WFS',
+        description: 'Sites of Special Scientific Interest (England) WFS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/sites-of-special-scientific-interest-england/wms',
+        name: 'SitesOfSpecialScientificInterestEngland_WMS',
+        description: 'Sites of Special Scientific Interest (England) WMS'
+      },
+      {
+        url: 'https://environment.data.gov.uk/spatialdata/sites-of-special-scientific-interest-england/ogc/features/v1',
+        name: 'OGC API - Features service',
+        description: 'OGC API - Features service'
+      }
+    ],
+    temporalExtent: {
+      start: '1970-01-01',
+      end: '2099-12-31'
+    },
+    coordinateReferenceSystem: 'https://www.opengis.net/def/crs/EPSG/0/27700',
+    geographicExtent: {
+      west: -6.41736,
+      south: 49.8625,
+      east: 2.05827,
+      north: 55.7447
+    },
+    publicationDate: '2017-09-14T00:00:00.000Z',
+    creationDate: '2024-11-15T00:00:00.000Z'
   }
 ]
 

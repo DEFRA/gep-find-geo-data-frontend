@@ -22,6 +22,8 @@ services:
       interval: 10s
       start_period: 30s
       retries: 5
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - cdp-tenant
 
@@ -40,6 +42,8 @@ services:
       GEONETWORK_ES_PORT: 9200
       GEONETWORK_ES_PROTOCOL: http
       JAVA_OPTS: '-Xms512m -Xmx512m'
+    volumes:
+      - geonetwork-data:/catalogue-data
     networks:
       - cdp-tenant
 
@@ -59,3 +63,7 @@ services:
 networks:
   cdp-tenant:
     driver: bridge
+
+volumes:
+  elasticsearch-data:
+  geonetwork-data:
