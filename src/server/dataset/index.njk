@@ -46,7 +46,7 @@
           <h2 class="govuk-heading-m">Licence</h2>
           <p class="govuk-body">
             {% if licenceHref %}
-              <a class="govuk-link" href="{{ licenceHref }}">{{ record.licence }}</a>
+              <a class="govuk-link" href="{{ licenceHref }}" target="_blank" rel="noreferrer noopener">{{ record.licence }} (opens in new tab)</a>
             {% else %}
               {{ record.licence }}
             {% endif %}
