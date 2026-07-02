@@ -108,6 +108,22 @@ describe('#datasetController', () => {
     expect(result).toContain('href="/?keyword=landscape"')
   })
 
+  test('renders the licence link to open in a new tab', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      licence: 'Open Government Licence'
+    }))
+
+    const { result, statusCode } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(result).toContain('href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer noopener"')
+    expect(result).toContain('Open Government Licence (opens in new tab)')
+  })
+
   test('does not render metadata links with unsafe URL schemes', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [
