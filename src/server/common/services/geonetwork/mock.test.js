@@ -54,7 +54,7 @@ describe('#mock', () => {
 
     test('narrows the result set when a dataType filter is applied', async () => {
       const filtered = await search({
-        filters: { dataType: ['Vector'] },
+        filters: { dataType: ['.gpkg'] },
         size: testRecordCount
       })
       expect(filtered.total).toBeGreaterThan(0)

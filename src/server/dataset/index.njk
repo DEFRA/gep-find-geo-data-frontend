@@ -173,7 +173,7 @@
                 url: link.url
               }) }}
             {% endset %}
-            {% set openHtml %}<a href="{{ link.url }}" class="govuk-link">Open link</a>{% endset %}
+            {% set openHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link">Open link</a>{% endset %}
             {% set serviceRows = (serviceRows.push([
               { text: link.name },
               { html: copyHtml, classes: "app-copy-link-table-cell" },
@@ -194,7 +194,7 @@
         {% if downloadLinks.length %}
           {% set downloadRows = [] %}
           {% for link in downloadLinks %}
-            {% set dlHtml %}<a href="{{ link.url }}" class="govuk-link" download>Download</a>{% endset %}
+            {% set dlHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link" download>Download</a>{% endset %}
             {% set downloadRows = (downloadRows.push([
               { text: link.name },
               { text: link.format },

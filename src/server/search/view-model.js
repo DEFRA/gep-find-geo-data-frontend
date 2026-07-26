@@ -328,8 +328,8 @@ export function buildViewModel ({ parsed, response, basePath }) {
   })
 
   return {
-    pageTitle: 'Search Defra Data',
-    heading: 'Search Defra Data',
+    pageTitle: 'Search Defra Group Land Data',
+    heading: 'Search Defra Group Land Data',
     hasErrors: parsed.hasErrors,
     searchQuery: parsed.q,
     selectedSort: parsed.sort,

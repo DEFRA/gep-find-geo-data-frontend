@@ -27,7 +27,8 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: |
-          npm ci
+          npm ci --no-audit
+          npm audit --omit=dev # remove omit after neostandard compatible with eslint 10
           npm run build:frontend
           npm run lint
           npm test

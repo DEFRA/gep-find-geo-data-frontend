@@ -233,8 +233,8 @@ describe('#search view-model', () => {
     describe('top-level shape', () => {
       test('sensible defaults for an empty query and response', () => {
         expect(viewModel()).toMatchObject({
-          pageTitle: 'Search Defra Data',
-          heading: 'Search Defra Data',
+          pageTitle: 'Search Defra Group Land Data',
+          heading: 'Search Defra Group Land Data',
           searchQuery: '',
           selectedSort: 'newest',
           selectedPageSize: DEFAULT_PAGE_SIZE,

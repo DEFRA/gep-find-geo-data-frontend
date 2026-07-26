@@ -94,7 +94,7 @@ describe('#searchController', () => {
       })
 
       expect(statusCode).toBe(statusCodes.ok)
-      expect(result).toContain('Search Defra Data')
+      expect(result).toContain('Search Defra Group Land Data')
       expect(result).toContain('id="search-input"')
     })
 
