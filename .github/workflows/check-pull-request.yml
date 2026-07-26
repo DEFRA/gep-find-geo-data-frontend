@@ -28,7 +28,7 @@ jobs:
           cache: npm
       - run: |
           npm ci --no-audit
-          npm audit --omit=dev # remove omit after neostandard compatible with eslint 10
+          npm audit --omit=dev
           npm run build:frontend
           npm run lint
           npm test
