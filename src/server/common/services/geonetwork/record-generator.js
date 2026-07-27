@@ -165,7 +165,7 @@ function generateRecord (index, prng) {
     format: randomSubset(prng, formatOptions, 1, 3),
     links: [
       {
-        url: `https://example.com/mock-download.zip`,
+        url: 'https://example.com/mock-download.zip',
         name: `${theme} ${region} - Download`,
         description: `Download ${theme.toLowerCase()} data for ${region}`
       }
