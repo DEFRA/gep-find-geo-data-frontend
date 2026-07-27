@@ -75,7 +75,7 @@ describe('context and cache', () => {
           cookieAction: null,
           hasAnalyticsConsent: false,
           currentUrl: '/',
-          serviceName: 'Defra Group Land Model - Search and Find',
+          serviceName: 'Defra Group Land Service - Search and Find',
           serviceUrl: '/',
           user: null
         })
@@ -180,7 +180,7 @@ describe('context and cache', () => {
           cookieAction: null,
           hasAnalyticsConsent: false,
           currentUrl: '/',
-          serviceName: 'Defra Group Land Model - Search and Find',
+          serviceName: 'Defra Group Land Service - Search and Find',
           serviceUrl: '/',
           user: null
         })

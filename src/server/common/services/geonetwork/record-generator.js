@@ -6,14 +6,12 @@ const defraOrgs = [
   'Forestry Commission',
   'Rural Payments Agency',
   'Animal and Plant Health Agency',
-  'Centre for Environment, Fisheries and Aquaculture Science',
   'Agriculture and Horticulture Development Board',
-  'Marine Management Organisation',
   'Joint Nature Conservation Committee',
   'Department for Environment, Food and Rural Affairs'
 ]
 
-const dataTypes = ['Vector', 'Grid']
+const dataTypes = ['.tif', '.gpkg']
 
 const accessLevels = ['Open data', 'Restricted access']
 
@@ -31,24 +29,17 @@ const themes = [
   'Water Quality',
   'Air Quality Monitoring',
   'Coastal Erosion',
-  'Shoreline Change',
   'Soil Carbon',
   'Soil Texture',
   'Agricultural Land Use',
   'Species Occurrence',
   'Local Nature Reserves',
-  'Marine Habitats',
-  'Seabed Sediments',
   'Peatland Extent',
-  'Nitrate Vulnerable Zones',
-  'Bathing Water Quality'
+  'Nitrate Vulnerable Zones'
 ]
 
 const regions = [
   'England',
-  'Wales',
-  'Scotland',
-  'Northern Ireland',
   'Great Britain',
   'United Kingdom',
   'Yorkshire and the Humber',
@@ -78,19 +69,8 @@ const topics = [
   'Inland waters'
 ]
 
-const licences = [
-  'Open Government Licence',
-  'Creative Commons Attribution 4.0',
-  'Restricted access - contact publisher'
-]
-
-const contactEmails = [
-  'data.services@naturalengland.org.uk',
-  'DSPcustomerforum@environment-agency.gov.uk',
-  'enquiries@forestrycommission.gov.uk',
-  'enquiries@rpa.gov.uk',
-  'info@cefas.gov.uk'
-]
+const openLicence = 'Open Government Licence'
+const restrictedLicence = 'Restricted access - contact publisher'
 
 const formatOptions = [
   'Open format | Shapefile (SHP)',
@@ -109,7 +89,7 @@ const crsOptions = [
 
 const keywordPool = [
   'environment', 'survey', 'monitoring', 'spatial data',
-  'conservation', 'land use', 'habitat', 'water',
+  'conservation', 'land use', 'habitat',
   'ecology', 'landscape', 'biodiversity', 'mapping'
 ]
 
@@ -164,20 +144,21 @@ function generateRecord (index, prng) {
   const categoryKeys = new Set(categories.map((category) => category.toLowerCase()))
   const keywords = randomSubset(prng, keywordPool, 2, 5)
     .filter((keyword) => !categoryKeys.has(keyword.toLowerCase()))
+  const accessLevel = pick(prng, accessLevels)
 
   return {
     id,
-    title: `${theme} ${region}`,
+    title: `EXAMPLE - ${theme} ${region}`,
     abstract,
     owner: org,
     dataType: pick(prng, dataTypes),
-    accessLevel: pick(prng, accessLevels),
+    accessLevel,
     updateFrequency: pick(prng, updateFrequencies),
     categories,
     updatedAt: randomIsoDate(prng),
     lineage: `Dataset produced by ${org} covering ${theme.toLowerCase()} for ${region}.`,
-    contactPoint: pick(prng, contactEmails),
-    licence: pick(prng, licences),
+    contactPoint: 'example@defra.gov.uk',
+    licence: accessLevel === 'Open data' ? openLicence : restrictedLicence,
     useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
     language: 'eng',
     keywords,

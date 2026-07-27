@@ -50,7 +50,7 @@ export const config = convict({
   serviceDisplayName: {
     doc: 'Human-readable service name shown in the UI',
     format: String,
-    default: 'Defra Group Land Model - Search and Find'
+    default: 'Defra Group Land Service - Search and Find'
   },
   root: {
     doc: 'Project root',
@@ -293,7 +293,7 @@ export const config = convict({
     mockRecordCount: {
       doc: 'Generated mock records to include in the pool',
       format: Number,
-      default: 100,
+      default: 20,
       env: 'GEONETWORK_MOCK_RECORD_COUNT'
     }
   }
