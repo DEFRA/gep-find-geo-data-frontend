@@ -293,7 +293,7 @@ export const config = convict({
     mockRecordCount: {
       doc: 'Generated mock records to include in the pool',
       format: Number,
-      default: 20,
+      default: 19,
       env: 'GEONETWORK_MOCK_RECORD_COUNT'
     }
   }
