@@ -229,11 +229,9 @@ async function postSearch (body) {
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
     })
   } catch (err) {
-    const errorName = err?.name ?? 'UnknownError'
     const errorCode = err?.code ?? 'NO_ERROR_CODE'
-    const errorMessage = err?.message ?? 'No error message'
 
-    if (errorName === 'TimeoutError' || errorName === 'AbortError') {
+    if (err.name === 'TimeoutError' || err.name === 'AbortError') {
       logger.error(
         {
           err,
@@ -241,7 +239,7 @@ async function postSearch (body) {
           timeoutMs: REQUEST_TIMEOUT_MS,
           errorCode
         },
-        `GeoNetwork search timed out: url=${url}, timeoutMs=${REQUEST_TIMEOUT_MS}, errorName=${errorName}, errorCode=${errorCode}, errorMessage=${errorMessage}`
+        `GeoNetwork search timed out: url=${url}, timeoutMs=${REQUEST_TIMEOUT_MS}, errorName=${err.name}, errorCode=${errorCode}, errorMessage=${err.message}`
       )
 
       throw new Error('GeoNetwork search timed out')
@@ -253,7 +251,7 @@ async function postSearch (body) {
         url,
         errorCode
       },
-      `GeoNetwork search request failed: url=${url}, errorName=${errorName}, errorCode=${errorCode}, errorMessage=${errorMessage}`
+      `GeoNetwork search request failed: url=${url}, errorName=${err.name}, errorCode=${errorCode}, errorMessage=${err.message}`
     )
 
     throw new Error('GeoNetwork search request failed')
