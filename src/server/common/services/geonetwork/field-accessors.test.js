@@ -70,6 +70,16 @@ describe('#field-accessors', () => {
       })).toBe('2026-04-14T12:07:32.271Z')
     })
 
+    test('compares timestamps with different timezone offsets', () => {
+      expect(latestNestedDate('resourceDate')({
+        resourceDate: [
+          { date: '2024-01-02T01:00:00+02:00' },
+          { date: '2024-01-01T23:30:00-02:00' },
+          { date: '2024-01-02T00:30:00Z' }
+        ]
+      })).toBe('2024-01-01T23:30:00-02:00')
+    })
+
     test('returns null when the field is missing', () => {
       expect(latestNestedDate('resourceDate')({})).toBeNull()
     })

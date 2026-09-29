@@ -106,24 +106,27 @@ function locationClause (location) {
   }
 }
 
+const RECORDS_ONLY = { term: { isTemplate: 'n' } }
+
 /**
  * @param {{ query?: string, filters: import('./client.js').SearchFilters }} options
- * @returns {object | undefined}
+ * @returns {object}
  */
 function buildQuery ({ query, filters }) {
   const bool = {}
 
   if (typeof query === 'string' && query.length > 0) {
     bool.must = [{
-      multi_match: {
-        query,
-        fields: searchFields,
-        type: 'best_fields'
+      bool: {
+        should: [
+          { multi_match: { query, fields: searchFields, type: 'best_fields' } },
+          { multi_match: { query, fields: searchFields, type: 'bool_prefix' } }
+        ]
       }
     }]
   }
 
-  const queryFilterClauses = []
+  const queryFilterClauses = [RECORDS_ONLY]
 
   const range = updatedAtRangeClause(filters.updatedAtBetween)
   if (range) {
@@ -135,13 +138,8 @@ function buildQuery ({ query, filters }) {
     queryFilterClauses.push(geo)
   }
 
-  if (queryFilterClauses.length > 0) {
-    bool.filter = queryFilterClauses
-  }
+  bool.filter = queryFilterClauses
 
-  if (Object.keys(bool).length === 0) {
-    return { match_all: {} }
-  }
   return { bool }
 }
 
@@ -378,7 +376,7 @@ async function getRecord (id) {
   const body = {
     size: 1,
     _source: recordSourceIncludes,
-    query: { ids: { values: [id] } }
+    query: { bool: { filter: [RECORDS_ONLY, { ids: { values: [id] } }] } }
   }
 
   const esResponse = await postSearch(body)

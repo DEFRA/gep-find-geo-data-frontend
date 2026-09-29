@@ -25,7 +25,9 @@ vi.mock('../../helpers/logging/logger.js', () => ({
   })
 }))
 
-const { search } = await import('./api.js')
+const { search, getRecord } = await import('./api.js')
+
+const RECORDS_ONLY = { term: { isTemplate: 'n' } }
 
 function mockEsResponse (payload) {
   mockRequest.mockResolvedValue({
@@ -199,6 +201,7 @@ describe('#api', () => {
       expect(body.query).toEqual({
         bool: {
           filter: [
+            RECORDS_ONLY,
             {
               bool: {
                 must: [nestedGte('2024-01-01T00:00:00.000Z')],
@@ -222,6 +225,7 @@ describe('#api', () => {
       const body = lastRequestBody()
       expect(body.query.bool.must).toHaveLength(1)
       expect(body.query.bool.filter).toEqual([
+        RECORDS_ONLY,
         {
           bool: {
             must: [
@@ -251,6 +255,7 @@ describe('#api', () => {
       expect(body.query).toEqual({
         bool: {
           filter: [
+            RECORDS_ONLY,
             {
               bool: {
                 must: [
@@ -285,7 +290,7 @@ describe('#api', () => {
         }
       })
       const body = lastRequestBody()
-      expect(body.query).toEqual({ match_all: {} })
+      expect(body.query).toEqual({ bool: { filter: [RECORDS_ONLY] } })
       expect(body.post_filter).toEqual({
         bool: {
           filter: [
@@ -352,6 +357,7 @@ describe('#api', () => {
       expect(body.query).toEqual({
         bool: {
           filter: [
+            RECORDS_ONLY,
             {
               geo_shape: {
                 geom: {
@@ -372,7 +378,7 @@ describe('#api', () => {
       mockEmptyResponse()
       await search({ filters: { updatedAtBetween: {} } })
       const body = lastRequestBody()
-      expect(body.query).toEqual({ match_all: {} })
+      expect(body.query).toEqual({ bool: { filter: [RECORDS_ONLY] } })
     })
 
     test('throws on an unknown facet name', async () => {
@@ -424,24 +430,35 @@ describe('#api', () => {
       expect(body.aggs.keywords).toBeUndefined()
     })
 
-    test('full-text query uses multi_match with boosted title', async () => {
+    test('full-text query matches whole words or a last-term prefix with boosted title', async () => {
       mockEmptyResponse()
-      await search({ query: 'flood water' })
+      await search({ query: 'flood wat' })
 
+      const fields = [
+        'resourceTitleObject.default^3',
+        'resourceAbstractObject.default'
+      ]
       const body = lastRequestBody()
       expect(body.query).toEqual({
         bool: {
           must: [{
-            multi_match: {
-              query: 'flood water',
-              fields: [
-                'resourceTitleObject.default^3',
-                'resourceAbstractObject.default'
-              ],
-              type: 'best_fields'
+            bool: {
+              should: [
+                { multi_match: { query: 'flood wat', fields, type: 'best_fields' } },
+                { multi_match: { query: 'flood wat', fields, type: 'bool_prefix' } }
+              ]
             }
-          }]
+          }],
+          filter: [RECORDS_ONLY]
         }
+      })
+    })
+
+    test('a record lookup excludes templates', async () => {
+      mockEmptyResponse()
+      await getRecord('abc')
+      expect(lastRequestBody().query).toEqual({
+        bool: { filter: [RECORDS_ONLY, { ids: { values: ['abc'] } }] }
       })
     })
   })
