@@ -8,45 +8,6 @@ services:
     networks:
       - cdp-tenant
 
-  elasticsearch:
-    image: elasticsearch:7.17.15
-    ports:
-      - '9200:9200'
-    environment:
-      discovery.type: single-node
-      xpack.security.enabled: 'false'
-      cluster.routing.allocation.disk.threshold_enabled: 'false'
-      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9200']
-      interval: 10s
-      start_period: 30s
-      retries: 5
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    networks:
-      - cdp-tenant
-
-  geonetwork:
-    image: geonetwork:4.2
-    ports:
-      - '8080:8080'
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    environment:
-      ES_HOST: elasticsearch
-      ES_PORT: 9200
-      ES_PROTOCOL: http
-      GEONETWORK_ES_HOST: elasticsearch
-      GEONETWORK_ES_PORT: 9200
-      GEONETWORK_ES_PROTOCOL: http
-      JAVA_OPTS: '-Xms512m -Xmx512m'
-    volumes:
-      - geonetwork-data:/catalogue-data
-    networks:
-      - cdp-tenant
-
   keycloak:
     image: quay.io/keycloak/keycloak:26.6.2
     command: start-dev --import-realm --http-port=8081
@@ -63,7 +24,3 @@ services:
 networks:
   cdp-tenant:
     driver: bridge
-
-volumes:
-  elasticsearch-data:
-  geonetwork-data:

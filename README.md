@@ -88,6 +88,10 @@ Install dependencies:
 npm ci
 ```
 
+If developing GeoNetwork functionality you will need GeoNetwork running, a dockerised version with the custom plugins is available
+in [https://dev.azure.com/defragovuk/DEFRA-GEP/_git/DEFRA-GEP-metadata-management](DEFRA-GEP-metadata-management) for use with
+this project and the `gep-land-model-viewer-frontend`.
+
 ### Development
 
 To run the application in `development` mode run:
@@ -229,8 +233,6 @@ A local environment with:
 
 - Redis (session cache)
 - Keycloak (OIDC provider, port 8081)
-- GeoNetwork (metadata catalogue, port 8080)
-- Elasticsearch (for GeoNetwork, port 9200)
 
 ```bash
 docker compose up --build -d
