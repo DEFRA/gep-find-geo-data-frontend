@@ -95,13 +95,25 @@ function tagLinks (values, filterName) {
   return links
 }
 
+/**
+ * @param {string} datasetId
+ * @param {string} landModelViewerUrl
+ * @returns {string}
+ */
+function mapHref (datasetId, landModelViewerUrl) {
+  const url = new URL('/', landModelViewerUrl)
+  url.searchParams.set('dataset', datasetId)
+  return url.href
+}
+
 import { licenceUrl } from '../common/constants/licences.js'
 
 /**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
+ * @param {string} landModelViewerUrl
  * @returns {object}
  */
-function buildViewModel (record) {
+function buildViewModel (record, landModelViewerUrl) {
   const links = (record.links ?? []).filter(hasSafeUrl)
 
   const serviceLinks = []
@@ -120,6 +132,7 @@ function buildViewModel (record) {
     pageTitle: record.title,
     heading: record.title,
     record,
+    mapHref: mapHref(record.id, landModelViewerUrl),
     serviceLinks,
     downloadLinks,
     licenceHref: licenceUrl(record.licence),

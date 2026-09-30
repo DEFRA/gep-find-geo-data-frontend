@@ -1,5 +1,6 @@
 import Boom from '@hapi/boom'
 
+import { config } from '../../config/config.js'
 import * as geonetwork from '../common/services/geonetwork/client.js'
 import { buildViewModel } from './view-model.js'
 
@@ -12,6 +13,9 @@ export const datasetController = {
       throw Boom.notFound()
     }
 
-    return h.view('dataset/index', buildViewModel(record))
+    return h.view(
+      'dataset/index',
+      buildViewModel(record, config.get('landModelViewerUrl'))
+    )
   }
 }
