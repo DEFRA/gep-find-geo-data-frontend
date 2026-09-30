@@ -14,6 +14,12 @@ export function getSafeRedirect (url) {
       // Origin mismatch - url resolves to an external host
       return '/'
     }
+
+    // Dot segments can normalise to //host, e.g. /.//evil.com
+    if (parsed.pathname.startsWith('//')) {
+      return '/'
+    }
+
     return parsed.pathname + parsed.search
   } catch {
     return '/'
