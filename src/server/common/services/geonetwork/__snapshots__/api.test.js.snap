@@ -209,6 +209,11 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "bool": {
       "filter": [
         {
+          "term": {
+            "isTemplate": "n",
+          },
+        },
+        {
           "bool": {
             "must": [
               {
@@ -257,13 +262,29 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
       ],
       "must": [
         {
-          "multi_match": {
-            "fields": [
-              "resourceTitleObject.default^3",
-              "resourceAbstractObject.default",
+          "bool": {
+            "should": [
+              {
+                "multi_match": {
+                  "fields": [
+                    "resourceTitleObject.default^3",
+                    "resourceAbstractObject.default",
+                  ],
+                  "query": "flood",
+                  "type": "best_fields",
+                },
+              },
+              {
+                "multi_match": {
+                  "fields": [
+                    "resourceTitleObject.default^3",
+                    "resourceAbstractObject.default",
+                  ],
+                  "query": "flood",
+                  "type": "bool_prefix",
+                },
+              },
             ],
-            "query": "flood",
-            "type": "best_fields",
           },
         },
       ],
@@ -293,7 +314,15 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
   ],
   "from": 0,
   "query": {
-    "match_all": {},
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "isTemplate": "n",
+          },
+        },
+      ],
+    },
   },
   "size": 10,
   "sort": [
@@ -316,7 +345,15 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
   ],
   "from": 0,
   "query": {
-    "match_all": {},
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "isTemplate": "n",
+          },
+        },
+      ],
+    },
   },
   "size": 10,
   "sort": [
@@ -342,7 +379,15 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
   ],
   "from": 0,
   "query": {
-    "match_all": {},
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "isTemplate": "n",
+          },
+        },
+      ],
+    },
   },
   "size": 10,
   "sort": [

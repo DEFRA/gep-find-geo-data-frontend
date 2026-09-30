@@ -84,7 +84,7 @@ function latestNestedDate (name) {
     const dates = (src[name] ?? [])
       .map((entry) => entry?.date)
       .filter(Boolean)
-    return dates.length === 0 ? null : dates.reduce((a, b) => (a > b ? a : b))
+    return dates.length === 0 ? null : dates.reduce((a, b) => (Date.parse(a) > Date.parse(b) ? a : b))
   }
 }
 
