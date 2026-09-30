@@ -84,6 +84,12 @@ export const config = convict({
     default: 'http://localhost:3000',
     env: 'APP_BASE_URL'
   },
+  landModelViewerUrl: {
+    doc: 'Land Model Viewer frontend base URL for view on map links',
+    format: 'url',
+    default: 'http://localhost:3002',
+    env: 'LAND_MODEL_VIEWER_URL'
+  },
   log: {
     enabled: {
       doc: 'Is logging enabled',

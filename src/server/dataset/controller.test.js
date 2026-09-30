@@ -70,6 +70,20 @@ describe('#datasetController', () => {
     expect(result).toMatch(/<title>[^<]*Flood Extents[^<]*<\/title>/)
   })
 
+  test('renders a view on map button', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord())
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(result).toMatch(
+      /<a href="http:\/\/localhost:3002\/\?dataset=92b43165-0dd0-4e69-a712-1e49bb5aa0d0"[^>]*govuk-button--secondary[^>]*>\s*View on map\s*<\/a>/
+    )
+  })
+
   test('renders service and download links from the dataset view model', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [

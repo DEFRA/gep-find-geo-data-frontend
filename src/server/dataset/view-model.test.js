@@ -1,5 +1,7 @@
 import { buildViewModel } from './view-model.js'
 
+const landModelViewerUrl = 'https://land-model-viewer.example.test'
+
 /**
  * @param {object} overrides
  * @returns {import('../common/services/geonetwork/client.js').MetadataRecord}
@@ -14,6 +16,11 @@ function baseRecord (overrides = {}) {
 }
 
 describe('#dataset view-model', () => {
+  test('links to the dataset on the map', () => {
+    const { mapHref } = buildViewModel(baseRecord({ id: '123e4567-e89b-12d3-a456-426614174000' }), landModelViewerUrl)
+    expect(mapHref).toBe('https://land-model-viewer.example.test/?dataset=123e4567-e89b-12d3-a456-426614174000')
+  })
+
   test('URLs without file extensions go to service links', () => {
     const record = baseRecord({
       links: [
@@ -23,7 +30,7 @@ describe('#dataset view-model', () => {
       ]
     })
 
-    const { serviceLinks } = buildViewModel(record)
+    const { serviceLinks } = buildViewModel(record, landModelViewerUrl)
     expect(serviceLinks).toHaveLength(3)
   })
 
@@ -35,7 +42,7 @@ describe('#dataset view-model', () => {
       ]
     })
 
-    const { downloadLinks } = buildViewModel(record)
+    const { downloadLinks } = buildViewModel(record, landModelViewerUrl)
     expect(downloadLinks).toHaveLength(2)
     expect(downloadLinks[0].format).toBe('ZIP')
     expect(downloadLinks[1].format).toBe('PDF')
@@ -50,7 +57,7 @@ describe('#dataset view-model', () => {
       ]
     })
 
-    const { downloadLinks } = buildViewModel(record)
+    const { downloadLinks } = buildViewModel(record, landModelViewerUrl)
     expect(downloadLinks).toHaveLength(3)
     expect(downloadLinks[0].format).toBe('ZIP')
     expect(downloadLinks[1].format).toBe('PDF')
@@ -65,19 +72,19 @@ describe('#dataset view-model', () => {
       ]
     })
 
-    const { serviceLinks, downloadLinks } = buildViewModel(record)
+    const { serviceLinks, downloadLinks } = buildViewModel(record, landModelViewerUrl)
     expect(serviceLinks).toHaveLength(2)
     expect(downloadLinks).toHaveLength(0)
   })
 
   test('handles records with no links', () => {
-    const { serviceLinks, downloadLinks } = buildViewModel(baseRecord())
+    const { serviceLinks, downloadLinks } = buildViewModel(baseRecord(), landModelViewerUrl)
     expect(serviceLinks).toEqual([])
     expect(downloadLinks).toEqual([])
   })
 
   test('handles records with undefined links', () => {
-    const { serviceLinks, downloadLinks } = buildViewModel(baseRecord({ links: undefined }))
+    const { serviceLinks, downloadLinks } = buildViewModel(baseRecord({ links: undefined }), landModelViewerUrl)
     expect(serviceLinks).toEqual([])
     expect(downloadLinks).toEqual([])
   })
@@ -95,7 +102,7 @@ describe('#dataset view-model', () => {
       ]
     })
 
-    const { serviceLinks, downloadLinks } = buildViewModel(record)
+    const { serviceLinks, downloadLinks } = buildViewModel(record, landModelViewerUrl)
     expect(serviceLinks).toEqual([
       { url: 'https://example.com/spatialdata/wms', name: 'WMS service', description: '' }
     ])
@@ -107,10 +114,10 @@ describe('#dataset view-model', () => {
   test('builds a coordinate reference system href only for safe URLs', () => {
     const safe = buildViewModel(baseRecord({
       coordinateReferenceSystem: 'http://www.opengis.net/def/crs/EPSG/0/27700'
-    }))
+    }), landModelViewerUrl)
     const unsafe = buildViewModel(baseRecord({
       coordinateReferenceSystem: 'javascript:alert(1)'
-    }))
+    }), landModelViewerUrl)
 
     expect(safe.coordinateReferenceSystemHref).toBe('http://www.opengis.net/def/crs/EPSG/0/27700')
     expect(unsafe.coordinateReferenceSystemHref).toBeNull()
@@ -119,11 +126,11 @@ describe('#dataset view-model', () => {
   test('builds a licence href for recognised licences', () => {
     const known = buildViewModel(baseRecord({
       licence: 'Open Government Licence'
-    }))
+    }), landModelViewerUrl)
     const unknown = buildViewModel(baseRecord({
       licence: 'Restricted access - contact publisher'
-    }))
-    const missing = buildViewModel(baseRecord())
+    }), landModelViewerUrl)
+    const missing = buildViewModel(baseRecord(), landModelViewerUrl)
 
     expect(known.licenceHref).toBe(
       'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'
@@ -138,7 +145,7 @@ describe('#dataset view-model', () => {
       keywords: ['Habitats and biotopes', 'landscape', 'landscape']
     })
 
-    const { categoryLinks, keywordLinks } = buildViewModel(record)
+    const { categoryLinks, keywordLinks } = buildViewModel(record, landModelViewerUrl)
     expect(categoryLinks).toEqual([
       { text: 'Environment', href: '/?category=Environment' },
       { text: 'Elevation', href: '/?category=Elevation' }
