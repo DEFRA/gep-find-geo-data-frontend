@@ -59,9 +59,63 @@ describe('#dataset view-model', () => {
 
     const { downloadLinks } = buildViewModel(record, landModelViewerUrl)
     expect(downloadLinks).toHaveLength(3)
-    expect(downloadLinks[0].format).toBe('ZIP')
+    expect(downloadLinks[0].format).toBe('File geodatabase')
     expect(downloadLinks[1].format).toBe('PDF')
     expect(downloadLinks[2].format).toBe('LYRX')
+  })
+
+  test('labels formats by file type, using the inner type of zipped files', () => {
+    const names = [
+      'data.gdb.zip',
+      'data.geojson.zip',
+      'data.gpkg.zip',
+      'data.shp.zip',
+      'style.tif.lyrx',
+      'ReadMe.xlsx',
+      'archive.zip',
+      'notes.odt'
+    ]
+    const record = baseRecord({
+      links: names.map((name) => ({ url: `https://example.com/files/${name}`, name, description: '' }))
+    })
+
+    const { downloadLinks } = buildViewModel(record, landModelViewerUrl)
+    expect(downloadLinks.map((link) => link.format)).toEqual([
+      'File geodatabase',
+      'GeoJSON',
+      'GeoPackage',
+      'Shapefile',
+      'LYRX',
+      'Excel Spreadsheet',
+      'ZIP',
+      'ODT'
+    ])
+  })
+
+  test('prefers the most specific format across URL, fileName query and name', () => {
+    const record = baseRecord({
+      links: [
+        { url: 'https://example.com/files/12345.zip', name: 'flood.gdb.zip', description: '' },
+        { url: 'https://example.com/api/file/download?fileName=flood.gpkg.zip', name: 'Flood extents', description: '' }
+      ]
+    })
+
+    const { downloadLinks } = buildViewModel(record, landModelViewerUrl)
+    expect(downloadLinks.map((link) => link.format)).toEqual(['File geodatabase', 'GeoPackage'])
+  })
+
+  test('ignores full stops in link names that are not known formats', () => {
+    const record = baseRecord({
+      links: [
+        { url: 'https://example.com/wms', name: 'Flood Zones v2.1 WMS', description: '' },
+        { url: 'https://example.com/metadata', name: 'Source metadata (see gov.uk)', description: '' },
+        { url: 'https://example.com/about', name: 'See data.gov.uk', description: '' }
+      ]
+    })
+
+    const { serviceLinks, downloadLinks } = buildViewModel(record, landModelViewerUrl)
+    expect(serviceLinks).toHaveLength(3)
+    expect(downloadLinks).toHaveLength(0)
   })
 
   test('treats versioned URL paths as service links, not downloads', () => {

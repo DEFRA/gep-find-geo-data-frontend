@@ -169,9 +169,47 @@
 
     </div>
 
-    {% if serviceLinks.length or downloadLinks.length %}
-      {% set dataHtml %}
-        {% if serviceLinks.length %}
+    <div class="app-dataset-data">
+      <h2 class="govuk-heading-m">Data access</h2>
+
+      <div class="app-dataset-data__section">
+        <h3 class="govuk-heading-s app-dataset-data__heading">View on a map</h3>
+        <div class="app-dataset-data__map">
+          <p class="govuk-body govuk-!-margin-bottom-0">Open this data on an interactive map.</p>
+          <p class="govuk-body govuk-!-margin-bottom-0"><a href="{{ mapHref }}" class="govuk-link">View this data on a map</a></p>
+        </div>
+      </div>
+
+      {% if downloadLinks.length %}
+        <div class="app-dataset-data__section">
+          <h3 class="govuk-heading-s app-dataset-data__heading">Download this data</h3>
+          <p class="govuk-body govuk-!-margin-top-2">The files below all contain the same information, saved in different formats so you can open it in the software you already use.</p>
+
+          {% set downloadRows = [] %}
+          {% for link in downloadLinks %}
+            {% set dlHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link" download>Download<span class="govuk-visually-hidden"> {{ link.name }}</span></a>{% endset %}
+            {% set downloadRows = (downloadRows.push([
+              { text: link.name, classes: "app-dataset-data__name" },
+              { text: link.format, classes: "app-dataset-data__col--fit" },
+              { html: dlHtml, classes: "app-dataset-data__col--action" }
+            ]), downloadRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            head: [
+              { html: '<span class="govuk-visually-hidden">File</span>' },
+              { text: "Format", classes: "app-dataset-data__col--fit" },
+              { text: "Action", classes: "app-dataset-data__col--action" }
+            ],
+            rows: downloadRows
+          }) }}
+        </div>
+      {% endif %}
+
+      {% if serviceLinks.length %}
+        <div class="app-dataset-data__section">
+          <h3 class="govuk-heading-s app-dataset-data__heading">More about this data</h3>
+
           {% set serviceRows = [] %}
           {% for link in serviceLinks %}
             {% set copyHtml %}
@@ -182,57 +220,23 @@
             {% endset %}
             {% set openHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link">Open link</a>{% endset %}
             {% set serviceRows = (serviceRows.push([
-              { text: link.name },
-              { html: copyHtml, classes: "app-copy-link-table-cell" },
-              { html: openHtml }
+              { text: link.name, classes: "app-dataset-data__name" },
+              { html: copyHtml, classes: "app-dataset-data__col--fit app-copy-link-table-cell" },
+              { html: openHtml, classes: "app-dataset-data__col--action" }
             ]), serviceRows) %}
           {% endfor %}
 
           {{ govukTable({
             head: [
-              { text: "Data services and download by area of interest" },
-              { text: "Link", classes: "app-dataset-data__col--narrow app-copy-link-table-cell" },
-              { text: "Action", classes: "app-dataset-data__col--narrow" }
+              { html: '<span class="govuk-visually-hidden">Name</span>' },
+              { text: "Link", classes: "app-dataset-data__col--fit app-copy-link-table-cell" },
+              { text: "Action", classes: "app-dataset-data__col--action" }
             ],
             rows: serviceRows
           }) }}
-        {% endif %}
-
-        {% if downloadLinks.length %}
-          {% set downloadRows = [] %}
-          {% for link in downloadLinks %}
-            {% set dlHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link" download>Download</a>{% endset %}
-            {% set downloadRows = (downloadRows.push([
-              { text: link.name },
-              { text: link.format },
-              { html: dlHtml }
-            ]), downloadRows) %}
-          {% endfor %}
-
-          {{ govukTable({
-            head: [
-              { text: "Full downloads and supporting documentation" },
-              { text: "Format", classes: "app-dataset-data__col--narrow" },
-              { text: "Action", classes: "app-dataset-data__col--narrow" }
-            ],
-            rows: downloadRows
-          }) }}
-        {% endif %}
-      {% endset %}
-
-      <div class="app-dataset-data">
-        {{ govukAccordion({
-          id: "accordion-data",
-          items: [
-            {
-              heading: { text: "Data and Supporting Information" },
-              content: { html: dataHtml },
-              expanded: true
-            }
-          ]
-        }) }}
-      </div>
-    {% endif %}
+        </div>
+      {% endif %}
+    </div>
 
   </div>
 {% endblock %}

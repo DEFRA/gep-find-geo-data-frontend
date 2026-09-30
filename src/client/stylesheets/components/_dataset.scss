@@ -13,32 +13,45 @@
   padding: govuk-spacing(4);
 }
 
-.app-dataset-data .govuk-accordion__show-all {
-  display: none;
+.app-dataset-data__section + .app-dataset-data__section {
+  border-top: 1px solid var(--govuk-border-colour);
+  margin-top: govuk-spacing(6);
+  padding-top: govuk-spacing(3);
 }
 
-.app-dataset-data .govuk-accordion {
-  border-bottom: none;
-}
-
-.app-dataset-data .govuk-accordion__section-button {
-  border-top: none;
-}
-
-.app-dataset-data .govuk-accordion__section-content {
-  padding-bottom: 0;
+.app-dataset-data__heading {
+  border-bottom: 1px solid var(--govuk-border-colour);
+  margin-bottom: 0;
+  padding-bottom: govuk-spacing(2);
 }
 
 .app-dataset-data .govuk-table {
-  margin-bottom: govuk-spacing(4);
-}
-
-.app-dataset-data .govuk-table:last-child {
   margin-bottom: 0;
 }
 
-.app-dataset-data__col--narrow {
-  width: 120px;
+.app-dataset-data__col--fit {
+  width: 1%;
+
+  @include govuk-media-query($from: tablet) {
+    white-space: nowrap;
+  }
+}
+
+.app-dataset-data__col--action {
+  width: 6em;
+  white-space: nowrap;
+}
+
+.app-dataset-data__map {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: govuk-spacing(2) govuk-spacing(4);
+  padding-top: govuk-spacing(2);
+}
+
+.app-dataset-data__name {
+  overflow-wrap: anywhere;
 }
 
 .app-dataset-data .govuk-table__body .govuk-table__row:last-child .govuk-table__cell {

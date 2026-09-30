@@ -1,18 +1,5 @@
-/**
- * @param {string} value
- * @returns {string}
- */
-function extractExtension (value) {
-  const dot = value.lastIndexOf('.')
-  if (dot === -1) {
-    return ''
-  }
-  const ext = value.slice(dot + 1)
-  if (!ext || ext.includes('/') || ext.includes('?') || !/[a-z]/i.test(ext)) {
-    return ''
-  }
-  return ext.toUpperCase()
-}
+import { fileFormat } from '../common/constants/file-formats.js'
+import { licenceUrl } from '../common/constants/licences.js'
 
 /**
  * @param {string} value
@@ -27,17 +14,26 @@ function parseUrl (value) {
 }
 
 /**
+ * Checks the URL path, its `fileName` query value and the link name, preferring
+ * the most specific format, e.g. `flood.gdb.zip` over a plain `12345.zip`.
+ * The name is free text, so only known formats count there.
  * @param {import('../common/services/geonetwork/client.js').MetadataLink} link
  * @returns {string}
  */
 function extractFormat (link) {
   const url = parseUrl(link.url)
-  const format = url ? extractExtension(url.pathname) : ''
-  if (format) {
-    return format
+  const nameFormat = fileFormat(link.name)
+  const formats = [
+    fileFormat(url?.pathname),
+    fileFormat(url?.searchParams.get('fileName')),
+    nameFormat?.known ? nameFormat : null
+  ].filter((format) => format !== null)
+  if (!formats.length) {
+    return ''
   }
 
-  return extractExtension(link.name)
+  const specific = formats.find((format) => format.known && format.extension !== 'zip')
+  return (specific ?? formats[0]).label
 }
 
 /**
@@ -105,8 +101,6 @@ function mapHref (datasetId, landModelViewerUrl) {
   url.searchParams.set('dataset', datasetId)
   return url.href
 }
-
-import { licenceUrl } from '../common/constants/licences.js'
 
 /**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
