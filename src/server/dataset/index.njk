@@ -96,16 +96,6 @@
           {% endif %}
         {% endset %}
 
-        {% set metadataHtml %}
-          {% if record.language %}
-            <h3 class="govuk-heading-s">Language</h3>
-            <p class="govuk-body">{{ record.language | displayLanguage }}</p>
-          {% endif %}
-
-          <h3 class="govuk-heading-s">Metadata identifier</h3>
-          <p class="govuk-body">{{ record.id }}</p>
-        {% endset %}
-
         {{ govukAccordion({
           id: "accordion-default",
           items: [
@@ -116,10 +106,6 @@
             {
               heading: { text: "Spatial Information" },
               content: { html: spatialHtml }
-            },
-            {
-              heading: { text: "Metadata Information" },
-              content: { html: metadataHtml }
             }
           ]
         }) }}
