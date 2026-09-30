@@ -58,6 +58,12 @@ import { config } from '../../../../config/config.js'
  */
 
 /**
+ * @typedef {object} SpatialResolution
+ * @property {number[]} scaleDenominators The denominator in each 1:n scale, e.g. 250000 for 1:250,000.
+ * @property {string[]} distances Distance values including their units, e.g. '2 m'.
+ */
+
+/**
  * @typedef {Object} MetadataRecord
  * @property {string} id
  * @property {string} title
@@ -67,6 +73,7 @@ import { config } from '../../../../config/config.js'
  * @property {string | null} updateFrequency
  * @property {string[]} categories
  * @property {string | null} owner
+ * @property {SpatialResolution | null} resolution
  * @property {string | null} updatedAt
  * @property {string | null} lineage
  * @property {string | null} contactPoint
@@ -89,6 +96,7 @@ import { config } from '../../../../config/config.js'
  * @property {string} title
  * @property {string} abstract
  * @property {string | null} owner
+ * @property {SpatialResolution | null} resolution
  * @property {string | null} updatedAt
  */
 

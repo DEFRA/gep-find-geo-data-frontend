@@ -8,13 +8,16 @@
         {% if result.abstract %}
           <p class="govuk-body-s govuk-!-margin-bottom-1">{{ result.abstract }}</p>
         {% endif %}
-        {% if result.owner or result.updatedAt %}
+        {% if result.owner or result.updatedAt or result.resolution %}
           <p class="govuk-body-s app-search-results__meta">
             {% if result.owner %}
               <span class="app-search-results__meta-item">Data owner: {{ result.owner }}</span>
             {% endif %}
             {% if result.updatedAt %}
               <span class="app-search-results__meta-item">Date last updated: {{ result.updatedAt | formatDate }}</span>
+            {% endif %}
+            {% if result.resolution %}
+              <span class="app-search-results__meta-item">Resolution: {{ result.resolution | formatResolution }}</span>
             {% endif %}
           </p>
         {% endif %}

@@ -127,6 +127,13 @@
 
           <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
+          {% if record.resolution %}
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Resolution</h2>
+            <p class="govuk-body">{{ record.resolution | formatResolution }}</p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+          {% endif %}
+
           <h2 class="govuk-heading-s govuk-!-margin-bottom-1">Dataset reference dates</h2>
 
           <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Creation date</h3>

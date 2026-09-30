@@ -11,6 +11,7 @@ import {
   mappedValue,
   objectDefault,
   rawArray,
+  resolution,
   temporalExtent
 } from './field-accessors.js'
 
@@ -93,6 +94,11 @@ const fields = {
     sort: { field: 'resourceDate.date', nestedPath: 'resourceDate' },
     inSearchResult: true,
     hitAccessor: latestNestedDate('resourceDate')
+  },
+  resolution: {
+    source: ['resolutionScaleDenominator', 'resolutionDistance'],
+    inSearchResult: true,
+    hitAccessor: resolution
   },
   lineage: {
     source: ['lineageObject.default'],

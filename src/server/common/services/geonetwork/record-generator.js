@@ -155,6 +155,7 @@ function generateRecord (index, prng) {
     accessLevel,
     updateFrequency: pick(prng, updateFrequencies),
     categories,
+    resolution: null,
     updatedAt: randomIsoDate(prng),
     lineage: `Dataset produced by ${org} covering ${theme.toLowerCase()} for ${region}.`,
     contactPoint: 'example@defra.gov.uk',

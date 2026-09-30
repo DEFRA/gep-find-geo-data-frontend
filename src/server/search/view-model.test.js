@@ -19,6 +19,7 @@ const exampleResult = (overrides = {}) => ({
   title: 'Flood Extents',
   abstract: 'Recorded flood extents for England.',
   owner: 'Environment Agency',
+  resolution: { scaleDenominators: [250000], distances: [] },
   updatedAt: '2026-04-10T00:00:00Z',
   ...overrides
 })
@@ -279,6 +280,7 @@ describe('#search view-model', () => {
           href: '/dataset/abc-123',
           abstract: 'Recorded flood extents for England.',
           owner: 'Environment Agency',
+          resolution: { scaleDenominators: [250000], distances: [] },
           updatedAt: '2026-04-10T00:00:00Z'
         }])
       })

@@ -183,6 +183,7 @@ function mapResults (results) {
     href: `/dataset/${result.id}`,
     abstract: truncateWords(result.abstract, ABSTRACT_WORD_LIMIT),
     owner: result.owner,
+    resolution: result.resolution,
     updatedAt: result.updatedAt
   }))
 }

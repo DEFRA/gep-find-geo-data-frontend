@@ -7,6 +7,8 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resolutionScaleDenominator",
+    "resolutionDistance",
   ],
   "aggs": {
     "dataType": {
@@ -311,6 +313,8 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resolutionScaleDenominator",
+    "resolutionDistance",
   ],
   "from": 0,
   "query": {
@@ -342,6 +346,8 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resolutionScaleDenominator",
+    "resolutionDistance",
   ],
   "from": 0,
   "query": {
@@ -376,6 +382,8 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resolutionScaleDenominator",
+    "resolutionDistance",
   ],
   "from": 0,
   "query": {

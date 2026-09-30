@@ -11,6 +11,7 @@ import {
   mappedValue,
   objectDefault,
   rawArray,
+  resolution,
   temporalExtent
 } from './field-accessors.js'
 
@@ -320,6 +321,45 @@ describe('#field-accessors', () => {
 
     test('returns null when the field is missing', () => {
       expect(datedEntry('resourceDate', 'creation')({})).toBeNull()
+    })
+  })
+
+  describe('resolution', () => {
+    test('maps scale denominators to numbers', () => {
+      expect(resolution({
+        resolutionScaleDenominator: ['250000', 10000]
+      })).toEqual({ scaleDenominators: [250000, 10000], distances: [] })
+    })
+
+    test('preserves distances and their units', () => {
+      expect(resolution({
+        resolutionDistance: ['2 m', '10 cm']
+      })).toEqual({ scaleDenominators: [], distances: ['2 m', '10 cm'] })
+    })
+
+    test('maps scales and distances together', () => {
+      expect(resolution({
+        resolutionScaleDenominator: ['250000'],
+        resolutionDistance: ['2 m']
+      })).toEqual({ scaleDenominators: [250000], distances: ['2 m'] })
+    })
+
+    test('returns null when resolution is missing', () => {
+      expect(resolution({})).toBeNull()
+    })
+
+    test('returns null when the resolution arrays are empty', () => {
+      expect(resolution({
+        resolutionScaleDenominator: [],
+        resolutionDistance: []
+      })).toBeNull()
+    })
+
+    test('ignores unusable values', () => {
+      expect(resolution({
+        resolutionScaleDenominator: [null, '', 'unknown', 0, -1, 1.5, '250000'],
+        resolutionDistance: [null, '', '  ', '2 m']
+      })).toEqual({ scaleDenominators: [250000], distances: ['2 m'] })
     })
   })
 })
