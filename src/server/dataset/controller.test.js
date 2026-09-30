@@ -84,6 +84,21 @@ describe('#datasetController', () => {
     )
   })
 
+  test('links to the map from the data access section', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord())
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(result).toContain('Data access')
+    expect(result).toMatch(
+      /<a href="http:\/\/localhost:3002\/\?dataset=92b43165-0dd0-4e69-a712-1e49bb5aa0d0" class="govuk-link">View this data on a map<\/a>/
+    )
+  })
+
   test('renders service and download links from the dataset view model', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [
@@ -99,8 +114,8 @@ describe('#datasetController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toContain('Data services and download by area of interest')
-    expect(result).toContain('Full downloads and supporting documentation')
+    expect(result).toContain('More about this data')
+    expect(result).toContain('Download this data')
     expect(result).toContain('href="https://example.com/service/wms"')
     expect(result).toContain('href="https://example.com/files/flood-extents.zip"')
     expect(result).toContain('ZIP')
