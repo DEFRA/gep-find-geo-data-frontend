@@ -38,8 +38,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: |
-          npm ci --no-audit
-          npm audit --omit=dev
+          npm ci
           npm run build:frontend
           npm run lint
           npm test
