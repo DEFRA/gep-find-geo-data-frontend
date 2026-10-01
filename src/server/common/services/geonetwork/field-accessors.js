@@ -162,6 +162,22 @@ function rawArray (name) {
 }
 
 /**
+ * @param {object} src
+ * @returns {import('./client.js').SpatialResolution | null}
+ */
+function resolution (src) {
+  const scaleDenominators = (src.resolutionScaleDenominator ?? [])
+    .map(Number)
+    .filter((value) => Number.isSafeInteger(value) && value > 0)
+  const distances = (src.resolutionDistance ?? [])
+    .filter((value) => typeof value === 'string' && value.trim())
+
+  return scaleDenominators.length || distances.length
+    ? { scaleDenominators, distances }
+    : null
+}
+
+/**
  * @param {string} name
  * @returns {(src: object) => import('./client.js').TemporalExtent | null}
  */
@@ -191,5 +207,6 @@ export {
   mappedValue,
   objectDefault,
   rawArray,
+  resolution,
   temporalExtent
 }

@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { load } from 'cheerio'
 
 import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
@@ -190,6 +191,38 @@ describe('#datasetController', () => {
     expect(statusCode).toBe(statusCodes.ok)
     expect(result).toContain('javascript:alert(1)')
     expect(result).not.toContain('href="javascript:alert(1)"')
+  })
+
+  test('renders resolution below Contact publisher with a separator', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      contactPoint: 'publisher@example.gov.uk',
+      resolution: { scaleDenominators: [250000], distances: ['2 m'] }
+    }))
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    const $ = load(result)
+    const sidebar = $('.app-dataset-sidebar')
+    const heading = sidebar.find('h2').filter((i, el) => $(el).text() === 'Resolution')
+    expect(heading.prevAll('h2').first().text()).toBe('Contact publisher')
+    expect(heading.next('p.govuk-body').text()).toBe('1:250,000, 2m')
+    expect(heading.next('p').next('hr').hasClass('govuk-section-break--visible')).toBe(true)
+  })
+
+  test('omits Resolution when no value is supplied', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({ resolution: null }))
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(result).not.toContain('>Resolution</h2>')
   })
 
   test('returns 404 when the record is missing', async () => {

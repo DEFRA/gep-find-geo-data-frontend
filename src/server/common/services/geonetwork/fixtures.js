@@ -17,6 +17,7 @@ Our guidance document can be accessed below.
     categories: [
       'Environment'
     ],
+    resolution: null,
     updatedAt: '2026-03-15T00:00:00.000Z',
     lineage: 'Between 1981 and 1982 the Nature Conservancy Council began to compile an inventory of ancient woodland for England and Wales. This Ancient Woodland Inventory (AWI) was originally produced on a county basis with reports and paper maps published as they became available. It has since been digitised to create a national dataset which has been administered by the NCC’s successor bodies, English Nature and now Natural England.The majority of the south east counties were updated in a pilot project (2006 - 2014) and this area includes smaller woods for the first time, dropping the threshold to 0.25 hectares from the previously mapped two hectares threshold.Datasets used include:National Forest Index - Forest Commission, OS MasterMap (PSGA), Historic Ordnance Survey data including Ordnance Surveyor\'s Drawings, County Maps and First Series 1 inch maps to current editions - Landmark (bespoke licence), Priority Habitat Inventory - Natural England (OGL), Ancient Tree Inventory - Woodland Trust Aerial Photography (APGB agreement)',
     contactPoint: 'data.services@naturalengland.org.uk',
@@ -68,6 +69,7 @@ Our guidance document can be accessed below.
     categories: [
       'Environment'
     ],
+    resolution: null,
     updatedAt: '2026-04-17T00:00:00.000Z',
     lineage: 'The sources for crop classification are satellite images from the Sentinel constellation and Planet Fusion. A combination of radar and multispectral imagery from Sentinel sensors was used for automatic crop classification based on ground truth observation on crop types. The classification was also validated using independent ground observation points.',
     contactPoint: 'open.data@rpa.gov.uk',
@@ -134,6 +136,7 @@ Please note, if downloading data for an area of interest, all polygons that inte
       'Inland waters',
       'Oceans'
     ],
+    resolution: null,
     updatedAt: '2026-05-20T00:00:00.000Z',
     lineage: 'The Flood Zones are created using local flood model outputs, recorded flood outlines and national flood model information. These are combined by our new National Flood Risk Assessment (NaFRA2) system to generate extents of land at flood risk, with the aim of using the best available flood risk information in any one location.',
     contactPoint: 'example@environment-agency.gov.uk',
@@ -193,6 +196,7 @@ Please note, if downloading data for an area of interest, all polygons that inte
     categories: [
       'Environment'
     ],
+    resolution: null,
     updatedAt: '2024-09-16T00:00:00.000Z',
     lineage: `Process Description: A number of data layers are used to develop a ground dataset of habitat reference data, which are then used to inform a machine-learning model and spatial analyses to generate a map of the likely locations and distributions of habitats across England. The main source data layers underpinning the spatial framework and models are Sentinel-2 and Sentinel-1 satellite data from the ESA Copernicus programme, Lidar from the EA's national Lidar Programme and collected data through the project's national survey programme. Additional datasets informing the approach as detailed below and outlined in the accompanying technical user guide. 
 
@@ -265,6 +269,7 @@ NB. This is a complex dataset, with preview available only on certain zoom level
       'Environment',
       'Inland waters'
     ],
+    resolution: { scaleDenominators: [], distances: ['2 m'] },
     updatedAt: '2025-09-17T00:00:00.000Z',
     lineage: 'RoFSW is created using a combination of local flood model information and national flood modelling. These are used to generate the probabilities of flood risk for each 2m grid square of land, with the aim of using the best available flood risk information in any one location.',
     contactPoint: 'example@environment-agency.gov.uk',
@@ -319,6 +324,7 @@ NB. This is a complex dataset, with preview available only on certain zoom level
     categories: [
       'Environment'
     ],
+    resolution: null,
     updatedAt: '2025-04-15T00:00:00.000Z',
     lineage: 'All data is captured to the Ordnance Survey National Grid sometimes called the British National Grid. OS MasterMap Topographic Layer ? produced and supplied by Ordnance Survey from data at 1:1250, 1:2500 and 1:10000 surveying and mapping standards - is used as the primary source. Other sources ? acquired internally and from external suppliers - may include aerial imagery at resolutions ranging from 25cm to 2m, Ordnance Survey 1:10000 raster images, historical OS mapping, charts and chart data from UK Hydrographic Office and other sources, scanned images of paper designation mapping (mostly originally produced at 1:10560 or 1:10000 scales), GPS and other surveyed data, and absolute coordinates. The data was first captured against an August 2002 cut of OS MasterMap Topography. Natural England has successfully uploaded an up-to-date version of OS MasterMap Topographic Layer. However, we have not yet updated our designated data holding to this new version of MasterMap. This should occur in the near future, when we will simultaneously apply positional accuracy improvement (PAI) to our data.',
     contactPoint: 'data.services@naturalengland.org.uk',

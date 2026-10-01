@@ -47,6 +47,7 @@ function lastRequestBody () {
 const fullHit = {
   _id: 'abc',
   _source: {
+    resolutionScaleDenominator: ['250000'],
     resourceTitleObject: { default: 'Test Title' },
     resourceAbstractObject: { default: 'Test Abstract' },
     OrgForResourceObject: { default: 'Environment Agency' },
@@ -475,6 +476,7 @@ describe('#api', () => {
         title: 'Test Title',
         abstract: 'Test Abstract',
         owner: 'Environment Agency',
+        resolution: { scaleDenominators: [250000], distances: [] },
         updatedAt: '2025-07-28T00:00:00Z'
       })
     })
@@ -497,6 +499,7 @@ describe('#api', () => {
         title: '',
         abstract: '',
         owner: null,
+        resolution: null,
         updatedAt: null
       })
     })

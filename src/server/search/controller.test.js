@@ -86,6 +86,38 @@ describe('#searchController', () => {
   })
 
   describe('HTML rendering', () => {
+    test('renders resolution', async () => {
+      mockSearch.mockResolvedValue(emptyResponse({
+        total: 1,
+        results: [exampleResult({
+          resolution: { scaleDenominators: [250000], distances: ['2 m'] }
+        })]
+      }))
+
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/',
+        auth: mockAuthCredentials
+      })
+
+      expect(result).toContain('Resolution: 1:250,000, 2m')
+    })
+
+    test('omits resolution when it is not supplied', async () => {
+      mockSearch.mockResolvedValue(emptyResponse({
+        total: 1,
+        results: [exampleResult({ resolution: null })]
+      }))
+
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/',
+        auth: mockAuthCredentials
+      })
+
+      expect(result).not.toContain('Resolution:')
+    })
+
     test('renders the page heading and search form', async () => {
       const { result, statusCode } = await server.inject({
         method: 'GET',
