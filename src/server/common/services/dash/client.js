@@ -6,11 +6,11 @@ import * as api from './api.js'
  */
 
 /**
- * @param {string} [filepath]
+ * //@param {string} [filepath]
  * //@returns {Promise<DownloadResponse>}
  */
-async function downloadFile (filepath) {
+async function downloadFile () {
   const client = api;
-  return client.download(filepath);
+  return client.download();
 }
 export { downloadFile }

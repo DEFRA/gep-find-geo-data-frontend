@@ -314,7 +314,7 @@ export const config = convict({
       doc: 'Azure Tenant Id',
       format: String,
       default: 'test',
-      env: 'AZURE__TENANT_ID'
+      env: 'AZURE_TENANT_ID'
     },
     azureClientSecret: {
       doc: 'Azure Service Principal Client Secret',
@@ -327,6 +327,18 @@ export const config = convict({
       format: String,
       default: 'devdapdlkst2401',
       env: 'AZURE_STORAGE_ACCOUNT_NAME'
+    },
+    azureFileSystem: {
+      doc: 'Azure File System Name',
+      format: String,
+      default: 'test',
+      env: 'AZURE_FILE_SYSTEM'
+    },
+    azureFilePath: {
+      doc: 'Azure File Path',
+      format: String,
+      default: 'test',
+      env: 'AZURE_FILE_PATH'
     }
   }
 })

@@ -20,19 +20,26 @@ function GetDataLakeServiceClientAD() {
 }
 
 /**
- * @param {string} filepath
+ * //@param {string} filepath
  */
-async function postDownload (filepath) {
+async function postDownload () {
 
   const dataLakeServiceClient = GetDataLakeServiceClientAD();
-  const fileSystemClient = dataLakeServiceClient.getFileSystemClient('invalid_data');
+
+  logger.info("Before getFileSystemClient");
+  const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`);
+  logger.info("Completed getFileSystemClient");
 
   try {
-    const fileClient = fileSystemClient.getFileClient(filepath);
+    logger.info("Before getFileClient");
+    const fileClient = fileSystemClient.getFileClient(`${config.get('dash.azureFilePath')}`);
+    logger.info("Completed getFileClient");
 
     const downloadResponse = await fileClient.read();
+    logger.info("Completed read");
 
     const downloaded = await streamToString(downloadResponse.readableStreamBody);
+    logger.info("Completed streamToString");
 
     async function streamToString(readableStream) {
       return new Promise((resolve, reject) => {
@@ -53,14 +60,15 @@ async function postDownload (filepath) {
     
   } catch (err) {
     const errorCode = err?.code ?? 'NO_ERROR_CODE'
+    logger.error(errorCode);
   }
 }
 
 /**
- * @param {string} filepath
+ * //@param {string} filepath
  */
-async function download (filepath) {
-  postDownload(filepath);
+async function download () {
+  postDownload();
 }
 
 export { download }
