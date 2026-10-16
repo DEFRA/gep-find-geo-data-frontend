@@ -35,12 +35,9 @@ export const download = {
       server.route([
         {
           method: 'GET',
-          path: '/download/{id}',
+          path: '/dataset/download',
           options: {
             validate: {
-              params: Validate.object({
-                id: Validate.string().guid().required()
-              }),
               failAction: () => {
                 throw Boom.notFound()
               }

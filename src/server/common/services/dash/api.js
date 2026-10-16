@@ -2,6 +2,8 @@ import { createLogger } from '../../helpers/logging/logger.js'
 import { config } from '../../../../config/config.js';
 import { DataLakeServiceClient } from '@azure/storage-file-datalake';
 import { DefaultAzureCredential } from '@azure/identity';
+import fs from "fs";
+
 
 const logger = createLogger()
 
@@ -45,8 +47,6 @@ async function postDownload (filepath) {
       });
     }
 
-    const fs = require('fs');
-
     fs.writeFile('mytestfiledownloaded.txt', downloaded, (err) => {
       if (err) throw err;
     });
@@ -60,7 +60,6 @@ async function postDownload (filepath) {
  * @param {string} filepath
  */
 async function download (filepath) {
-  logger.info("Entered download in api");
   postDownload(filepath);
 }
 

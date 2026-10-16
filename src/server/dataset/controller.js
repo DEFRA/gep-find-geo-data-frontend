@@ -24,9 +24,6 @@ export const datasetController = {
 export const downloadController = {
   async handler (request) {
     const { filepath } = request.params
-
-    console.log("Have hit the download controller");
-    const file = await dash.downloadFile(filepath)
-    
+    return await dash.downloadFile(filepath);
   }
 }
