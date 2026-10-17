@@ -10,7 +10,7 @@ import * as api from './api.js'
  * //@returns {Promise<DownloadResponse>}
  */
 async function downloadFile () {
-  const client = api;
-  return client.download();
+  const client = api
+  return client.download()
 }
 export { downloadFile }

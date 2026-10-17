@@ -23,7 +23,7 @@ export const datasetController = {
 
 export const downloadController = {
   async handler (request) {
-    //const { filepath } = request.params
-    return await dash.downloadFile();
+    // const { filepath } = request.params
+    return await dash.downloadFile()
   }
 }
