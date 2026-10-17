@@ -104,6 +104,7 @@ describe('#datasetController', () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [
         { url: 'https://example.com/service/wms', name: 'WMS service', description: '' },
+        { url: 'https://example.com/files/flood-extents.zip', name: 'Flood extents', description: '' }
       ]
     }))
 
