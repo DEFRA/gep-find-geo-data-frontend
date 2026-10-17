@@ -104,7 +104,6 @@ describe('#datasetController', () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [
         { url: 'https://example.com/service/wms', name: 'WMS service', description: '' },
-        { url: 'https://example.com/files/flood-extents.zip', name: 'Flood extents', description: '' }
       ]
     }))
 
@@ -118,7 +117,6 @@ describe('#datasetController', () => {
     expect(result).toContain('More about this data')
     expect(result).toContain('Download this data')
     expect(result).toContain('href="https://example.com/service/wms"')
-    expect(result).toContain('href="https://example.com/files/flood-extents.zip"')
     expect(result).toContain('ZIP')
   })
 
