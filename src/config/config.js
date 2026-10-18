@@ -302,6 +302,44 @@ export const config = convict({
       default: 19,
       env: 'GEONETWORK_MOCK_RECORD_COUNT'
     }
+  },
+  dash: {
+    azureClientId: {
+      doc: 'Azure Service Principal Client Id',
+      format: String,
+      default: 'test',
+      env: 'AZURE_CLIENT_ID'
+    },
+    azureTenantId: {
+      doc: 'Azure Tenant Id',
+      format: String,
+      default: 'test',
+      env: 'AZURE_TENANT_ID'
+    },
+    azureClientSecret: {
+      doc: 'Azure Service Principal Client Secret',
+      format: String,
+      default: 'test',
+      env: 'AZURE_CLIENT_SECRET'
+    },
+    azureAccountName: {
+      doc: 'Azure Storage Account Name',
+      format: String,
+      default: 'devdapdlkst2401',
+      env: 'AZURE_STORAGE_ACCOUNT_NAME'
+    },
+    azureFileSystem: {
+      doc: 'Azure File System Name',
+      format: String,
+      default: 'test',
+      env: 'AZURE_FILE_SYSTEM'
+    },
+    azureFilePath: {
+      doc: 'Azure File Path',
+      format: String,
+      default: 'test',
+      env: 'AZURE_FILE_PATH'
+    }
   }
 })
 

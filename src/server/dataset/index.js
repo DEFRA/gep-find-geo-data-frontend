@@ -1,7 +1,7 @@
 import Boom from '@hapi/boom'
 import Validate from '@hapi/validate'
 
-import { datasetController } from './controller.js'
+import { datasetController, downloadController } from './controller.js'
 
 export const dataset = {
   plugin: {
@@ -22,6 +22,28 @@ export const dataset = {
             }
           },
           ...datasetController
+        }
+      ])
+    }
+  }
+}
+
+export const download = {
+  plugin: {
+    name: 'download',
+    register (server) {
+      server.route([
+        {
+          method: 'GET',
+          path: '/dataset/download',
+          options: {
+            validate: {
+              failAction: () => {
+                throw Boom.notFound()
+              }
+            }
+          },
+          ...downloadController
         }
       ])
     }

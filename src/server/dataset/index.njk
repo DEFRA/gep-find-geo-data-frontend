@@ -180,7 +180,7 @@
 
           {% set downloadRows = [] %}
           {% for link in downloadLinks %}
-            {% set dlHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link" download>Download<span class="govuk-visually-hidden"> {{ link.name }}</span></a>{% endset %}
+            {% set dlHtml %}<a href="download" class="govuk-link" download>Download<span class="govuk-visually-hidden"> {{ link.name }}</span></a>{% endset %}
             {% set downloadRows = (downloadRows.push([
               { text: link.name, classes: "app-dataset-data__name" },
               { text: link.format, classes: "app-dataset-data__col--fit" },
