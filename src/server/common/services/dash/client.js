@@ -2,7 +2,7 @@ import * as api from './api.js'
 
 /**
  * @typedef {Object} DownloadResponse
- * @property {string} fieldName
+ * @property {string} fileName
  */
 
 /**
