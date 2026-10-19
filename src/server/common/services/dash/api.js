@@ -2,13 +2,11 @@ import { createLogger } from '../../helpers/logging/logger.js'
 import { config } from '../../../../config/config.js'
 import { DataLakeServiceClient } from '@azure/storage-file-datalake'
 import { DefaultAzureCredential } from '@azure/identity'
-import fs from 'fs'
 import { buffer } from 'stream/consumers'
 
 const logger = createLogger()
 
 function GetDataLakeServiceClientAD () {
-
   const dataLakeServiceClient = new DataLakeServiceClient(
       `https://${config.get('dash.azureAccountName')}.dfs.core.windows.net`,
       new DefaultAzureCredential())
@@ -36,22 +34,21 @@ async function postDownload () {
     logger.info('Completed read')
 
     if (downloadResponse.readableStreamBody) {
-      const downloaded = await buffer(downloadResponse.readableStreamBody);
-      logger.info("Downloaded file content:" + downloaded.toString());  
-      return downloaded;
+      const downloaded = await buffer(downloadResponse.readableStreamBody)
+      logger.info('Downloaded file content:' + downloaded.toString())
+      return downloaded
     }
-    
   } catch (error) {
     if (
-        error.name === "CredentialUnavailableError" ||
-        error.name === "AggregateAuthenticationError" ||
-        error.name === "AuthenticationError"
+      error.name === 'CredentialUnavailableError' ||
+        error.name === 'AggregateAuthenticationError' ||
+        error.name === 'AuthenticationError'
     ) {
-        logger.error("No credential available. " + error.message);
-    } else if (error.code === "Forbidden") {
-        logger.error("Access denied. Check your RBAC role assignments. " + + error.message);
+      logger.error('No credential available. ' + error.message)
+    } else if (error.code === 'Forbidden') {
+      logger.error('Access denied. Check your RBAC role assignments. ' + +error.message)
     } else {
-        logger.error("Unexpected error:" + error.message);
+      logger.error('Unexpected error:' + error.message)
     }
 
     throw new Error('Dash file download request failed')

@@ -12,6 +12,6 @@ import * as api from './api.js'
 async function downloadFile () {
   const client = api
   const downloadedFile = client.download()
-  return downloadedFile;
+  return downloadedFile
 }
 export { downloadFile }
