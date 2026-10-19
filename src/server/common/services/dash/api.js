@@ -3,11 +3,11 @@ import { config } from '../../../../config/config.js'
 import { DataLakeServiceClient } from '@azure/storage-file-datalake'
 import { DefaultAzureCredential } from '@azure/identity'
 import fs from 'fs'
+import { buffer } from 'stream/consumers'
 
 const logger = createLogger()
 
 function GetDataLakeServiceClientAD () {
-  logger.info('Entered GetDataLakeServiceClientAD')
 
   const dataLakeServiceClient = new DataLakeServiceClient(
       `https://${config.get('dash.azureAccountName')}.dfs.core.windows.net`,
@@ -20,52 +20,50 @@ function GetDataLakeServiceClientAD () {
 
 /**
  * //@param {string} filepath
+ * @returns {Promise<object>}
  */
 async function postDownload () {
   const dataLakeServiceClient = GetDataLakeServiceClientAD()
 
-  logger.info('Before getFileSystemClient')
   const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`)
   logger.info('Completed getFileSystemClient')
 
   try {
-    logger.info('Before getFileClient')
     const fileClient = fileSystemClient.getFileClient(`${config.get('dash.azureFilePath')}`)
     logger.info('Completed getFileClient')
 
     const downloadResponse = await fileClient.read()
     logger.info('Completed read')
 
-    const downloaded = await streamToString(downloadResponse.readableStreamBody)
-    logger.info('Completed streamToString')
-
-    async function streamToString (readableStream) {
-      return new Promise((resolve, reject) => {
-        const chunks = []
-        readableStream.on('data', (data) => {
-          chunks.push(data.toString())
-        })
-        readableStream.on('end', () => {
-          resolve(chunks.join(''))
-        })
-        readableStream.on('error', reject)
-      })
+    if (downloadResponse.readableStreamBody) {
+      const downloaded = await buffer(downloadResponse.readableStreamBody);
+      logger.info("Downloaded file content:" + downloaded.toString());  
+      return downloaded;
+    }
+    
+  } catch (error) {
+    if (
+        error.name === "CredentialUnavailableError" ||
+        error.name === "AggregateAuthenticationError" ||
+        error.name === "AuthenticationError"
+    ) {
+        logger.error("No credential available. " + error.message);
+    } else if (error.code === "Forbidden") {
+        logger.error("Access denied. Check your RBAC role assignments. " + + error.message);
+    } else {
+        logger.error("Unexpected error:" + error.message);
     }
 
-    fs.writeFile('mytestfiledownloaded.txt', downloaded, (err) => {
-      if (err) throw err
-    })
-  } catch (err) {
-    const errorCode = err?.code ?? 'NO_ERROR_CODE'
-    logger.error(errorCode)
+    throw new Error('Dash file download request failed')
   }
 }
 
 /**
  * //@param {string} filepath
+ * @returns {Promise<import('./client.js').DownloadResponse>}
  */
 async function download () {
-  postDownload()
+  return postDownload()
 }
 
 export { download }
