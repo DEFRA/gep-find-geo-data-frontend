@@ -58,8 +58,9 @@ async function postDownload (id, fileName) {
       return {
         body: downloaded,
         headers: {
-          filename: fileName,
-          'Content-Type': fileProperties.contentType
+          filename: "$fileName",
+          'Content-Type': fileProperties.contentType,
+          'Content-Disposition': 'attachment'
         }
       }
     }
