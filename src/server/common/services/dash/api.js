@@ -1,42 +1,67 @@
+import Boom from '@hapi/boom'
 import { createLogger } from '../../helpers/logging/logger.js'
 import { config } from '../../../../config/config.js'
 import { DataLakeServiceClient } from '@azure/storage-file-datalake'
 import { DefaultAzureCredential } from '@azure/identity'
 import { buffer } from 'stream/consumers'
+import { getRecord } from '../geonetwork/client.js'
 
 const logger = createLogger()
+
+/**
+ * @param {string} id
+ * @param {string} fileName
+ * @returns {Promise<string>} filepath
+ */
+async function GetDatasetFilepath (id, fileName) {
+  const record = await getRecord(id)
+  if (!record) {
+    throw Boom.notFound()
+  }
+
+  for (const link of record.links) {
+    if (link['name'] === fileName) {
+      return link['url']
+    }
+  }
+
+  return 'Dash file link not found'
+}
 
 function GetDataLakeServiceClientAD () {
   const dataLakeServiceClient = new DataLakeServiceClient(
       `https://${config.get('dash.azureAccountName')}.dfs.core.windows.net`,
       new DefaultAzureCredential())
 
-  logger.info('Created GetDataLakeServiceClientAD')
-
   return dataLakeServiceClient
 }
 
 /**
- * //@param {string} filepath
+ * @param {string} id
+ * @param {string} fileName
  * @returns {Promise<object>}
  */
-async function postDownload () {
+async function postDownload (id, fileName) {
+  const filePath = await GetDatasetFilepath(id, fileName)
   const dataLakeServiceClient = GetDataLakeServiceClientAD()
-
   const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`)
-  logger.info('Completed getFileSystemClient')
 
   try {
-    const fileClient = fileSystemClient.getFileClient(`${config.get('dash.azureFilePath')}`)
-    logger.info('Completed getFileClient')
-
+    const fileClient = fileSystemClient.getFileClient(filePath)
+    const fileProperties = await fileClient.getProperties()
     const downloadResponse = await fileClient.read()
-    logger.info('Completed read')
 
     if (downloadResponse.readableStreamBody) {
       const downloaded = await buffer(downloadResponse.readableStreamBody)
-      logger.info('Downloaded file content:' + downloaded.toString())
-      return downloaded
+
+      return {
+        body: downloaded,
+        headers: {
+          filename: '$fileName',
+          'Content-Type': fileProperties.contentType,
+          'Content-Disposition': 'attachment'
+        }
+      }
     }
   } catch (error) {
     if (
@@ -56,11 +81,12 @@ async function postDownload () {
 }
 
 /**
- * //@param {string} filepath
+ * @param {string} id
+ * @param {string} fileName
  * @returns {Promise<import('./client.js').DownloadResponse>}
  */
-async function download () {
-  return postDownload()
+async function download (id, fileName) {
+  return postDownload(id, fileName)
 }
 
 export { download }
