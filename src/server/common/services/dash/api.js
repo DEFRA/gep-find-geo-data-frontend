@@ -21,7 +21,10 @@ async function GetDatasetFilepath (id, fileName) {
 
   for (const link of record.links) {
     if (link['name'] === fileName) {
-      return link['url']
+      const splitString = link['url'].split('/')
+      const index = splitString.indexOf("gep_raw_data")
+
+      return link['url'].slice(index)
     }
   }
 
@@ -62,7 +65,14 @@ async function postDownload (id, fileName) {
     if (downloadResponse.readableStreamBody) {
       const downloaded = await buffer(downloadResponse.readableStreamBody)
 
-      return downloaded
+      return {
+        body: downloaded,
+        headers: {
+          filename: '$fileName',
+          'Content-Type': fileProperties.contentType,
+          'Content-Disposition': 'attachment'
+        }
+      }
     }
   } catch (error) {
     if (
