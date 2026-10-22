@@ -325,13 +325,13 @@ export const config = convict({
     azureAccountName: {
       doc: 'Azure Storage Account Name',
       format: String,
-      default: 'devdapdlkst2401',
+      default: 'test',
       env: 'AZURE_STORAGE_ACCOUNT_NAME'
     },
     azureFileSystem: {
       doc: 'Azure File System Name',
       format: String,
-      default: 'base-res-devtestbase1',
+      default: 'test',
       env: 'AZURE_FILE_SYSTEM'
     }
   }
