@@ -13,19 +13,19 @@ const logger = createLogger()
  * @param {string} fileName
  * @returns {Promise<string>} filepath
  */
-async function GetDatasetFilepath(id, fileName) {
+async function GetDatasetFilepath (id, fileName) {
   const record = await getRecord(id)
   if (!record) {
     throw Boom.notFound()
   }
 
   for (const link of record.links) {
-    if (link['name'] == fileName) {
+    if (link['name'] === fileName) {
       return link['url']
     }
   }
 
-  return 'FILEPATH NOT FOUND'
+  return 'Dash file link not found'
 }
 
 function GetDataLakeServiceClientAD () {
@@ -42,7 +42,6 @@ function GetDataLakeServiceClientAD () {
  * @returns {Promise<object>}
  */
 async function postDownload (id, fileName) {
-
   const filePath = await GetDatasetFilepath(id, fileName)
   const dataLakeServiceClient = GetDataLakeServiceClientAD()
   const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`)
@@ -58,7 +57,7 @@ async function postDownload (id, fileName) {
       return {
         body: downloaded,
         headers: {
-          filename: "$fileName",
+          filename: '$fileName',
           'Content-Type': fileProperties.contentType,
           'Content-Disposition': 'attachment'
         }

@@ -20,7 +20,7 @@ export const datasetController = {
     )
   }
 }
- 
+
 export const downloadController = {
   async handler (request) {
     const { id, fileName } = request.params
