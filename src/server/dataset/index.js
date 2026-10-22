@@ -35,7 +35,7 @@ export const download = {
       server.route([
         {
           method: 'GET',
-          path: '/dataset/download',
+          path: '/dataset/download/{id}/{fileName}',
           options: {
             validate: {
               failAction: () => {

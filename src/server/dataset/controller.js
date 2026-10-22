@@ -20,10 +20,10 @@ export const datasetController = {
     )
   }
 }
-
+ 
 export const downloadController = {
   async handler (request) {
-    // const { filepath } = request.params
-    return await dash.downloadFile()
+    const { id, fileName } = request.params
+    return await dash.downloadFile(id, fileName)
   }
 }

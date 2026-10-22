@@ -2,16 +2,15 @@ import * as api from './api.js'
 
 /**
  * @typedef {Object} DownloadResponse
- * @property {string} fileName
  */
 
 /**
- * //@param {string} [filepath]
+ * @param {string} [id]
+ * @param {string} [fileName]
  * @returns {Promise<DownloadResponse>}
  */
-async function downloadFile () {
+async function downloadFile (id, fileName) {
   const client = api
-  const downloadedFile = client.download()
-  return downloadedFile
+  return client.download(id, fileName)
 }
 export { downloadFile }

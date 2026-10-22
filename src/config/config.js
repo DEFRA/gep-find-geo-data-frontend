@@ -331,14 +331,8 @@ export const config = convict({
     azureFileSystem: {
       doc: 'Azure File System Name',
       format: String,
-      default: 'test',
+      default: 'base-res-devtestbase1',
       env: 'AZURE_FILE_SYSTEM'
-    },
-    azureFilePath: {
-      doc: 'Azure File Path',
-      format: String,
-      default: 'test',
-      env: 'AZURE_FILE_PATH'
     }
   }
 })
