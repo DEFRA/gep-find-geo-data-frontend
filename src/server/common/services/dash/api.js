@@ -48,20 +48,21 @@ async function postDownload (id, fileName) {
 
   try {
     const fileClient = fileSystemClient.getFileClient(filePath)
+    logger.info(`Filepath ${filePath}`)
     const fileProperties = await fileClient.getProperties()
+
+    if (fileProperties != null && fileProperties?.contentType != null) {
+      logger.info(`Fileproperties content type ${fileProperties.contentType}`)
+    } else {
+      logger.info('FileProperties or content type does not exist')
+    }
+
     const downloadResponse = await fileClient.read()
 
     if (downloadResponse.readableStreamBody) {
       const downloaded = await buffer(downloadResponse.readableStreamBody)
 
-      return {
-        body: downloaded,
-        headers: {
-          filename: '$fileName',
-          'Content-Type': fileProperties.contentType,
-          'Content-Disposition': 'attachment'
-        }
-      }
+      return downloaded
     }
   } catch (error) {
     if (
