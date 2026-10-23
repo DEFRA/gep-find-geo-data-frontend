@@ -65,14 +65,7 @@ async function postDownload (id, fileName) {
     if (downloadResponse.readableStreamBody) {
       const downloaded = await buffer(downloadResponse.readableStreamBody)
 
-      return {
-        body: downloaded,
-        headers: {
-          filename: '$fileName',
-          'Content-Type': fileProperties.contentType,
-          'Content-Disposition': 'attachment'
-        }
-      }
+      return downloaded
     }
   } catch (error) {
     if (
