@@ -21,7 +21,10 @@ async function GetDatasetFilepath (id, fileName) {
 
   for (const link of record.links) {
     if (link['name'] === fileName) {
-      return link['url']
+      const splitString = link['url'].split('/')
+      const index = splitString.indexOf('gep_raw_data')
+
+      return splitString.slice(index).join('/')
     }
   }
 
