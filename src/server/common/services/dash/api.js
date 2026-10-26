@@ -3,7 +3,6 @@ import { createLogger } from '../../helpers/logging/logger.js'
 import { config } from '../../../../config/config.js'
 import { DataLakeServiceClient } from '@azure/storage-file-datalake'
 import { DefaultAzureCredential } from '@azure/identity'
-import { buffer } from 'stream/consumers'
 import { getRecord } from '../geonetwork/client.js'
 
 const logger = createLogger()
@@ -42,7 +41,7 @@ function GetDataLakeServiceClientAD () {
 /**
  * @param {string} id
  * @param {string} fileName
- * @returns {Promise<object>}
+ * @returns {Promise<import('./client.js').DownloadResponse>}
  */
 async function postDownload (id, fileName) {
   const filePath = await GetDatasetFilepath(id, fileName)
@@ -51,21 +50,13 @@ async function postDownload (id, fileName) {
 
   try {
     const fileClient = fileSystemClient.getFileClient(filePath)
-    logger.info(`Filepath ${filePath}`)
     const fileProperties = await fileClient.getProperties()
 
-    if (fileProperties != null && fileProperties?.contentType != null) {
-      logger.info(`Fileproperties content type ${fileProperties.contentType}`)
-    } else {
-      logger.info('FileProperties or content type does not exist')
-    }
+    const downloadResponse = (await fileClient.read()).readableStreamBody
 
-    const downloadResponse = await fileClient.read()
-
-    if (downloadResponse.readableStreamBody) {
-      const downloaded = await buffer(downloadResponse.readableStreamBody)
-
-      return downloaded
+    return {
+      file: downloadResponse,
+      contentType: fileProperties.contentType
     }
   } catch (error) {
     if (
