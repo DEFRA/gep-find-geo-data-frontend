@@ -58,10 +58,9 @@ async function postDownload (id, fileName) {
       file: downloadResponse,
       contentType: fileProperties.contentType
     }
-
   } catch (error) {
     if (
-        error.name === 'CredentialUnavailableError' ||
+      error.name === 'CredentialUnavailableError' ||
         error.name === 'AggregateAuthenticationError' ||
         error.name === 'AuthenticationError'
     ) {

@@ -1,9 +1,8 @@
-import Stream from 'stream'
 import * as api from './api.js'
 
 /**
  * @typedef {Object} DownloadResponse
- * @property {Stream} file
+ * @property {import('@azure/storage-file-datalake').NodeJSReadableStream} file
  * @property {string} contentType
  */
 
