@@ -45,14 +45,19 @@ function GetDataLakeServiceClientAD () {
  */
 async function postDownload (id, fileName) {
   const filePath = await GetDatasetFilepath(id, fileName)
+  logger.debug(`Dash download file path: ${filePath}`)
   const dataLakeServiceClient = GetDataLakeServiceClientAD()
   const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`)
 
   try {
     const fileClient = fileSystemClient.getFileClient(filePath)
+    logger.debug('Dash download request to getProperties started')
     const fileProperties = await fileClient.getProperties()
+    logger.debug('Dash download request to getProperties completed')
 
+    logger.debug('Dash download request to read started')
     const downloadResponse = (await fileClient.read()).readableStreamBody
+    logger.debug('Dash download request to getProperties completed')
 
     return {
       file: downloadResponse,
@@ -67,7 +72,7 @@ async function postDownload (id, fileName) {
     ) {
       logger.error('No credential available. ' + error.message)
     } else if (error.code === 'Forbidden') {
-      logger.error('Access denied. Check your RBAC role assignments. ' + +error.message)
+      logger.error('Access denied. Check your RBAC role assignments. ' + error.message)
     } else {
       logger.error('Unexpected error:' + error.message)
     }
