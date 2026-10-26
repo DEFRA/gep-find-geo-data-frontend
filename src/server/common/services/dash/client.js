@@ -4,6 +4,7 @@ import * as api from './api.js'
  * @typedef {Object} DownloadResponse
  * @property {import('@azure/storage-file-datalake').NodeJSReadableStream} file
  * @property {string} contentType
+ * @property {string} fileName
  */
 
 /**
