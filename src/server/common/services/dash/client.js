@@ -1,7 +1,10 @@
+import Stream from 'stream'
 import * as api from './api.js'
 
 /**
  * @typedef {Object} DownloadResponse
+ * @property {Stream} file
+ * @property {string} contentType
  */
 
 /**

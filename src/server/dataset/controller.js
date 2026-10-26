@@ -22,8 +22,11 @@ export const datasetController = {
 }
 
 export const downloadController = {
-  async handler (request) {
+  async handler (request, h) {
     const { id, fileName } = request.params
-    return await dash.downloadFile(id, fileName)
+
+    const downloadResponse = await dash.downloadFile(id, fileName)
+    
+    return h.response(downloadResponse.file).type(downloadResponse.contentType).header('Content-Disposition',`attachment; filename*=UTF-8''${fileName}`)
   }
 }
