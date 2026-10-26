@@ -27,6 +27,6 @@ export const downloadController = {
 
     const downloadResponse = await dash.downloadFile(id, fileName)
 
-    return h.response(downloadResponse.file).type(downloadResponse.contentType).header('Content-Disposition', `attachment; filename*=UTF-8''${fileName}`)
+    return h.response(downloadResponse.file).type(downloadResponse.contentType).header('Content-Disposition', `attachment; filename*=UTF-8''${downloadResponse.fileName}`)
   }
 }

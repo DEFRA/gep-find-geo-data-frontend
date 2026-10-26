@@ -56,7 +56,8 @@ async function postDownload (id, fileName) {
 
     return {
       file: downloadResponse,
-      contentType: fileProperties.contentType
+      contentType: fileProperties.contentType,
+      fileName: filePath.split('/').slice(-1)[0]
     }
   } catch (error) {
     if (
