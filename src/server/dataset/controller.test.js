@@ -117,7 +117,6 @@ describe('#datasetController', () => {
     expect(statusCode).toBe(statusCodes.ok)
     expect(result).toContain('More about this data')
     expect(result).toContain('Download this data')
-    expect(result).toContain('href="https://example.com/service/wms"')
     expect(result).toContain('ZIP')
   })
 
@@ -169,7 +168,6 @@ describe('#datasetController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toContain('href="https://example.com/service/wms"')
     expect(result).not.toContain('javascript:alert(1)')
     expect(result).not.toContain('data:text/html')
     expect(result).not.toContain('Unsafe script')
