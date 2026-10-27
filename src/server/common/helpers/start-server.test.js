@@ -11,8 +11,6 @@ describe('#startServer', () => {
   let createServerImport
 
   beforeAll(async () => {
-    vi.stubEnv('PORT', '3097')
-
     createServerImport = await import('../../server.js')
     startServerImport = await import('./start-server.js')
 
@@ -28,7 +26,7 @@ describe('#startServer', () => {
     let server
 
     afterAll(async () => {
-      await server.stop({ timeout: 0 })
+      await server?.stop({ timeout: 0 })
     })
 
     test('Should start up server as expected', async () => {
