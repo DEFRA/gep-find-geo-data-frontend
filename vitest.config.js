@@ -5,6 +5,13 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     clearMocks: true,
+    // Keep tests independent of the running app and developer shell settings.
+    env: {
+      PORT: '0',
+      LOG_FORMAT: 'ecs',
+      SESSION_CACHE_ENGINE: 'memory',
+      GOOGLE_TAG_MANAGER_KEY: ''
+    },
     coverage: {
       provider: 'v8',
       reportsDirectory: './coverage',
