@@ -228,11 +228,11 @@ async function postSearch (body) {
     }))
   } catch (err) {
     if (err.name === 'TimeoutError' || err.name === 'AbortError') {
-      logger.error({ timeoutMs: REQUEST_TIMEOUT_MS }, 'GeoNetwork search timed out')
+      logger.error({ err, url, timeoutMs: REQUEST_TIMEOUT_MS }, 'GeoNetwork search timed out')
       throw new Error('GeoNetwork search timed out')
     }
 
-    logger.error('GeoNetwork search request failed')
+    logger.error({ err, url }, 'GeoNetwork search request failed')
 
     throw new Error('GeoNetwork search request failed')
   }
@@ -242,7 +242,7 @@ async function postSearch (body) {
   if (statusCode !== statusCodes.ok) {
     await responseBody.text()
     logger.error(
-      { statusCode },
+      { statusCode, url },
       'GeoNetwork search returned non-200'
     )
     throw new Error(`GeoNetwork search failed with status ${statusCode}`)

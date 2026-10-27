@@ -44,6 +44,7 @@ const sessionStrategy = {
             ) ?? userSession
           } catch (error) {
             request.logger.error(
+              error,
               'User session token refresh failed during validation'
             )
             return { isValid: false }

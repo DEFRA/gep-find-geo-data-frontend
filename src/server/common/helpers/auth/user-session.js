@@ -123,7 +123,7 @@ async function updateUserSession (request, refreshTokenResponse, previousSession
   const sessionId = request.state?.userSessionCookie?.sessionId
   await request.server.session.set(sessionId, session)
 
-  request.logger.info('User session refreshed')
+  request.logger.info(`User session refreshed, UserId: ${session.id}`)
 
   return session
 }
@@ -139,7 +139,7 @@ async function refreshTokenIfExpired (refreshToken, request, userSession) {
     return undefined
   }
 
-  request.logger.info('Session token expired, attempting refresh')
+  request.logger.info(`Token for UserId: ${userSession.id} has expired, attempting to refresh`)
 
   try {
     const refreshTokenResponse = await refreshToken(userSession.refreshToken)

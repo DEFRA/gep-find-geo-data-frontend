@@ -68,11 +68,11 @@ async function postDownload (id, fileName) {
         error.name === 'AggregateAuthenticationError' ||
         error.name === 'AuthenticationError'
     ) {
-      logger.error('Azure credentials unavailable')
+      logger.error('No credential available. ' + error.message)
     } else if (error.code === 'Forbidden') {
-      logger.error('Azure access denied')
+      logger.error('Access denied. Check your RBAC role assignments. ' + error.message)
     } else {
-      logger.error('Azure download failed')
+      logger.error('Unexpected error:' + error.message)
     }
 
     throw new Error('Dash file download request failed')

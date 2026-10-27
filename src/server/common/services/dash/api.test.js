@@ -82,7 +82,7 @@ describe('Dash download', () => {
     'reports %s credential failures', async (name) => {
       mocks.getProperties.mockRejectedValue(Object.assign(new Error('credentials failed'), { name }))
       await expect(download('record-id', 'data.csv')).rejects.toThrow('Dash file download request failed')
-      expect(mocks.error).toHaveBeenCalledWith('Azure credentials unavailable')
+      expect(mocks.error).toHaveBeenCalledWith('No credential available. credentials failed')
       expect(mocks.read).not.toHaveBeenCalled()
     }
   )
@@ -90,12 +90,12 @@ describe('Dash download', () => {
   test('reports forbidden downloads', async () => {
     mocks.read.mockRejectedValue(Object.assign(new Error('forbidden'), { code: 'Forbidden' }))
     await expect(download('record-id', 'data.csv')).rejects.toThrow('Dash file download request failed')
-    expect(mocks.error).toHaveBeenCalledWith('Azure access denied')
+    expect(mocks.error).toHaveBeenCalledWith('Access denied. Check your RBAC role assignments. forbidden')
   })
 
   test('reports unexpected read failures', async () => {
     mocks.read.mockRejectedValue(new Error('connection lost'))
     await expect(download('record-id', 'data.csv')).rejects.toThrow('Dash file download request failed')
-    expect(mocks.error).toHaveBeenCalledWith('Azure download failed')
+    expect(mocks.error).toHaveBeenCalledWith('Unexpected error:connection lost')
   })
 })

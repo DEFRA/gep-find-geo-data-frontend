@@ -18,10 +18,10 @@ const authCallbackController = {
       const sessionId = randomUUID()
 
       request.logger.info('Creating user session')
-      await createUserSession(request, sessionId)
+      const userSession = await createUserSession(request, sessionId)
 
       request.sessionCookie.set({ sessionId })
-      request.logger.info('User logged in')
+      request.logger.info(`User logged in UserId: ${userSession.id}`)
 
       if (request.auth.credentials.referrer) {
         redirect = request.auth.credentials.referrer

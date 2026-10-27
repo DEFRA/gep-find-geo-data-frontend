@@ -1,6 +1,7 @@
 import { vi } from 'vitest'
 
 import hapi from '@hapi/hapi'
+import { config } from '../../../config/config.js'
 import { statusCodes } from '../constants/status-codes.js'
 
 describe('#startServer', () => {
@@ -44,6 +45,23 @@ describe('#startServer', () => {
       expect(result).toEqual({ message: 'success' })
       expect(statusCode).toBe(statusCodes.ok)
     })
+  })
+
+  test('logs the configured GeoNetwork URL when using the live client', async () => {
+    const originalGet = config.get.bind(config)
+    const get = vi.spyOn(config, 'get').mockImplementation((key) => {
+      if (key === 'geonetwork.useMock') return false
+      if (key === 'geonetwork.apiUrl') return 'https://geonetwork.example.test/srv/api'
+      return originalGet(key)
+    })
+    const server = { start: vi.fn(), logger: { info: vi.fn() } }
+    createServerSpy.mockResolvedValueOnce(server)
+    try {
+      await startServerImport.startServer()
+      expect(server.logger.info).toHaveBeenCalledWith('GeoNetwork client: live at https://geonetwork.example.test/srv/api')
+    } finally {
+      get.mockRestore()
+    }
   })
 
   describe('When server start fails', () => {

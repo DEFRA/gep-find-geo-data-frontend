@@ -30,7 +30,7 @@ export class CognitoFederatedCredentialProvider {
       logger.info('Cognito token received')
       return result.Token
     } catch (e) {
-      logger.error('Failed to get Cognito Token')
+      logger.error(e, 'Failed to get Cognito Token')
       throw e
     }
   }
@@ -62,7 +62,7 @@ export function tokenHasExpired (token) {
     const decodedToken = jwt.token.decode(token)
     jwt.token.verifyTime(decodedToken)
   } catch (e) {
-    logger.debug('Cognito token has expired')
+    logger.debug(e, 'Cognito token has expired')
     return true
   }
   return false

@@ -16,7 +16,7 @@ describe('#authCallbackController', () => {
 
   test('Should create session and redirect to referrer', async () => {
     mockCreateUserSession.mockResolvedValue({
-      id: 'user-id',
+      id: '92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
       displayName: 'Test User',
       isAuthenticated: true,
       accessToken: 'access-token',
@@ -41,6 +41,11 @@ describe('#authCallbackController', () => {
     await authCallbackController.handler(request, h)
 
     expect(mockCreateUserSession).toHaveBeenCalledWith(request, expect.any(String))
+    expect(request.logger.info).toHaveBeenCalledWith('User logged in UserId: 92b43165-0dd0-4e69-a712-1e49bb5aa0d0')
+    const logs = JSON.stringify(request.logger.info.mock.calls)
+    expect(logs).not.toContain('Test User')
+    expect(logs).not.toContain('access-token')
+    expect(logs).not.toContain('refresh-token')
     expect(request.sessionCookie.set).toHaveBeenCalledWith({
       sessionId: expect.any(String)
     })
