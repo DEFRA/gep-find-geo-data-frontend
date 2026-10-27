@@ -211,19 +211,16 @@
                 url: link.url
               }) }}
             {% endset %}
-            {% set openHtml %}<a href="{{ link.url }}" class="govuk-link js-mock-link">Open link</a>{% endset %}
             {% set serviceRows = (serviceRows.push([
               { text: link.name, classes: "app-dataset-data__name" },
-              { html: copyHtml, classes: "app-dataset-data__col--fit app-copy-link-table-cell" },
-              { html: openHtml, classes: "app-dataset-data__col--action" }
+              { html: copyHtml, classes: "app-dataset-data__col--fit app-copy-link-table-cell" }
             ]), serviceRows) %}
           {% endfor %}
 
           {{ govukTable({
             head: [
               { html: '<span class="govuk-visually-hidden">Name</span>' },
-              { text: "Link", classes: "app-dataset-data__col--fit app-copy-link-table-cell" },
-              { text: "Action", classes: "app-dataset-data__col--action" }
+              { text: "Link", classes: "app-dataset-data__col--fit app-copy-link-table-cell" }
             ],
             rows: serviceRows
           }) }}
