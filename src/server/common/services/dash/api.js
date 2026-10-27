@@ -1,5 +1,5 @@
 import Boom from '@hapi/boom'
-import { createLogger } from '../../helpers/logging/logger.js'
+import { createLogger, logExternalCall } from '../../helpers/logging/logger.js'
 import { config } from '../../../../config/config.js'
 import { DataLakeServiceClient } from '@azure/storage-file-datalake'
 import { DefaultAzureCredential } from '@azure/identity'
@@ -13,6 +13,7 @@ const logger = createLogger()
  * @returns {Promise<string>} filepath
  */
 async function GetDatasetFilepath (id, fileName) {
+  logger.debug('Resolving dataset download link')
   const record = await getRecord(id)
   if (!record) {
     throw Boom.notFound()
@@ -23,10 +24,12 @@ async function GetDatasetFilepath (id, fileName) {
       const splitString = link['url'].split('/')
       const index = splitString.indexOf('gep_raw_data')
 
+      logger.debug('Dataset download link resolved')
       return splitString.slice(index).join('/')
     }
   }
 
+  logger.debug('Dataset download link not found')
   return 'Dash file link not found'
 }
 
@@ -45,19 +48,14 @@ function GetDataLakeServiceClientAD () {
  */
 async function postDownload (id, fileName) {
   const filePath = await GetDatasetFilepath(id, fileName)
-  logger.debug(`Dash download file path: ${filePath}`)
   const dataLakeServiceClient = GetDataLakeServiceClientAD()
   const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`)
 
   try {
     const fileClient = fileSystemClient.getFileClient(filePath)
-    logger.debug('Dash download request to getProperties started')
-    const fileProperties = await fileClient.getProperties()
-    logger.debug('Dash download request to getProperties completed')
-
-    logger.debug('Dash download request to read started')
-    const downloadResponse = (await fileClient.read()).readableStreamBody
-    logger.debug('Dash download request to getProperties completed')
+    const fileProperties = await logExternalCall('Azure Data Lake', 'getProperties', () => fileClient.getProperties())
+    const downloadResponse = (await logExternalCall('Azure Data Lake', 'read', () => fileClient.read())).readableStreamBody
+    logger.debug('Dataset download stream opened')
 
     return {
       file: downloadResponse,
@@ -70,11 +68,11 @@ async function postDownload (id, fileName) {
         error.name === 'AggregateAuthenticationError' ||
         error.name === 'AuthenticationError'
     ) {
-      logger.error('No credential available. ' + error.message)
+      logger.error('Azure credentials unavailable')
     } else if (error.code === 'Forbidden') {
-      logger.error('Access denied. Check your RBAC role assignments. ' + error.message)
+      logger.error('Azure access denied')
     } else {
-      logger.error('Unexpected error:' + error.message)
+      logger.error('Azure download failed')
     }
 
     throw new Error('Dash file download request failed')

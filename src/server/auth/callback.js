@@ -18,19 +18,17 @@ const authCallbackController = {
       const sessionId = randomUUID()
 
       request.logger.info('Creating user session')
-      const userSession = await createUserSession(request, sessionId)
+      await createUserSession(request, sessionId)
 
       request.sessionCookie.set({ sessionId })
-      request.logger.info(
-        `User logged in UserId: ${userSession.id} displayName: ${userSession.displayName}`
-      )
+      request.logger.info('User logged in')
 
       if (request.auth.credentials.referrer) {
         redirect = request.auth.credentials.referrer
       }
     }
 
-    request.logger.info(`Login complete, redirecting user to ${redirect}`)
+    request.logger.info('Login complete')
     return redirectWithRefresh(h, redirect)
   }
 }

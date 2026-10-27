@@ -89,7 +89,7 @@ describe('#buildRedisClient', () => {
       client._trigger('error', error)
 
       expect(mockLoggerError).toHaveBeenCalledWith(
-        `Redis connection error ${error}`
+        'Redis connection failed'
       )
     })
   })

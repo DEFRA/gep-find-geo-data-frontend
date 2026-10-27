@@ -1,7 +1,7 @@
 import { sessionStrategy } from './session-strategy.js'
 import { refreshTokenIfExpired } from './user-session.js'
 
-vi.mock('./user-session.js')
+vi.mock('./user-session.js', () => ({ refreshTokenIfExpired: vi.fn() }))
 const mockRefreshTokenIfExpired = vi.mocked(refreshTokenIfExpired)
 
 vi.mock('@hapi/cookie', () => ({
@@ -148,7 +148,6 @@ describe('#sessionStrategy', () => {
 
       expect(result.isValid).toBe(false)
       expect(request.logger.error).toHaveBeenCalledWith(
-        refreshError,
         'User session token refresh failed during validation'
       )
     })

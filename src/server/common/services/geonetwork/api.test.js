@@ -17,6 +17,7 @@ vi.mock('../../../../config/config.js', () => ({
 }))
 
 vi.mock('../../helpers/logging/logger.js', () => ({
+  logExternalCall: (_service, _operation, call) => call(),
   createLogger: () => ({
     info: vi.fn(),
     error: vi.fn(),

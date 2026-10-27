@@ -1,8 +1,8 @@
 import { request } from 'undici'
+import { createLogger, logExternalCall } from '../../helpers/logging/logger.js'
 
 import { config } from '../../../../config/config.js'
 import { statusCodes } from '../../constants/status-codes.js'
-import { createLogger } from '../../helpers/logging/logger.js'
 import {
   filterNames,
   fields,
@@ -217,7 +217,7 @@ async function postSearch (body) {
 
   let response
   try {
-    response = await request(url, {
+    response = await logExternalCall('GeoNetwork', 'search', () => request(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -225,32 +225,14 @@ async function postSearch (body) {
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
-    })
+    }))
   } catch (err) {
-    const errorCode = err?.code ?? 'NO_ERROR_CODE'
-
     if (err.name === 'TimeoutError' || err.name === 'AbortError') {
-      logger.error(
-        {
-          err,
-          url,
-          timeoutMs: REQUEST_TIMEOUT_MS,
-          errorCode
-        },
-        `GeoNetwork search timed out: url=${url}, timeoutMs=${REQUEST_TIMEOUT_MS}, errorName=${err.name}, errorCode=${errorCode}, errorMessage=${err.message}`
-      )
-
+      logger.error({ timeoutMs: REQUEST_TIMEOUT_MS }, 'GeoNetwork search timed out')
       throw new Error('GeoNetwork search timed out')
     }
 
-    logger.error(
-      {
-        err,
-        url,
-        errorCode
-      },
-      `GeoNetwork search request failed: url=${url}, errorName=${err.name}, errorCode=${errorCode}, errorMessage=${err.message}`
-    )
+    logger.error('GeoNetwork search request failed')
 
     throw new Error('GeoNetwork search request failed')
   }
@@ -258,9 +240,9 @@ async function postSearch (body) {
   const { statusCode, body: responseBody } = response
 
   if (statusCode !== statusCodes.ok) {
-    const text = await responseBody.text()
+    await responseBody.text()
     logger.error(
-      { statusCode, url, responseBody: text.slice(0, 1024) },
+      { statusCode },
       'GeoNetwork search returned non-200'
     )
     throw new Error(`GeoNetwork search failed with status ${statusCode}`)
@@ -348,6 +330,7 @@ async function search ({
   sort = 'relevance'
 } = {}) {
   validateSearchOptions({ filters, facets, sort })
+  logger.debug('Searching metadata records')
 
   const body = {
     from,
@@ -360,6 +343,8 @@ async function search ({
   }
 
   const esResponse = await postSearch(body)
+
+  logger.debug({ total: esResponse.hits?.total?.value ?? 0, resultCount: esResponse.hits?.hits?.length ?? 0 }, 'Metadata search completed')
 
   return {
     total: esResponse.hits?.total?.value ?? 0,
@@ -381,6 +366,7 @@ async function getRecord (id) {
 
   const esResponse = await postSearch(body)
   const hit = esResponse.hits?.hits?.[0]
+  logger.debug({ found: Boolean(hit) }, 'Metadata record lookup completed')
   if (!hit) {
     return null
   }

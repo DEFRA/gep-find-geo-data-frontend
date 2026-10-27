@@ -1,4 +1,7 @@
 import { addSeconds, isPast, parseISO } from 'date-fns'
+import { createLogger } from '../logging/logger.js'
+
+const logger = createLogger()
 
 /**
  * @typedef {object} UserSession
@@ -59,6 +62,7 @@ async function clearUserSession (request) {
     request.sessionCookie.clear()
     request.sessionCookie.h.unstate('userSessionCookie')
   }
+  logger.debug('User session cleared')
 }
 
 /**
@@ -88,6 +92,7 @@ async function createUserSession (request, sessionId) {
   }
 
   await request.server.session.set(sessionId, session)
+  logger.debug('User session stored')
   return session
 }
 
@@ -118,9 +123,7 @@ async function updateUserSession (request, refreshTokenResponse, previousSession
   const sessionId = request.state?.userSessionCookie?.sessionId
   await request.server.session.set(sessionId, session)
 
-  request.logger.info(
-    `User session refreshed, UserId: ${session.id}, displayName: ${session.displayName}`
-  )
+  request.logger.info('User session refreshed')
 
   return session
 }
@@ -136,14 +139,13 @@ async function refreshTokenIfExpired (refreshToken, request, userSession) {
     return undefined
   }
 
-  request.logger.info(
-    `Token for user ${userSession.displayName} has expired, attempting to refresh`
-  )
+  request.logger.info('Session token expired, attempting refresh')
 
   try {
     const refreshTokenResponse = await refreshToken(userSession.refreshToken)
     return await updateUserSession(request, refreshTokenResponse, userSession)
   } catch (error) {
+    logger.debug('Clearing user session after token refresh failure')
     await clearUserSession(request)
     throw error
   }

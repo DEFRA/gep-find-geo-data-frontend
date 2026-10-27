@@ -118,6 +118,56 @@ describe('#oidcClient', () => {
       )
     })
 
+    test('builds client authentication with the current federated assertion', async () => {
+      const server = createMockServer()
+      const { getConfig } = getOidcMethods(server)
+      await getConfig()
+
+      const authenticate = openid.Configuration.mock.calls[0][3]
+      const body = new URLSearchParams()
+      authenticate({}, { client_id: 'test-client-id' }, body)
+
+      expect(Object.fromEntries(body)).toEqual({
+        client_id: 'test-client-id',
+        client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+        client_assertion: 'mock-federated-token'
+      })
+    })
+
+    test('refreshes discovery metadata after the cache expires', async () => {
+      const now = vi.spyOn(Date, 'now').mockReturnValue(1000)
+      try {
+        const { getConfig } = getOidcMethods(createMockServer())
+        await getConfig()
+        now.mockReturnValue(1000 + 60 * 60 * 1000 + 1)
+        await getConfig()
+        expect(openid.discovery).toHaveBeenCalledTimes(2)
+      } finally {
+        now.mockRestore()
+      }
+    })
+
+    test('shares discovery across concurrent configuration requests', async () => {
+      let resolveDiscovery
+      openid.discovery.mockReturnValue(new Promise((resolve) => { resolveDiscovery = resolve }))
+      const { getConfig } = getOidcMethods(createMockServer())
+      const first = getConfig()
+      const second = getConfig()
+      await vi.waitFor(() => expect(openid.discovery).toHaveBeenCalledOnce())
+      resolveDiscovery(mockOidcConfig)
+      await Promise.all([first, second])
+      expect(openid.discovery).toHaveBeenCalledOnce()
+    })
+
+    test('retries discovery after a failed request', async () => {
+      const error = new Error('Discovery unavailable')
+      openid.discovery.mockRejectedValueOnce(error)
+      const { getConfig } = getOidcMethods(createMockServer())
+      await expect(getConfig()).rejects.toBe(error)
+      await expect(getConfig()).resolves.toBe(mockOidcConfig)
+      expect(openid.discovery).toHaveBeenCalledTimes(2)
+    })
+
     test('applies execute functions when using cached metadata', async () => {
       const server = createMockServer()
       const { getConfig } = getOidcMethods(server)
