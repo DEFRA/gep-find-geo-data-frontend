@@ -1,7 +1,7 @@
 import { logoutController } from './logout.js'
 import { clearUserSession } from '../common/helpers/auth/user-session.js'
 
-vi.mock('../common/helpers/auth/user-session.js')
+vi.mock('../common/helpers/auth/user-session.js', () => ({ clearUserSession: vi.fn() }))
 vi.mock('../../config/config.js', () => ({
   config: {
     get: vi.fn((key) => {

@@ -1,8 +1,8 @@
 import * as openid from 'openid-client'
+import { createLogger, logExternalCall } from '../logging/logger.js'
 import Boom from '@hapi/boom'
 
 import { config } from '../../../../config/config.js'
-import { createLogger } from '../logging/logger.js'
 import { asExternalUrl } from '../url/url-helpers.js'
 import { getSafeRedirect } from '../get-safe-redirect.js'
 
@@ -34,9 +34,7 @@ function scheme (_server, options) {
   return {
     authenticate: async function (request, h) {
       if (request.query.error) {
-        logger.error(
-          `OIDC authorization error: ${request.query.error} ${request.query.error_description}`
-        )
+        logger.error('OIDC authorization failed')
         return Boom.unauthorized(request.query.error)
       }
 
@@ -97,6 +95,7 @@ async function preLogin (request, oidcConfig, options) {
     referrer
   })
 
+  logger.debug('OIDC authorization redirect prepared')
   return openid.buildAuthorizationUrl(oidcConfig, parameters)
 }
 
@@ -116,11 +115,11 @@ async function postLogin (request, oidcConfig, options) {
   const currentUrl = asExternalUrl(request.url, config.get('appBaseUrl'))
 
   logger.info('Exchanging authorization code for tokens')
-  const token = await openid.authorizationCodeGrant(oidcConfig, currentUrl, {
+  const token = await logExternalCall('OIDC', 'authorizationCodeGrant', () => openid.authorizationCodeGrant(oidcConfig, currentUrl, {
     pkceCodeVerifier: codeVerifier,
     expectedNonce: nonce,
     idTokenExpected: true
-  })
+  }))
 
   const expiresIn = token.expiresIn()
   if (!expiresIn || !token.refresh_token) {
