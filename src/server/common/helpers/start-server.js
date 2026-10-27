@@ -7,6 +7,9 @@ async function startServer () {
 
   const useMock = config.get('geonetwork.useMock')
   server.logger.info('Server started successfully')
+  server.logger.info(
+    `Access your frontend on http://localhost:${config.get('port')}`
+  )
   server.logger.info(useMock ? 'GeoNetwork client: mock' : 'GeoNetwork client: live')
 
   return server

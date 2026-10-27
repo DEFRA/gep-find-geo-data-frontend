@@ -27,7 +27,7 @@ export function context (request) {
     try {
       webpackManifest = JSON.parse(readFileSync(manifestPath, 'utf-8'))
     } catch (error) {
-      logger.error('Webpack manifest unavailable')
+      logger.error(error, `Webpack ${path.basename(manifestPath)} not found`)
     }
   }
 
