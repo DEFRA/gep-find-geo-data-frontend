@@ -28,7 +28,7 @@ const authCallbackController = {
       }
     }
 
-    request.logger.info('Login complete')
+    request.logger.info(`Login complete, redirecting user to ${redirect}`)
     return redirectWithRefresh(h, redirect)
   }
 }
