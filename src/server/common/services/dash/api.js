@@ -25,7 +25,7 @@ async function GetDatasetFilepath (id, fileName) {
       const index = splitString.indexOf('gep_raw_data')
 
       logger.debug('Dataset download link resolved')
-      return splitString.slice(index).join('/')
+      return decodeURIComponent(splitString.slice(index).join('/'))
     }
   }
 
