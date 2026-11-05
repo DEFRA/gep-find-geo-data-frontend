@@ -37,8 +37,9 @@
   }
 }
 
+// Just fits "Download", so action links line up across tables and sit flush right
 .app-dataset-data__col--action {
-  width: 6em;
+  width: 4.5em;
   white-space: nowrap;
 }
 

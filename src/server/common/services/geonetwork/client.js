@@ -72,6 +72,7 @@ import { config } from '../../../../config/config.js'
  * @property {string | null} accessLevel
  * @property {string | null} updateFrequency
  * @property {string[]} categories
+ * @property {string[]} [catalogueCategories]
  * @property {string | null} owner
  * @property {SpatialResolution | null} resolution
  * @property {string | null} updatedAt

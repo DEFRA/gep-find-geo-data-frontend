@@ -17,8 +17,16 @@ function baseRecord (overrides = {}) {
 
 describe('#dataset view-model', () => {
   test('links to the dataset on the map', () => {
-    const { mapHref } = buildViewModel(baseRecord({ id: '123e4567-e89b-12d3-a456-426614174000' }), landModelViewerUrl)
+    const { mapHref } = buildViewModel(baseRecord({
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      catalogueCategories: ['otherCat']
+    }), landModelViewerUrl)
     expect(mapHref).toBe('https://land-model-viewer.example.test/?dataset=123e4567-e89b-12d3-a456-426614174000')
+  })
+
+  test('omits the map link for reference datasets', () => {
+    const { mapHref } = buildViewModel(baseRecord({ catalogueCategories: ['referenceDatasets'] }), landModelViewerUrl)
+    expect(mapHref).toBeNull()
   })
 
   test('URLs without file extensions go to service links', () => {

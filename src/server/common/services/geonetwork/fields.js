@@ -88,6 +88,11 @@ const fields = {
     facet: { field: 'cl_topic.default' },
     hitAccessor: allDefaults('cl_topic')
   },
+  catalogueCategories: {
+    // GeoNetwork record categories (the tags API), not ISO topic categories.
+    source: ['cat'],
+    hitAccessor: rawArray('cat')
+  },
   updatedAt: {
     source: ['resourceDate.date'],
     filter: { field: 'resourceDate.date', nestedPath: 'resourceDate' },

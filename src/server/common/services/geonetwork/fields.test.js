@@ -24,6 +24,7 @@ describe('#fields', () => {
           { type: 'revision', date: '2025-04-15T00:00:00Z' }
         ],
         cl_topic: [{ default: 'Environment' }, { default: 'Elevation' }],
+        cat: ['referenceDatasets'],
         lineageObject: { default: 'Captured using OS MasterMap.' },
         contactForResource: [{ email: 'test@example.gov.uk' }],
         MD_ConstraintsUseLimitationObject: [{ default: 'Open Government Licence' }],
@@ -63,6 +64,7 @@ describe('#fields', () => {
         accessLevel: 'Open data',
         updateFrequency: 'Monthly',
         categories: ['Environment', 'Elevation'],
+        catalogueCategories: ['referenceDatasets'],
         updatedAt: '2025-04-15T00:00:00Z',
         lineage: 'Captured using OS MasterMap.',
         contactPoint: 'test@example.gov.uk',
@@ -78,6 +80,10 @@ describe('#fields', () => {
         publicationDate: '2017-09-14T00:00:00Z',
         creationDate: '2024-01-01T00:00:00Z'
       })
+    })
+
+    test('catalogueCategories defaults to an empty list', () => {
+      expect(fields.catalogueCategories.hitAccessor({})).toEqual([])
     })
   })
 

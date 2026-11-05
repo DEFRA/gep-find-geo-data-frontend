@@ -100,6 +100,35 @@ describe('#datasetController', () => {
     )
   })
 
+  test('hides map links for reference datasets', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      catalogueCategories: ['referenceDatasets'],
+      links: [{ url: 'https://example.com/data.zip', name: 'data.zip', description: '' }]
+    }))
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(result).toContain('Data access')
+    expect(result).not.toContain('View on map')
+    expect(result).not.toContain('View this data on a map')
+  })
+
+  test('omits Data access when there is nothing to show', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({ catalogueCategories: ['referenceDatasets'], links: [] }))
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(result).not.toContain('Data access')
+  })
+
   test('renders service and download links from the dataset view model', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [
