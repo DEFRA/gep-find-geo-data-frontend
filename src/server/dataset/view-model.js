@@ -104,6 +104,14 @@ function mapHref (datasetId, landModelViewerUrl) {
 
 /**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
+ * @returns {boolean}
+ */
+function canViewOnMap (record) {
+  return !record.catalogueCategories?.includes('referenceDatasets')
+}
+
+/**
+ * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
  * @param {string} landModelViewerUrl
  * @returns {object}
  */
@@ -126,7 +134,7 @@ function buildViewModel (record, landModelViewerUrl) {
     pageTitle: record.title,
     heading: record.title,
     record,
-    mapHref: mapHref(record.id, landModelViewerUrl),
+    mapHref: canViewOnMap(record) ? mapHref(record.id, landModelViewerUrl) : null,
     serviceLinks,
     downloadLinks,
     licenceHref: licenceUrl(record.licence),

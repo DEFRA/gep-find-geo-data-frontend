@@ -463,6 +463,12 @@ describe('#api', () => {
         bool: { filter: [RECORDS_ONLY, { ids: { values: ['abc'] } }] }
       })
     })
+
+    test('a record lookup requests catalogue categories', async () => {
+      mockEmptyResponse()
+      await getRecord('abc')
+      expect(lastRequestBody()._source).toContain('cat')
+    })
   })
 
   describe('#search response mapping', () => {
