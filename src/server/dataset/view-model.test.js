@@ -201,6 +201,24 @@ describe('#dataset view-model', () => {
     expect(missing.licenceHref).toBeNull()
   })
 
+  test('builds use limitation hrefs from safe anchor links', () => {
+    const { useLimitations } = buildViewModel(baseRecord({
+      useLimitation: [
+        { text: 'Licence terms apply', link: 'https://example.com/licence' },
+        { text: 'Search', link: 'www.example.co.uk' },
+        { text: 'Unsafe', link: 'javascript:alert(1)' },
+        { text: 'Cite https://doi.org/10.5285/abc', link: null }
+      ]
+    }), landModelViewerUrl)
+
+    expect(useLimitations).toEqual([
+      { text: 'Licence terms apply', href: 'https://example.com/licence' },
+      { text: 'Search', href: 'http://www.example.co.uk' },
+      { text: 'Unsafe', href: null },
+      { text: 'Cite https://doi.org/10.5285/abc', href: null }
+    ])
+  })
+
   test('builds category and keyword filter links', () => {
     const record = baseRecord({
       categories: ['Environment', 'Elevation', 'environment'],

@@ -1,5 +1,6 @@
 import {
   allDefaults,
+  allLinkedDefaults,
   boundingBox,
   datedEntry,
   firstDefault,
@@ -119,7 +120,7 @@ const fields = {
   },
   useLimitation: {
     source: ['MD_LegalConstraintsOtherConstraintsObject'],
-    hitAccessor: firstDefault('MD_LegalConstraintsOtherConstraintsObject')
+    hitAccessor: allLinkedDefaults('MD_LegalConstraintsOtherConstraintsObject')
   },
   language: {
     source: ['mainLanguage'],

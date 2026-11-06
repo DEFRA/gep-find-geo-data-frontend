@@ -8,6 +8,16 @@ function allDefaults (name) {
 
 /**
  * @param {string} name
+ * @returns {(src: object) => import('./client.js').LinkedText[]}
+ */
+function allLinkedDefaults (name) {
+  return (src) => (src[name] ?? [])
+    .filter((entry) => entry?.default)
+    .map((entry) => ({ text: entry.default, link: entry.link ?? null }))
+}
+
+/**
+ * @param {string} name
  * @returns {(src: object) => import('./client.js').BoundingBox | null}
  */
 function boundingBox (name) {
@@ -196,6 +206,7 @@ function temporalExtent (name) {
 
 export {
   allDefaults,
+  allLinkedDefaults,
   boundingBox,
   datedEntry,
   firstDefault,

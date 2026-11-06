@@ -1,5 +1,6 @@
 import {
   allDefaults,
+  allLinkedDefaults,
   boundingBox,
   datedEntry,
   firstDefault,
@@ -127,6 +128,25 @@ describe('#field-accessors', () => {
 
     test('returns an empty array when the field is missing', () => {
       expect(allDefaults('tag')({})).toEqual([])
+    })
+  })
+
+  describe('allLinkedDefaults', () => {
+    test('returns text with any anchor link', () => {
+      expect(allLinkedDefaults('MD_LegalConstraintsOtherConstraintsObject')({
+        MD_LegalConstraintsOtherConstraintsObject: [
+          { default: 'Licence terms apply', link: 'https://example.com/licence' },
+          { default: 'Cite https://doi.org/10.5285/abc' },
+          {}
+        ]
+      })).toEqual([
+        { text: 'Licence terms apply', link: 'https://example.com/licence' },
+        { text: 'Cite https://doi.org/10.5285/abc', link: null }
+      ])
+    })
+
+    test('returns an empty array when the field is missing', () => {
+      expect(allLinkedDefaults('MD_LegalConstraintsOtherConstraintsObject')({})).toEqual([])
     })
   })
 

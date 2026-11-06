@@ -5,5 +5,6 @@ export { formatResolution } from './format-resolution.js'
 export { formatDate } from './format-date.js'
 export { formatCurrency } from './format-currency.js'
 export { paragraphs } from './paragraphs.js'
+export { linkify } from './linkify.js'
 
 export { assign }
