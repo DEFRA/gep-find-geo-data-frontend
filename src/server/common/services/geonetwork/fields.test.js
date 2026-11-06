@@ -69,7 +69,7 @@ describe('#fields', () => {
         lineage: 'Captured using OS MasterMap.',
         contactPoint: 'test@example.gov.uk',
         licence: 'Open Government Licence',
-        useLimitation: 'There are no public access constraints to this data.',
+        useLimitation: [{ text: 'There are no public access constraints to this data.', link: null }],
         language: 'eng',
         keywords: ['Habitats and biotopes', 'ecology', 'landscape'],
         format: ['Shapefile (SHP)', 'GeoPackage (GPKG)'],

@@ -181,6 +181,28 @@ describe('#datasetController', () => {
     expect(result).toContain('Open Government Licence (opens in new tab)')
   })
 
+  test('renders use limitation anchors and URLs as links', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      useLimitation: [
+        { text: 'Licence terms apply', link: 'https://example.com/licence' },
+        { text: 'Cite <b>this</b> https://doi.org/10.5285/abc', link: null },
+        { text: 'Terms at https://example.com/terms', link: 'https://example.com/terms-page' }
+      ]
+    }))
+
+    const { result, statusCode } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(statusCode).toBe(statusCodes.ok)
+    expect(result).toContain('<a class="govuk-link" href="https://example.com/licence">Licence terms apply</a>')
+    expect(result).toContain('Cite &lt;b&gt;this&lt;/b&gt; <a class="govuk-link" href="https://doi.org/10.5285/abc">https://doi.org/10.5285/abc</a>')
+    expect(result).toContain('<a class="govuk-link" href="https://example.com/terms-page">Terms at https://example.com/terms</a>')
+    expect(result).not.toContain('href="https://example.com/terms"')
+  })
+
   test('does not render metadata links with unsafe URL schemes', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       links: [

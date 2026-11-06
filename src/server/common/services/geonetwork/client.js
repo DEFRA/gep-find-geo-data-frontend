@@ -44,6 +44,12 @@ import { config } from '../../../../config/config.js'
  */
 
 /**
+ * @typedef {Object} LinkedText
+ * @property {string} text
+ * @property {string | null} link From a `gmx:Anchor` xlink:href.
+ */
+
+/**
  * @typedef {Object} TemporalExtent
  * @property {string | null} start
  * @property {string | null} end
@@ -79,7 +85,7 @@ import { config } from '../../../../config/config.js'
  * @property {string | null} lineage
  * @property {string | null} contactPoint
  * @property {string | null} licence
- * @property {string | null} useLimitation
+ * @property {LinkedText[]} useLimitation
  * @property {string | null} language
  * @property {string[]} keywords
  * @property {string[]} format
