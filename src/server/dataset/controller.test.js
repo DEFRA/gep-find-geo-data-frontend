@@ -149,6 +149,24 @@ describe('#datasetController', () => {
     expect(result).toContain('ZIP')
   })
 
+  test('hides download links for restricted download datasets', async () => {
+    mockGetRecord.mockResolvedValue(exampleRecord({
+      catalogueCategories: ['restrictedDownloadDatasets'],
+      links: [{ url: 'https://example.com/data.zip', name: 'data.zip', description: '' }]
+    }))
+
+    const { result } = await server.inject({
+      method: 'GET',
+      url: '/dataset/92b43165-0dd0-4e69-a712-1e49bb5aa0d0',
+      auth: mockAuthCredentials
+    })
+
+    expect(result).toContain('Data access')
+    expect(result).toContain('View on map')
+    expect(result).toContain('View this data on a map')
+    expect(result).not.toContain('Download this data')
+  })
+
   test('renders category and keyword links as search filters', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord())
 

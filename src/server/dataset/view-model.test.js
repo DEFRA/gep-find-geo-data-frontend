@@ -29,6 +29,11 @@ describe('#dataset view-model', () => {
     expect(mapHref).toBeNull()
   })
 
+  test('omits the download link for restricted download datasets', () => {
+    const { downloadable } = buildViewModel(baseRecord({ catalogueCategories: ['restrictedDownloadDatasets'] }), landModelViewerUrl)
+    expect(downloadable).toBeFalsy()
+  })
+
   test('URLs without file extensions go to service links', () => {
     const record = baseRecord({
       links: [
