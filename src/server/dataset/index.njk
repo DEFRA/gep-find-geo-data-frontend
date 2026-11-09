@@ -46,9 +46,15 @@
           </ul>
         {% endif %}
 
-        {% if record.useLimitation %}
+        {% if useLimitations.length %}
           <h2 class="govuk-heading-m">Use limitation statement</h2>
-          <p class="govuk-body">{{ record.useLimitation }}</p>
+          {% for item in useLimitations %}
+            {% if item.href %}
+              <p class="govuk-body"><a class="govuk-link" href="{{ item.href }}">{{ item.text }}</a></p>
+            {% else %}
+              <p class="govuk-body">{{ item.text | linkify }}</p>
+            {% endif %}
+          {% endfor %}
         {% endif %}
 
         {% if record.licence %}

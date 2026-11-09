@@ -103,6 +103,27 @@ function mapHref (datasetId, landModelViewerUrl) {
 }
 
 /**
+ * Ensure link has protocol to avoid relative links.
+ * @param {string} value
+ * @returns {string | null}
+ */
+function anchorHref (value) {
+  if (URL.canParse(value)) {
+    return safeUrl(value)
+  }
+
+  return safeUrl(`http://${value}`)
+}
+
+/**
+ * @param {import('../common/services/geonetwork/client.js').LinkedText} entry
+ * @returns {{ text: string, href: string | null }}
+ */
+function linkedTextItem ({ text, link }) {
+  return { text, href: link ? anchorHref(link) : null }
+}
+
+/**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
  * @returns {boolean}
  */
@@ -138,6 +159,7 @@ function buildViewModel (record, landModelViewerUrl) {
     serviceLinks,
     downloadLinks,
     licenceHref: licenceUrl(record.licence),
+    useLimitations: (record.useLimitation ?? []).map(linkedTextItem),
     coordinateReferenceSystemHref: safeUrl(record.coordinateReferenceSystem),
     categoryLinks: tagLinks(record.categories ?? [], 'category'),
     keywordLinks: tagLinks(record.keywords ?? [], 'keyword'),

@@ -160,7 +160,7 @@ function generateRecord (index, prng) {
     lineage: `Dataset produced by ${org} covering ${theme.toLowerCase()} for ${region}.`,
     contactPoint: 'example@defra.gov.uk',
     licence: accessLevel === 'Open data' ? openLicence : restrictedLicence,
-    useLimitation: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.',
+    useLimitation: [{ text: 'There are no public access constraints to this data. Use of this data is subject to the licence identified.', link: null }],
     language: 'eng',
     keywords,
     format: randomSubset(prng, formatOptions, 1, 3),
