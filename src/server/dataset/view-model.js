@@ -133,6 +133,14 @@ function canViewOnMap (record) {
 
 /**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
+ * @returns {boolean}
+ */
+function canDownload (record) {
+  return !record.catalogueCategories?.includes('restrictedDownloadDatasets')
+}
+
+/**
+ * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
  * @param {string} landModelViewerUrl
  * @returns {object}
  */
@@ -156,6 +164,7 @@ function buildViewModel (record, landModelViewerUrl) {
     heading: record.title,
     record,
     mapHref: canViewOnMap(record) ? mapHref(record.id, landModelViewerUrl) : null,
+    downloadable: canDownload(record),
     serviceLinks,
     downloadLinks,
     licenceHref: licenceUrl(record.licence),
