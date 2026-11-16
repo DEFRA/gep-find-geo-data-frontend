@@ -53,9 +53,9 @@ const fullHit = {
     resourceAbstractObject: { default: 'Test Abstract' },
     OrgForResourceObject: { default: 'Environment Agency' },
     resourceDate: [
-      { date: '2024-11-15T00:00:00Z' },
-      { date: '2025-07-28T00:00:00Z' },
-      { date: '2017-09-14T00:00:00Z' }
+      { type: 'creation', date: '2024-11-15T00:00:00Z' },
+      { type: 'revision', date: '2025-07-28T00:00:00Z' },
+      { type: 'publication', date: '2025-09-14T00:00:00Z' }
     ]
   }
 }
@@ -151,6 +151,12 @@ describe('#api', () => {
         expect(lastRequestBody()).toMatchSnapshot()
       })
 
+      test('sort by oldest', async () => {
+        mockEmptyResponse()
+        await search({ sort: 'oldest' })
+        expect(lastRequestBody()).toMatchSnapshot()
+      })
+
       test('sort by titleAsc', async () => {
         mockEmptyResponse()
         await search({ sort: 'titleAsc' })
@@ -183,7 +189,7 @@ describe('#api', () => {
       await expect(search({ sort: 'unknown' })).rejects.toThrow('Unknown sort')
     })
 
-    test('updatedAtBetween filters on the latest resourceDate (must >= from, must_not >= to)', async () => {
+    test('updatedAtBetween filters on the updatedAt runtime field (>= from, < to)', async () => {
       mockEmptyResponse()
       await search({
         filters: {
@@ -194,20 +200,17 @@ describe('#api', () => {
         }
       })
       const body = lastRequestBody()
-      const nestedGte = (value) => ({
-        nested: {
-          path: 'resourceDate',
-          query: { range: { 'resourceDate.date': { gte: value } } }
-        }
-      })
+      expect(body.runtime_mappings).toHaveProperty('updatedAt.type', 'date')
       expect(body.query).toEqual({
         bool: {
           filter: [
             RECORDS_ONLY,
             {
-              bool: {
-                must: [nestedGte('2024-01-01T00:00:00.000Z')],
-                must_not: [nestedGte('2024-02-01T00:00:00.000Z')]
+              range: {
+                updatedAt: {
+                  gte: '2024-01-01T00:00:00.000Z',
+                  lt: '2024-02-01T00:00:00.000Z'
+                }
               }
             }
           ]
@@ -228,18 +231,7 @@ describe('#api', () => {
       expect(body.query.bool.must).toHaveLength(1)
       expect(body.query.bool.filter).toEqual([
         RECORDS_ONLY,
-        {
-          bool: {
-            must: [
-              {
-                nested: {
-                  path: 'resourceDate',
-                  query: { range: { 'resourceDate.date': { gte: '2024-01-01T00:00:00.000Z' } } }
-                }
-              }
-            ]
-          }
-        }
+        { range: { updatedAt: { gte: '2024-01-01T00:00:00.000Z' } } }
       ])
       expect(body.post_filter).toEqual({
         bool: {
@@ -250,7 +242,7 @@ describe('#api', () => {
       })
     })
 
-    test('a to-only updatedAtBetween requires a date and keeps the latest below it', async () => {
+    test('a to-only updatedAtBetween keeps updatedAt below it', async () => {
       mockEmptyResponse()
       await search({ filters: { updatedAtBetween: { to: '2026-01-01T00:00:00.000Z' } } })
       const body = lastRequestBody()
@@ -258,26 +250,7 @@ describe('#api', () => {
         bool: {
           filter: [
             RECORDS_ONLY,
-            {
-              bool: {
-                must: [
-                  {
-                    nested: {
-                      path: 'resourceDate',
-                      query: { exists: { field: 'resourceDate.date' } }
-                    }
-                  }
-                ],
-                must_not: [
-                  {
-                    nested: {
-                      path: 'resourceDate',
-                      query: { range: { 'resourceDate.date': { gte: '2026-01-01T00:00:00.000Z' } } }
-                    }
-                  }
-                ]
-              }
-            }
+            { range: { updatedAt: { lt: '2026-01-01T00:00:00.000Z' } } }
           ]
         }
       })
