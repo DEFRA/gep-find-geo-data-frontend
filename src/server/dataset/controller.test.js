@@ -262,7 +262,7 @@ describe('#datasetController', () => {
   test('renders resolution below Contact publisher with a separator', async () => {
     mockGetRecord.mockResolvedValue(exampleRecord({
       contactPoint: 'publisher@example.gov.uk',
-      resolution: { scaleDenominators: [250000], distances: ['2 m'] }
+      resolution: { scaleDenominators: [250000], distances: ['2 urn:ogc:def:uom:EPSG::9001'] }
     }))
 
     const { result } = await server.inject({
