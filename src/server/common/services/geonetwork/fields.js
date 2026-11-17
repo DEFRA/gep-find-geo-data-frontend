@@ -3,11 +3,11 @@ import {
   allLinkedDefaults,
   boundingBox,
   datedEntry,
+  firstDatedEntry,
   firstDefault,
   firstEmail,
   firstNestedCode,
   keywordDefaults,
-  latestNestedDate,
   linkArray,
   mappedValue,
   objectDefault,
@@ -21,7 +21,6 @@ const accessLevelMap = { true: 'Open data', false: 'Restricted access' }
 /**
  * @typedef {object} FieldOperation
  * @property {string | string[]} field GeoNetwork Elasticsearch field used for this operation.
- * @property {string} [nestedPath] Nested document path when the field must be queried or sorted inside a nested clause.
  * @property {number} [boost] Full-text search boost, only used by search operations.
  * @property {Record<string, string>} [labelMap] Display labels for machine values when GeoNetwork does not provide labels.
  */
@@ -95,11 +94,11 @@ const fields = {
     hitAccessor: rawArray('cat')
   },
   updatedAt: {
-    source: ['resourceDate.date'],
-    filter: { field: 'resourceDate.date', nestedPath: 'resourceDate' },
-    sort: { field: 'resourceDate.date', nestedPath: 'resourceDate' },
+    source: ['resourceDate.date', 'resourceDate.type'],
+    filter: { field: 'updatedAt' },
+    sort: { field: 'updatedAt' },
     inSearchResult: true,
-    hitAccessor: latestNestedDate('resourceDate')
+    hitAccessor: firstDatedEntry('resourceDate', ['revision', 'publication'])
   },
   resolution: {
     source: ['resolutionScaleDenominator', 'resolutionDistance'],
@@ -179,6 +178,23 @@ const sortMap = {
   titleDesc: { field: 'title', order: 'desc' },
   newest: { field: 'updatedAt', order: 'desc' },
   oldest: { field: 'updatedAt', order: 'asc' }
+}
+
+// Map our updatedAt logic to a runtime field so we can sort and filter on it without modifying the index.
+// See https://www.elastic.co/guide/en/elasticsearch/reference/7.17/runtime.html
+const runtimeMappings = {
+  updatedAt: {
+    type: 'date',
+    script: {
+      source: `
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      `
+    }
+  }
 }
 
 const searchSourceIncludes = Object.values(fields)
@@ -265,6 +281,7 @@ function facetLabelValue (name, label) {
 export {
   fields,
   sortMap,
+  runtimeMappings,
   searchSourceIncludes,
   recordSourceIncludes,
   searchFields,

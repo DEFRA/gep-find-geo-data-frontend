@@ -7,6 +7,7 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resourceDate.type",
     "resolutionScaleDenominator",
     "resolutionDistance",
   ],
@@ -216,35 +217,11 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
           },
         },
         {
-          "bool": {
-            "must": [
-              {
-                "nested": {
-                  "path": "resourceDate",
-                  "query": {
-                    "range": {
-                      "resourceDate.date": {
-                        "gte": "2002-01-01T00:00:00.000Z",
-                      },
-                    },
-                  },
-                },
-              },
-            ],
-            "must_not": [
-              {
-                "nested": {
-                  "path": "resourceDate",
-                  "query": {
-                    "range": {
-                      "resourceDate.date": {
-                        "gte": "2005-01-01T00:00:00.000Z",
-                      },
-                    },
-                  },
-                },
-              },
-            ],
+          "range": {
+            "updatedAt": {
+              "gte": "2002-01-01T00:00:00.000Z",
+              "lt": "2005-01-01T00:00:00.000Z",
+            },
           },
         },
         {
@@ -292,13 +269,24 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
       ],
     },
   },
+  "runtime_mappings": {
+    "updatedAt": {
+      "script": {
+        "source": "
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      ",
+      },
+      "type": "date",
+    },
+  },
   "size": 10,
   "sort": [
     {
-      "resourceDate.date": {
-        "nested": {
-          "path": "resourceDate",
-        },
+      "updatedAt": {
         "order": "desc",
       },
     },
@@ -313,6 +301,7 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resourceDate.type",
     "resolutionScaleDenominator",
     "resolutionDistance",
   ],
@@ -326,6 +315,20 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
           },
         },
       ],
+    },
+  },
+  "runtime_mappings": {
+    "updatedAt": {
+      "script": {
+        "source": "
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      ",
+      },
+      "type": "date",
     },
   },
   "size": 10,
@@ -346,6 +349,7 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resourceDate.type",
     "resolutionScaleDenominator",
     "resolutionDistance",
   ],
@@ -361,13 +365,24 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
       ],
     },
   },
+  "runtime_mappings": {
+    "updatedAt": {
+      "script": {
+        "source": "
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      ",
+      },
+      "type": "date",
+    },
+  },
   "size": 10,
   "sort": [
     {
-      "resourceDate.date": {
-        "nested": {
-          "path": "resourceDate",
-        },
+      "updatedAt": {
         "order": "desc",
       },
     },
@@ -375,13 +390,14 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
 }
 `;
 
-exports[`#api > #search Elasticsearch query generation > query body snapshots > sort by titleAsc 1`] = `
+exports[`#api > #search Elasticsearch query generation > query body snapshots > sort by oldest 1`] = `
 {
   "_source": [
     "resourceTitleObject.default",
     "resourceAbstractObject.default",
     "OrgForResourceObject.default",
     "resourceDate.date",
+    "resourceDate.type",
     "resolutionScaleDenominator",
     "resolutionDistance",
   ],
@@ -395,6 +411,68 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
           },
         },
       ],
+    },
+  },
+  "runtime_mappings": {
+    "updatedAt": {
+      "script": {
+        "source": "
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      ",
+      },
+      "type": "date",
+    },
+  },
+  "size": 10,
+  "sort": [
+    {
+      "updatedAt": {
+        "order": "asc",
+      },
+    },
+  ],
+}
+`;
+
+exports[`#api > #search Elasticsearch query generation > query body snapshots > sort by titleAsc 1`] = `
+{
+  "_source": [
+    "resourceTitleObject.default",
+    "resourceAbstractObject.default",
+    "OrgForResourceObject.default",
+    "resourceDate.date",
+    "resourceDate.type",
+    "resolutionScaleDenominator",
+    "resolutionDistance",
+  ],
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "isTemplate": "n",
+          },
+        },
+      ],
+    },
+  },
+  "runtime_mappings": {
+    "updatedAt": {
+      "script": {
+        "source": "
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      ",
+      },
+      "type": "date",
     },
   },
   "size": 10,

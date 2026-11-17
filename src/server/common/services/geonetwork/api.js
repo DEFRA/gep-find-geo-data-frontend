@@ -9,6 +9,7 @@ import {
   searchFields,
   searchSourceIncludes,
   recordSourceIncludes,
+  runtimeMappings,
   sortMap,
   validateSearchOptions
 } from './fields.js'
@@ -27,22 +28,12 @@ function updatedAtRangeClause (between) {
     return null
   }
 
-  const field = fields.updatedAt
-  const nested = (query) => field.filter.nestedPath
-    ? { nested: { path: field.filter.nestedPath, query } }
-    : query
-  const nestedGte = (value) => nested({ range: { [field.filter.field]: { gte: value } } })
-
-  // resourceDate holds all of a record's dates, so we match on the latest: a date
-  // >= from (or just any date when there is no from, so undated records are
-  // excluded), and no date >= to.
-  const must = [between.from ? nestedGte(between.from) : nested({ exists: { field: field.filter.field } })]
-  const mustNot = between.to ? [nestedGte(between.to)] : []
-
   return {
-    bool: {
-      must,
-      ...(mustNot.length > 0 && { must_not: mustNot })
+    range: {
+      [fields.updatedAt.filter.field]: {
+        ...(between.from && { gte: between.from }),
+        ...(between.to && { lt: between.to })
+      }
     }
   }
 }
@@ -200,12 +191,7 @@ function buildSort (sort) {
     return undefined
   }
 
-  const path = field.sort.field
-  const clause = { order: spec.order }
-  if (field.sort.nestedPath) {
-    clause.nested = { path: field.sort.nestedPath }
-  }
-  return [{ [path]: clause }]
+  return [{ [field.sort.field]: { order: spec.order } }]
 }
 
 /**
@@ -336,6 +322,7 @@ async function search ({
     from,
     size,
     _source: searchSourceIncludes,
+    runtime_mappings: runtimeMappings,
     query: buildQuery({ query, filters }),
     post_filter: buildPostFilter(filters),
     aggs: buildAggs(facets, filters),
