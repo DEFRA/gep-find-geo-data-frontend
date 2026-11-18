@@ -20,6 +20,6 @@ export function formatResolution (resolution) {
 function standardiseUnitOfMeasure (distance) {
   const values = distance.split(' ')
   const unit = resolutions.get(values[1])
-  values[1] = unit
+  values[1] = unit || values[1]
   return values.join('')
 }
