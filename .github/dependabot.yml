@@ -21,6 +21,7 @@ updates:
         patterns:
           - '@babel/*'
           - '@vitest/*'
+          - 'audit-ci'
           - 'autoprefixer'
           - 'babel-loader'
           - 'cheerio'
