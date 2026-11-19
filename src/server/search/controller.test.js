@@ -90,7 +90,7 @@ describe('#searchController', () => {
       mockSearch.mockResolvedValue(emptyResponse({
         total: 1,
         results: [exampleResult({
-          resolution: { scaleDenominators: [250000], distances: ['2 m'] }
+          resolution: { scaleDenominators: [250000], distances: ['2 urn:ogc:def:uom:EPSG::9001'] }
         })]
       }))
 
