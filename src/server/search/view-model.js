@@ -90,7 +90,11 @@ function parseFacetFilters (rawQuery) {
 }
 
 function parseSort (q, rawQuery) {
-  return q ? 'relevance' : VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+  if (q) {
+    return 'relevance'
+  } else {
+    return VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+  }
 }
 
 /**
