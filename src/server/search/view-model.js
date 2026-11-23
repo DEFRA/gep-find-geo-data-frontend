@@ -6,7 +6,7 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 export const DEFAULT_PAGE_SIZE = 20
 
 const SORT_OPTIONS = [
-  // { value: 'relevance', text: 'Best match', default: true },
+  { value: 'relevance', text: 'Best match' },
   { value: 'titleAsc', text: 'Alphabetical (A-Z)' },
   { value: 'titleDesc', text: 'Alphabetical (Z-A)' },
   { value: 'newest', text: 'Updated (newest)', default: true },
@@ -107,7 +107,8 @@ function parseFacetFilters (rawQuery) {
  */
 export function parseQuery (rawQuery = {}) {
   const q = typeof rawQuery.q === 'string' ? rawQuery.q.slice(0, QUERY_MAX_LENGTH) : ''
-  const sort = VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+  const sort = q ? 'relevance' : VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+  // const sort = VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
   const { page, size } = parsePagination(rawQuery)
   const filters = parseFacetFilters(rawQuery)
 

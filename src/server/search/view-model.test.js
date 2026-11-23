@@ -48,7 +48,7 @@ describe('#search view-model', () => {
           size: 50,
           filters: { categories: ['Environment'], keywords: ['ecology'] },
           facets: ['accessLevel', 'categories', 'owner', 'dataType', 'updateFrequency'],
-          sort: 'titleAsc'
+          sort: 'relevance'
         })
     })
 
@@ -84,8 +84,8 @@ describe('#search view-model', () => {
     })
 
     test('reads q, sort and page when valid', () => {
-      const parsed = parseQuery({ q: 'flood', sort: 'titleAsc', page: '3' })
-      expect(parsed).toMatchObject({ q: 'flood', sort: 'titleAsc', page: 3 })
+      const parsed = parseQuery({ q: 'flood', sort: 'relevance', page: '3' })
+      expect(parsed).toMatchObject({ q: 'flood', sort: 'relevance', page: 3 })
     })
 
     test('clamps invalid sort to newest', () => {
@@ -409,7 +409,7 @@ describe('#search view-model', () => {
 
       test('chip removeHref drops the filter key when no values remain', () => {
         const vm = viewModel({ q: 'flood', owner: 'Natural England' })
-        expect(vm.activeFilterGroups[0].items[0].removeHref).toBe('/?q=flood')
+        expect(vm.activeFilterGroups[0].items[0].removeHref).toBe('/?q=flood&sort=relevance')
       })
 
       test('adds a Date group for a since date and omits when invalid', () => {
@@ -599,8 +599,8 @@ describe('#search view-model', () => {
 
     describe('currentUrl', () => {
       test('includes q and non-default sort/size/page', () => {
-        expect(viewModel({ q: 'flood' }).currentUrl).toBe('/?q=flood')
-        expect(viewModel({ sort: 'titleAsc' }).currentUrl).toBe('/?sort=titleAsc')
+        expect(viewModel({ q: 'flood' }).currentUrl).toBe('/?q=flood&sort=relevance')
+        expect(viewModel({ sort: 'relevance' }).currentUrl).toBe('/?sort=relevance')
         expect(viewModel({ size: '50' }).currentUrl).toBe('/?size=50')
         expect(viewModel({ page: '3' }).currentUrl).toBe('/?page=3')
       })

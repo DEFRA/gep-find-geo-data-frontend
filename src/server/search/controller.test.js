@@ -70,7 +70,7 @@ describe('#searchController', () => {
           keywords: ['ecology', 'landscape']
         },
         facets: ['accessLevel', 'categories', 'owner', 'dataType', 'updateFrequency'],
-        sort: 'titleAsc'
+        sort: 'relevance'
       })
     })
 
@@ -288,7 +288,7 @@ describe('#searchController', () => {
       expect(response.headers['content-type']).toContain('application/json')
 
       const body = JSON.parse(response.payload)
-      expect(body.url).toBe('/?q=flood')
+      expect(body.url).toBe('/?q=flood&sort=relevance')
       expect(body.partials['search-results']).toContain('Flood Extents')
       expect(body.partials['search-results']).toContain('1 result')
       expect(body.partials['search-filters']).toBeDefined()
