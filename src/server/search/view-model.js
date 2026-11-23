@@ -89,6 +89,10 @@ function parseFacetFilters (rawQuery) {
   return filters
 }
 
+function parseSort (q, rawQuery) {
+  return q ? 'relevance' : VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+}
+
 /**
  * @typedef ParsedQuery
  * @property {string} q
@@ -107,8 +111,7 @@ function parseFacetFilters (rawQuery) {
  */
 export function parseQuery (rawQuery = {}) {
   const q = typeof rawQuery.q === 'string' ? rawQuery.q.slice(0, QUERY_MAX_LENGTH) : ''
-  const sort = q ? 'relevance' : VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
-  // const sort = VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+  const sort = parseSort(q, rawQuery)
   const { page, size } = parsePagination(rawQuery)
   const filters = parseFacetFilters(rawQuery)
 
