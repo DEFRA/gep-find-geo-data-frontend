@@ -140,7 +140,7 @@ describe('#api', () => {
             }
           },
           facets: ['owner', 'dataType'],
-          sort: 'newest'
+          sort: 'relevance'
         })
         expect(lastRequestBody()).toMatchSnapshot()
       })
@@ -160,6 +160,12 @@ describe('#api', () => {
       test('sort by titleAsc', async () => {
         mockEmptyResponse()
         await search({ sort: 'titleAsc' })
+        expect(lastRequestBody()).toMatchSnapshot()
+      })
+
+      test('sort by relevance', async () => {
+        mockEmptyResponse()
+        await search({ sort: 'relevance' })
         expect(lastRequestBody()).toMatchSnapshot()
       })
     })

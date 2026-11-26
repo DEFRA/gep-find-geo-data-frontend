@@ -286,7 +286,7 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
   "size": 10,
   "sort": [
     {
-      "updatedAt": {
+      "_score": {
         "order": "desc",
       },
     },
@@ -432,6 +432,54 @@ exports[`#api > #search Elasticsearch query generation > query body snapshots > 
     {
       "updatedAt": {
         "order": "asc",
+      },
+    },
+  ],
+}
+`;
+
+exports[`#api > #search Elasticsearch query generation > query body snapshots > sort by relevance 1`] = `
+{
+  "_source": [
+    "resourceTitleObject.default",
+    "resourceAbstractObject.default",
+    "OrgForResourceObject.default",
+    "resourceDate.date",
+    "resourceDate.type",
+    "resolutionScaleDenominator",
+    "resolutionDistance",
+  ],
+  "from": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "isTemplate": "n",
+          },
+        },
+      ],
+    },
+  },
+  "runtime_mappings": {
+    "updatedAt": {
+      "script": {
+        "source": "
+        if (doc.containsKey('revisionDateForResource') && !doc['revisionDateForResource'].empty) {
+          emit(doc['revisionDateForResource'].value.toInstant().toEpochMilli())
+        } else if (doc.containsKey('publicationDateForResource') && !doc['publicationDateForResource'].empty) {
+          emit(doc['publicationDateForResource'].value.toInstant().toEpochMilli())
+        }
+      ",
+      },
+      "type": "date",
+    },
+  },
+  "size": 10,
+  "sort": [
+    {
+      "_score": {
+        "order": "desc",
       },
     },
   ],

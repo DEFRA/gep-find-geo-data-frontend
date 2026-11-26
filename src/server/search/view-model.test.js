@@ -90,6 +90,17 @@ describe('#search view-model', () => {
 
     test('clamps invalid sort to newest', () => {
       expect(parseQuery({ sort: 'nonsense' }).sort).toBe('newest')
+      expect(parseQuery({ sort: '' }).sort).toBe('newest')
+    })
+
+    test('defaults sort to relevance with search text', () => {
+      expect(parseQuery({ q: 'flood' }).sort).toBe('relevance')
+      expect(parseQuery({ q: 'flood', sort: '' }).sort).toBe('relevance')
+      expect(parseQuery({ q: 'flood', sort: 'nonsense' }).sort).toBe('relevance')
+    })
+
+    test('ignores relevance without search text', () => {
+      expect(parseQuery({ sort: 'relevance' }).sort).toBe('newest')
     })
 
     test('clamps invalid page to 1', () => {
@@ -261,6 +272,19 @@ describe('#search view-model', () => {
       test('marks the selected sort option', () => {
         const selected = viewModel({ sort: 'titleAsc' }).sortOptions.find((o) => o.selected)
         expect(selected.value).toBe('titleAsc')
+      })
+
+      test('gives the default sort option an empty value', () => {
+        const searchOptions = viewModel({ q: 'flood' }).sortOptions
+        expect(searchOptions.find((o) => o.text === 'Best match')).toMatchObject({ value: '', selected: true })
+        expect(searchOptions.find((o) => o.text === 'Updated (newest)').value).toBe('newest')
+
+        const browseOptions = viewModel({}).sortOptions
+        expect(browseOptions.find((o) => o.text === 'Updated (newest)')).toMatchObject({ value: '', selected: true })
+      })
+
+      test('hides best match without search text', () => {
+        expect(viewModel({}).sortOptions.map((o) => o.text)).not.toContain('Best match')
       })
 
       test('marks the selected page size', () => {
@@ -600,6 +624,7 @@ describe('#search view-model', () => {
     describe('currentUrl', () => {
       test('includes q and non-default sort/size/page', () => {
         expect(viewModel({ q: 'flood' }).currentUrl).toBe('/?q=flood')
+        expect(viewModel({ q: 'flood', sort: 'newest' }).currentUrl).toBe('/?q=flood&sort=newest')
         expect(viewModel({ sort: 'titleAsc' }).currentUrl).toBe('/?sort=titleAsc')
         expect(viewModel({ size: '50' }).currentUrl).toBe('/?size=50')
         expect(viewModel({ page: '3' }).currentUrl).toBe('/?page=3')
