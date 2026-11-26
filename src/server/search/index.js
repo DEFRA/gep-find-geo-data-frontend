@@ -11,7 +11,7 @@ export const search = {
       server.route([
         {
           method: 'GET',
-          path: '/',
+          path: '/search',
           ...searchController
         }
       ])

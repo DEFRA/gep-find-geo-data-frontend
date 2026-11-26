@@ -6,6 +6,7 @@ import { dataset, download } from './dataset/index.js'
 import { privacy } from './privacy/index.js'
 import { accessibilityStatement } from './accessibility-statement/index.js'
 import { health } from './health/index.js'
+import { home } from './home/index.js'
 import { search } from './search/index.js'
 import { serveStaticFiles } from './common/helpers/serve-static-files.js'
 
@@ -19,7 +20,7 @@ export const router = {
       await server.register([health])
 
       // Application specific routes, add your own routes here
-      await server.register([auth, cookies, privacy, accessibilityStatement, search, dataset, download])
+      await server.register([auth, home, cookies, privacy, accessibilityStatement, search, dataset, download])
 
       // Static assets
       await server.register([serveStaticFiles])

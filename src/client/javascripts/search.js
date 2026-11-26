@@ -115,7 +115,7 @@ function createPartialsLoader ({ resultsEl }) {
 }
 
 function enhanceSearch (form) {
-  const endpoint = form.dataset.endpoint || form.getAttribute('action') || '/'
+  const endpoint = form.dataset.endpoint || form.getAttribute('action') || '/search'
   const filtersEl = document.getElementById('search-filters')
   const resultsEl = document.getElementById('search-results')
   const loader = createPartialsLoader({ resultsEl })
