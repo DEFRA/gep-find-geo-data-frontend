@@ -1,0 +1,12 @@
+.govuk-frontend-supported .app-js-fallback {
+  display: none;
+}
+
+.govuk-template__body:not(.govuk-frontend-supported) .app-js-only {
+  display: none;
+}
+
+.app-busy-region[aria-busy="true"] {
+  opacity: 0.3;
+  pointer-events: none;
+}

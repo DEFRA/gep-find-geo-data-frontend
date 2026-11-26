@@ -2,6 +2,7 @@
 
 {% from "govuk/components/accordion/macro.njk" import govukAccordion %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "copy-link/macro.njk" import appCopyLink %}
 {% from "read-more/macro.njk" import appReadMore %}
@@ -170,9 +171,13 @@
 
     </div>
 
-    {% if mapHref or downloadLinks.length or serviceLinks.length %}
+    {% if mapHref or downloadLinks.length or serviceLinks.length or landModelDownload %}
       <div class="app-dataset-data">
         <h2 class="govuk-heading-m">Data access</h2>
+
+        {% if landModelDownload.errorSummary %}
+          {{ govukErrorSummary(landModelDownload.errorSummary) }}
+        {% endif %}
 
         {% if mapHref %}
           <div class="app-dataset-data__section">
@@ -184,30 +189,10 @@
           </div>
         {% endif %}
 
-        {% if downloadLinks.length and downloadable%}
-          <div class="app-dataset-data__section">
-            <h3 class="govuk-heading-s app-dataset-data__heading">Download this data</h3>
-            <p class="govuk-body govuk-!-margin-top-2">The files below all contain the same information, saved in different formats so you can open it in the software you already use.</p>
-
-            {% set downloadRows = [] %}
-            {% for link in downloadLinks %}
-              {% set dlHtml %}<a href="download/{{ record.id }}/{{ link.name }}" class="govuk-link" download>Download<span class="govuk-visually-hidden"> {{ link.name }}</span></a>{% endset %}
-              {% set downloadRows = (downloadRows.push([
-                { text: link.name, classes: "app-dataset-data__name" },
-                { text: link.format, classes: "app-dataset-data__col--fit" },
-                { html: dlHtml, classes: "app-dataset-data__col--action" }
-              ]), downloadRows) %}
-            {% endfor %}
-
-            {{ govukTable({
-              head: [
-                { html: '<span class="govuk-visually-hidden">File</span>' },
-                { text: "Format", classes: "app-dataset-data__col--fit" },
-                { text: "Action", classes: "app-dataset-data__col--action" }
-              ],
-              rows: downloadRows
-            }) }}
-          </div>
+        {% if landModelDownload %}
+          {% include "dataset/land-model/_download-form.njk" %}
+        {% elif downloadLinks.length and downloadable %}
+          {% include "dataset/_download-links.njk" %}
         {% endif %}
 
         {% if serviceLinks.length %}

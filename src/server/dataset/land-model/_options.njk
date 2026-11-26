@@ -1,0 +1,25 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set optionsHtml %}
+  <div id="land-model-area" class="app-busy-region" data-app-partial>
+    {% include "dataset/land-model/_area.njk" %}
+  </div>
+
+  <div id="land-model-warning" class="app-js-only app-busy-region" data-app-partial>
+    {% include "dataset/land-model/_warning.njk" %}
+  </div>
+
+  <div id="land-model-format" class="app-busy-region app-land-model-format" data-app-partial>
+    {% include "dataset/land-model/_format.njk" %}
+  </div>
+{% endset %}
+
+{% set inset = landModelDownload.inset %}
+{% if inset %}
+  {{ govukInsetText({
+    html: optionsHtml,
+    classes: inset.classes
+  }) }}
+{% else %}
+  {{ optionsHtml | safe }}
+{% endif %}

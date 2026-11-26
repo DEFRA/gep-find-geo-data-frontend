@@ -351,6 +351,12 @@ export const config = convict({
       format: String,
       default: 'test',
       env: 'AZURE_FILE_SYSTEM'
+    },
+    useMock: {
+      doc: 'Serve placeholder downloads instead of reading from Azure Data Lake',
+      format: Boolean,
+      default: !isProduction,
+      env: 'DASH_USE_MOCK'
     }
   }
 })

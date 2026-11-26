@@ -1,0 +1,11 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% set area = landModelDownload.area %}
+{% if area.text %}
+  <p class="govuk-body app-js-only">{{ area.text }}</p>
+{% endif %}
+
+{% if area.intro %}
+  <p class="govuk-body app-js-only">{{ area.intro }}</p>
+{% endif %}
+{{ govukSelect(area.select) }}

@@ -15,6 +15,11 @@ async function startServer () {
       ? 'GeoNetwork client: mock'
       : `GeoNetwork client: live at ${config.get('geonetwork.apiUrl')}`
   )
+  server.logger.info(
+    config.get('dash.useMock')
+      ? 'Dash client: mock'
+      : `Dash client: live at ${config.get('dash.azureAccountName')}`
+  )
 
   return server
 }

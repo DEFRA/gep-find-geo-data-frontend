@@ -1,0 +1,31 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+<div class="app-dataset-data__section">
+  <h3 class="govuk-heading-s app-dataset-data__heading">Download this data</h3>
+
+  <form
+    id="land-model-download"
+    class="govuk-!-margin-top-2"
+    method="get"
+    action="{{ landModelDownload.formAction }}"
+    novalidate
+    data-module="app-land-model-download"
+    data-endpoint="{{ landModelDownload.endpoint }}"
+  >
+    <p class="govuk-body">{{ landModelDownload.intro }}</p>
+
+    <div id="land-model-grid-size" class="app-busy-region" data-app-partial>
+      {% include "dataset/land-model/_grid-size.njk" %}
+    </div>
+
+    <div id="land-model-options" class="app-busy-region" data-app-partial>
+      {% include "dataset/land-model/_options.njk" %}
+    </div>
+
+    <div id="land-model-details" class="app-js-only app-busy-region" data-app-partial aria-live="polite">
+      {% include "dataset/land-model/_details.njk" %}
+    </div>
+
+    {{ govukButton({ text: "Download", preventDoubleClick: true }) }}
+  </form>
+</div>

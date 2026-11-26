@@ -1,5 +1,7 @@
 import { fileFormat } from '../common/constants/file-formats.js'
 import { licenceUrl } from '../common/constants/licences.js'
+import { kindFromCategories } from './land-model/downloads.js'
+import { buildLandModelDownload } from './land-model/view-model.js'
 
 /**
  * @param {string} value
@@ -141,10 +143,39 @@ function canDownload (record) {
 
 /**
  * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
+ * @returns {import('./land-model/downloads.js').LandModelKind | null}
+ */
+function landModelKind (record) {
+  return kindFromCategories(record.catalogueCategories)
+}
+
+/**
+ * @typedef {Object} LandModelRequest
+ * @property {Record<string, unknown>} [query]
+ * @property {import('./land-model/selection.js').LandModelError[]} [errors]
+ */
+
+/**
+ * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
+ * @param {LandModelRequest} landModel
+ * @returns {import('./land-model/view-model.js').LandModelDownload | null}
+ */
+function landModelDownloadFor (record, { query, errors }) {
+  const kind = canDownload(record) ? landModelKind(record) : null
+  if (!kind) {
+    return null
+  }
+
+  return buildLandModelDownload({ recordId: record.id, kind, query, errors })
+}
+
+/**
+ * @param {import('../common/services/geonetwork/client.js').MetadataRecord} record
  * @param {string} landModelViewerUrl
+ * @param {LandModelRequest} [landModel]
  * @returns {object}
  */
-function buildViewModel (record, landModelViewerUrl) {
+function buildViewModel (record, landModelViewerUrl, landModel = {}) {
   const links = (record.links ?? []).filter(hasSafeUrl)
 
   const serviceLinks = []
@@ -159,12 +190,15 @@ function buildViewModel (record, landModelViewerUrl) {
     }
   }
 
+  const landModelDownload = landModelDownloadFor(record, landModel)
+
   return {
-    pageTitle: record.title,
+    pageTitle: landModelDownload?.errorSummary ? `Error: ${record.title}` : record.title,
     heading: record.title,
     record,
     mapHref: canViewOnMap(record) ? mapHref(record.id, landModelViewerUrl) : null,
     downloadable: canDownload(record),
+    landModelDownload,
     serviceLinks,
     downloadLinks,
     licenceHref: licenceUrl(record.licence),
@@ -179,4 +213,4 @@ function buildViewModel (record, landModelViewerUrl) {
   }
 }
 
-export { buildViewModel }
+export { buildViewModel, canDownload, landModelKind }

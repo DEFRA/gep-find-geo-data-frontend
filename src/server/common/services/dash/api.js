@@ -5,6 +5,8 @@ import { DataLakeServiceClient } from '@azure/storage-file-datalake'
 import { DefaultAzureCredential } from '@azure/identity'
 import { getRecord } from '../geonetwork/client.js'
 
+const LAND_MODEL_DATA_PATH = 'land_model_data'
+
 const logger = createLogger()
 
 /**
@@ -42,37 +44,46 @@ function GetDataLakeServiceClientAD () {
 }
 
 /**
- * @param {string} id
- * @param {string} fileName
- * @returns {Promise<import('./client.js').DownloadResponse>}
+ * @param {{ details?: { errorCode?: string } }} error
+ * @returns {boolean}
  */
-async function postDownload (id, fileName) {
-  const filePath = await GetDatasetFilepath(id, fileName)
+function isFileNotFound (error) {
+  return error.details?.errorCode === 'BlobNotFound'
+}
+
+/**
+ * @param {string} filePath
+ * @returns {Promise<import('./client.js').FileStream>}
+ */
+async function streamFile (filePath) {
   const dataLakeServiceClient = GetDataLakeServiceClientAD()
   const fileSystemClient = dataLakeServiceClient.getFileSystemClient(`${config.get('dash.azureFileSystem')}`)
 
   try {
     const fileClient = fileSystemClient.getFileClient(filePath)
-    const fileProperties = await logExternalCall('Azure Data Lake', 'getProperties', () => fileClient.getProperties())
-    const downloadResponse = (await logExternalCall('Azure Data Lake', 'read', () => fileClient.read())).readableStreamBody
+    const readResponse = await logExternalCall('Azure Data Lake', 'read', () => fileClient.read())
     logger.debug('Dataset download stream opened')
 
     return {
-      file: downloadResponse,
-      contentType: fileProperties.contentType,
+      file: readResponse.readableStreamBody,
+      contentType: readResponse.contentType,
+      contentLength: readResponse.contentLength,
       fileName: filePath.split('/').slice(-1)[0]
     }
   } catch (error) {
-    if (
+    if (isFileNotFound(error)) {
+      logger.info('Dash file not found')
+      throw Boom.notFound()
+    } else if (
       error.name === 'CredentialUnavailableError' ||
         error.name === 'AggregateAuthenticationError' ||
         error.name === 'AuthenticationError'
     ) {
-      logger.error('No credential available. ' + error.message)
+      logger.error(error, 'No credential available')
     } else if (error.code === 'Forbidden') {
-      logger.error('Access denied. Check your RBAC role assignments. ' + error.message)
+      logger.error(error, 'Access denied. Check your RBAC role assignments')
     } else {
-      logger.error('Unexpected error:' + error.message)
+      logger.error(error, 'Dash file download request failed')
     }
 
     throw new Error('Dash file download request failed')
@@ -82,10 +93,18 @@ async function postDownload (id, fileName) {
 /**
  * @param {string} id
  * @param {string} fileName
- * @returns {Promise<import('./client.js').DownloadResponse>}
+ * @returns {Promise<import('./client.js').FileStream>}
  */
-async function download (id, fileName) {
-  return postDownload(id, fileName)
+async function openDatasetFile (id, fileName) {
+  return streamFile(await GetDatasetFilepath(id, fileName))
 }
 
-export { download }
+/**
+ * @param {string} filePath Relative to the land model data folder.
+ * @returns {Promise<import('./client.js').FileStream>}
+ */
+async function openLandModelFile (filePath) {
+  return streamFile(`${LAND_MODEL_DATA_PATH}/${filePath}`)
+}
+
+export { openDatasetFile, openLandModelFile }

@@ -10,6 +10,7 @@ import {
 
 import { initCookieBanner, initCookiesPage } from './cookie-consent.js'
 import { initCopyLinks } from './copy-link.js'
+import { initLandModelDownload } from './land-model-download.js'
 import { initMockLinks } from './mock-links.js'
 import { initReadMore } from './read-more.js'
 import { initSearch } from './search.js'
@@ -24,6 +25,7 @@ createAll(SkipLink)
 initCookieBanner()
 initCookiesPage()
 initCopyLinks()
+initLandModelDownload()
 initMockLinks()
 initReadMore()
 initSearch()

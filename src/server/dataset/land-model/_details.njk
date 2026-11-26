@@ -1,0 +1,10 @@
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set details = landModelDownload.details %}
+{% if details %}
+  {% set summaryHtml %}
+    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">You will download</p>
+    <p class="govuk-body govuk-!-margin-bottom-0">{{ details.summary }}</p>
+  {% endset %}
+  {{ govukInsetText({ html: summaryHtml }) }}
+{% endif %}

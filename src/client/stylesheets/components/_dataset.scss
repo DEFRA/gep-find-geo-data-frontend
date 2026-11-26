@@ -43,6 +43,22 @@
   white-space: nowrap;
 }
 
+// Hidden questions still count as :last-child, so space goes above
+.app-land-model-inset .govuk-form-group,
+.app-land-model-inset .app-land-model-format .govuk-body {
+  margin-bottom: 0;
+}
+
+.app-land-model-inset .app-land-model-format .govuk-form-group,
+.app-land-model-inset .app-land-model-format .govuk-body {
+  @include govuk-responsive-margin(6, "top");
+}
+
+.app-land-model-inset .govuk-warning-text {
+  @include govuk-responsive-margin(3, "top");
+  margin-bottom: 0;
+}
+
 .app-dataset-data__map {
   display: flex;
   flex-wrap: wrap;
