@@ -9,12 +9,13 @@ const SORT_OPTIONS = [
   { value: 'relevance', text: 'Best match' },
   { value: 'titleAsc', text: 'Alphabetical (A-Z)' },
   { value: 'titleDesc', text: 'Alphabetical (Z-A)' },
-  { value: 'newest', text: 'Updated (newest)', default: true },
+  { value: 'newest', text: 'Updated (newest)' },
   { value: 'oldest', text: 'Updated (oldest)' }
 ]
 
 const VALID_SORTS = new Set(SORT_OPTIONS.map((option) => option.value))
-const DEFAULT_SORT = SORT_OPTIONS.find((option) => option.default).value
+const RELEVANCE_SORT = 'relevance'
+const NEWEST_SORT = 'newest'
 const VALID_PAGE_SIZES = new Set(PAGE_SIZE_OPTIONS)
 
 const SIDEBAR_ORDER = [
@@ -89,18 +90,27 @@ function parseFacetFilters (rawQuery) {
   return filters
 }
 
-function parseSort (q, rawQuery) {
+function defaultSortFor (q) {
   if (q) {
-    return 'relevance'
-  } else {
-    return VALID_SORTS.has(rawQuery.sort) ? rawQuery.sort : DEFAULT_SORT
+    return RELEVANCE_SORT
   }
+
+  return NEWEST_SORT
+}
+
+function parseSort (q, rawQuery) {
+  const sort = rawQuery.sort
+  if (!VALID_SORTS.has(sort) || (sort === RELEVANCE_SORT && !q)) {
+    return defaultSortFor(q)
+  }
+
+  return sort
 }
 
 /**
  * @typedef ParsedQuery
  * @property {string} q
- * @property {'titleAsc'|'titleDesc'|'newest'|'oldest'} sort
+ * @property {'relevance'|'titleAsc'|'titleDesc'|'newest'|'oldest'} sort
  * @property {number} page
  * @property {number} size
  * @property {import('../common/services/geonetwork/client.js').SearchFilters} filters
@@ -161,7 +171,7 @@ function buildParams (parsed, overrides = {}) {
   if (merged.q) {
     params.set('q', merged.q)
   }
-  if (merged.sort && merged.sort !== DEFAULT_SORT) {
+  if (merged.sort && merged.sort !== defaultSortFor(merged.q)) {
     params.set('sort', merged.sort)
   }
 
@@ -314,10 +324,15 @@ function buildHiddenFilters (parsed) {
  * @param {string} input.basePath
  */
 export function buildViewModel ({ parsed, response, basePath }) {
-  const sortOptions = SORT_OPTIONS.map((option) => ({
-    ...option,
-    selected: option.value === parsed.sort
-  }))
+  const defaultSort = defaultSortFor(parsed.q)
+  const sortOptions = SORT_OPTIONS
+    .filter((option) => parsed.q || option.value !== RELEVANCE_SORT)
+    .map(({ value, text }) => ({
+      // Default submits empty so the server can tell no sort was chosen
+      value: value === defaultSort ? '' : value,
+      text,
+      selected: value === parsed.sort
+    }))
 
   const pageSizeOptions = PAGE_SIZE_OPTIONS.map((value) => ({
     value: String(value),
