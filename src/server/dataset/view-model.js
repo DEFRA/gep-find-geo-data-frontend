@@ -67,7 +67,7 @@ function safeUrl (value) {
 function searchHref (name, value) {
   const params = new URLSearchParams()
   params.set(name, value)
-  return `/?${params.toString()}`
+  return `/search?${params.toString()}`
 }
 
 /**
@@ -207,7 +207,7 @@ function buildViewModel (record, landModelViewerUrl, landModel = {}) {
     categoryLinks: tagLinks(record.categories ?? [], 'category'),
     keywordLinks: tagLinks(record.keywords ?? [], 'keyword'),
     breadcrumbs: [
-      { text: 'Search', href: '/' },
+      { text: 'Search', href: '/search' },
       { text: record.title }
     ]
   }

@@ -232,12 +232,12 @@ describe('#dataset view-model', () => {
 
     const { categoryLinks, keywordLinks } = buildViewModel(record, landModelViewerUrl)
     expect(categoryLinks).toEqual([
-      { text: 'Environment', href: '/?category=Environment' },
-      { text: 'Elevation', href: '/?category=Elevation' }
+      { text: 'Environment', href: '/search?category=Environment' },
+      { text: 'Elevation', href: '/search?category=Elevation' }
     ])
     expect(keywordLinks).toEqual([
-      { text: 'Habitats and biotopes', href: '/?keyword=Habitats+and+biotopes' },
-      { text: 'landscape', href: '/?keyword=landscape' }
+      { text: 'Habitats and biotopes', href: '/search?keyword=Habitats+and+biotopes' },
+      { text: 'landscape', href: '/search?keyword=landscape' }
     ])
   })
 })

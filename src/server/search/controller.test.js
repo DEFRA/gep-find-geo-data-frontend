@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { load } from 'cheerio'
 
 import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
@@ -32,7 +33,7 @@ function exampleResult (overrides = {}) {
   }
 }
 
-const INVALID_DATE_URL = '/?dateMode=since&sinceDate-day=14&sinceDate-month=4'
+const INVALID_DATE_URL = '/search?dateMode=since&sinceDate-day=14&sinceDate-month=4'
 
 describe('#searchController', () => {
   let server
@@ -55,7 +56,7 @@ describe('#searchController', () => {
     test('forwards the parsed query to the client', async () => {
       await server.inject({
         method: 'GET',
-        url: '/?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&category=Environment&category=Elevation&keyword=ecology&keyword=landscape&page=3&sort=titleAsc',
+        url: '/search?q=flood&owner=Natural%20England&owner=Environment%20Agency&dataType=Grid&category=Environment&category=Elevation&keyword=ecology&keyword=landscape&page=3&sort=titleAsc',
         auth: mockAuthCredentials
       })
 
@@ -96,7 +97,7 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/',
+        url: '/search',
         auth: mockAuthCredentials
       })
 
@@ -111,7 +112,7 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/',
+        url: '/search',
         auth: mockAuthCredentials
       })
 
@@ -121,13 +122,24 @@ describe('#searchController', () => {
     test('renders the page heading and search form', async () => {
       const { result, statusCode } = await server.inject({
         method: 'GET',
-        url: '/',
+        url: '/search',
         auth: mockAuthCredentials
       })
 
       expect(statusCode).toBe(statusCodes.ok)
       expect(result).toContain('Search Defra Group Land Data')
       expect(result).toContain('id="search-input"')
+    })
+
+    test('renders the service navigation with ATLAS Search current', async () => {
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/search',
+        auth: mockAuthCredentials
+      })
+
+      const $ = load(result)
+      expect($('.govuk-service-navigation__link[aria-current="page"]').attr('href')).toBe('/search')
     })
 
     test('renders the totals, result titles and dataset links', async () => {
@@ -137,7 +149,7 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?q=flood',
+        url: '/search?q=flood',
         auth: mockAuthCredentials
       })
 
@@ -159,7 +171,7 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/',
+        url: '/search',
         auth: mockAuthCredentials
       })
 
@@ -182,7 +194,7 @@ describe('#searchController', () => {
 
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?owner=Natural%20England',
+        url: '/search?owner=Natural%20England',
         auth: mockAuthCredentials
       })
 
@@ -195,7 +207,7 @@ describe('#searchController', () => {
     test('renders keyword filters as hidden inputs', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?keyword=ecology&keyword=landscape',
+        url: '/search?keyword=ecology&keyword=landscape',
         auth: mockAuthCredentials
       })
 
@@ -206,7 +218,7 @@ describe('#searchController', () => {
     test('renders an empty-state message when no results match', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?q=zzznomatch',
+        url: '/search?q=zzznomatch',
         auth: mockAuthCredentials
       })
 
@@ -216,7 +228,7 @@ describe('#searchController', () => {
     test('renders the Date filter with options', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/',
+        url: '/search',
         auth: mockAuthCredentials
       })
 
@@ -231,7 +243,7 @@ describe('#searchController', () => {
     test('pre-selects the since radio, preserves day/month/year and renders its chip', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?dateMode=since&sinceDate-day=14&sinceDate-month=4&sinceDate-year=2024',
+        url: '/search?dateMode=since&sinceDate-day=14&sinceDate-month=4&sinceDate-year=2024',
         auth: mockAuthCredentials
       })
 
@@ -245,7 +257,7 @@ describe('#searchController', () => {
     test('pre-selects the time period radio, preserves years and renders both chips', async () => {
       const { result } = await server.inject({
         method: 'GET',
-        url: '/?dateMode=period&fromYear=2002&toYear=2004',
+        url: '/search?dateMode=period&fromYear=2002&toYear=2004',
         auth: mockAuthCredentials
       })
 
@@ -279,7 +291,7 @@ describe('#searchController', () => {
 
       const response = await server.inject({
         method: 'GET',
-        url: '/?q=flood',
+        url: '/search?q=flood',
         headers: { accept: 'application/json' },
         auth: mockAuthCredentials
       })
@@ -288,7 +300,7 @@ describe('#searchController', () => {
       expect(response.headers['content-type']).toContain('application/json')
 
       const body = JSON.parse(response.payload)
-      expect(body.url).toBe('/?q=flood')
+      expect(body.url).toBe('/search?q=flood')
       expect(body.partials['search-results']).toContain('Flood Extents')
       expect(body.partials['search-results']).toContain('1 result')
       expect(body.partials['search-filters']).toBeDefined()
@@ -315,7 +327,7 @@ describe('#searchController', () => {
 
       const response = await server.inject({
         method: 'GET',
-        url: '/',
+        url: '/search',
         auth: mockAuthCredentials
       })
 

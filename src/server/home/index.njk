@@ -1,0 +1,104 @@
+{% extends 'layouts/page.njk' %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{# Replaces the template's width container so the hero and divider can be full width #}
+{% block container %}
+<main class="govuk-main-wrapper govuk-!-padding-0" id="main-content">
+  <div class="app-hero">
+    <div class="govuk-width-container">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h1 class="govuk-heading-xl app-hero__title">Find and use Defra Group geospatial data</h1>
+          <p class="govuk-body-l app-hero__lead">Access trusted land and spatial (ATLAS) data from across Defra Group, in one place.</p>
+
+          <div class="govuk-button-group govuk-!-margin-bottom-0">
+            {{ govukButton({
+              text: "Search for a dataset",
+              href: "/search",
+              classes: "govuk-button--inverse",
+              isStartButton: true
+            }) }}
+            {{ govukButton({
+              text: "Visualise on a map",
+              href: links.viewer,
+              classes: "govuk-button--inverse",
+              isStartButton: true
+            }) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="govuk-width-container app-hub__section">
+    <h2 class="govuk-heading-l">What do you want to do?</h2>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="app-card">
+          <h3 class="govuk-heading-m">
+            <a class="govuk-link" href="/search">ATLAS Search</a>
+          </h3>
+          <p class="govuk-body govuk-!-margin-bottom-0">Search datasets by name, category or publisher</p>
+        </div>
+
+        <div class="app-card">
+          <h3 class="govuk-heading-m">
+            <a class="govuk-link" href="{{ links.viewer }}">ATLAS Viewer</a>
+          </h3>
+          <p class="govuk-body govuk-!-margin-bottom-0">Visualise a dataset or find data about an area</p>
+        </div>
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <aside class="app-related" aria-labelledby="get-help-heading">
+          <h2 class="govuk-heading-m" id="get-help-heading">Get help</h2>
+
+          <p class="govuk-body govuk-!-margin-bottom-1">
+            <a class="govuk-link govuk-!-font-weight-bold" href="{{ links.feedback }}">Report an issue</a>
+          </p>
+          <p class="govuk-body app-related__description">Tell us about incorrect data or a technical problem with ATLAS</p>
+
+          <p class="govuk-body govuk-!-margin-bottom-1">
+            <a class="govuk-link govuk-!-font-weight-bold" href="{{ links.guidance }}" target="_blank" rel="noreferrer noopener">Guidance (opens in a new tab)</a>
+          </p>
+          <p class="govuk-body app-related__description">Learn how to use ATLAS and its data</p>
+
+          <h2 class="govuk-heading-m govuk-!-margin-top-7">Contact us</h2>
+          <p class="govuk-body app-related__description">
+            For general queries, email
+            <a class="govuk-link" href="mailto:{{ links.contactEmail }}">{{ links.contactEmail }}</a>
+          </p>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-0">
+
+  <div class="govuk-width-container app-hub__section">
+    <h2 class="govuk-heading-l">About ATLAS</h2>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">What it is</h3>
+        <p class="govuk-body">ATLAS brings together the latest land and spatial data from across Defra. Data is checked for quality and standardised, so all the data can be relied upon and is ready to use.</p>
+        <p class="govuk-body">ATLAS has a dedicated team to expand what’s on offer and keep quality and performance at the highest standards.</p>
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">Who it is for</h3>
+        <p class="govuk-body">The service is for everyone across Defra Group.</p>
+        <p class="govuk-body">Geospatial analysts will find standardised datasets to help with complex analysis. Policy staff can get insights quickly at national or regional level. Operations can see their own and other ALB data for their particular focus area.</p>
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">What data it holds</h3>
+        <p class="govuk-body">ATLAS holds data from across Defra and elsewhere including land cover, land use, ownership, land management and soil.</p>
+        <p class="govuk-body">ATLAS also unifies in a Land Model so you can easily summarise data at different levels matched to a national grid and satellite imagery.</p>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

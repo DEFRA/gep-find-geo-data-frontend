@@ -1,10 +1,9 @@
 // import custom component styles
 @use 'heading/heading';
 @use 'defra-header';
-@use 'defra-layout';
-@use 'defra-navigation';
-@use 'defra-service-navigation';
 @use 'defra-footer';
+@use 'service-navigation';
+@use 'hub';
 @use 'defra-pagination';
 @use 'cookie-banner';
 @use 'js-states';

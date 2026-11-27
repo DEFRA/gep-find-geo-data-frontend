@@ -1,10 +1,10 @@
-@use '../variables/colours' as *;
+@use 'govuk-frontend' as *;
 
 .defra-footer {
   padding-top: 25px;
   padding-bottom: 25px;
-  border-top: 10px solid $defra-green;
-  background-color: $govuk-light-grey;
+  border-top: 10px solid var(--govuk-brand-colour);
+  background-color: govuk-colour("black", $variant: "tint-95");
 }
 
 .defra-footer__meta {
@@ -17,18 +17,6 @@
 
 .defra-footer__meta-item {
   width: 100%;
-}
-
-.defra-footer__top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.defra-footer__user-info {
-  display: flex;
-  gap: 15px;
-  white-space: nowrap;
 }
 
 .defra-footer__inline-list {
@@ -58,23 +46,16 @@
 
   &:link,
   &:visited {
-    color: $govuk-black;
+    color: var(--govuk-text-colour);
   }
 
   &:hover {
-    color: rgb(11, 12, 12, 0.99);
-    text-decoration-thickness: max(3px, 0.1875rem, 0.12em);
-    text-decoration-skip-ink: none;
+    @include govuk-link-hover-decoration;
+    color: var(--govuk-text-colour);
   }
 
   &:focus {
-    outline: 3px solid transparent;
-    color: $govuk-black;
-    background-color: $govuk-yellow;
-    box-shadow:
-      0 -2px $govuk-yellow,
-      0 4px $govuk-black;
-    text-decoration: none;
+    @include govuk-focused-text;
   }
 }
 
@@ -84,5 +65,5 @@
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   line-height: 1.25;
-  color: $govuk-black;
+  color: var(--govuk-text-colour);
 }

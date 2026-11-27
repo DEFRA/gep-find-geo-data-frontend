@@ -199,10 +199,10 @@ describe('#datasetController', () => {
     })
 
     expect(statusCode).toBe(statusCodes.ok)
-    expect(result).toContain('href="/?category=Environment"')
+    expect(result).toContain('href="/search?category=Environment"')
     expect(result).toContain('>Environment</a>')
-    expect(result).toContain('href="/?keyword=Habitats+and+biotopes"')
-    expect(result).toContain('href="/?keyword=landscape"')
+    expect(result).toContain('href="/search?keyword=Habitats+and+biotopes"')
+    expect(result).toContain('href="/search?keyword=landscape"')
   })
 
   test('renders the licence link to open in a new tab', async () => {

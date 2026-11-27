@@ -1,0 +1,33 @@
+@use "govuk-frontend" as *;
+
+.app-hub__section {
+  @include govuk-responsive-padding(8, "top");
+  @include govuk-responsive-padding(6, "bottom");
+}
+
+.app-hero {
+  @include govuk-responsive-padding(8, "top");
+  @include govuk-responsive-padding(6, "bottom");
+  color: govuk-functional-colour(inverse-text);
+  background-color: var(--govuk-brand-colour);
+}
+
+.app-hero__title,
+.app-hero__lead {
+  color: inherit;
+}
+
+.app-card {
+  @include govuk-responsive-margin(4, "bottom");
+  @include govuk-responsive-padding(4);
+  border: 1px solid var(--govuk-border-colour);
+}
+
+.app-related {
+  @include govuk-responsive-padding(4, "top");
+  border-top: 2px solid var(--govuk-brand-colour);
+}
+
+.app-related__description {
+  color: var(--govuk-secondary-text-colour);
+}

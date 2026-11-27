@@ -32,9 +32,15 @@ export function context (request) {
     user,
     assetPath: `${assetPath}/assets`,
     serviceName: config.get('serviceDisplayName'),
-    serviceUrl: '/',
+    serviceUrl: '/search',
     breadcrumbs: [],
     navigation: buildNavigation(request),
+    links: {
+      viewer: config.get('landModelViewerUrl'),
+      feedback: config.get('feedbackUrl'),
+      guidance: config.get('guidanceUrl'),
+      contactEmail: config.get('contactEmail')
+    },
     cspNonce: request.plugins?.blankie?.nonces?.script ?? null,
     googleTagManagerKey: config.get('googleAnalytics.googleTagManagerKey'),
     cookieName: config.get('cookieConsent.name'),

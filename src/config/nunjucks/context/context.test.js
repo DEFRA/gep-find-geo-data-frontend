@@ -62,19 +62,14 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           getAssetPath: expect.any(Function),
-          navigation: [
-            {
-              current: true,
-              text: 'Home',
-              href: '/'
-            }
-          ],
+          navigation: expect.any(Array),
+          links: expect.any(Object),
           cspNonce: null,
           googleTagManagerKey: '',
           cookieName: 'gep-find-geo-data-frontend_policy',
           currentUrl: '/',
-          serviceName: 'Defra Group Land Service - Search and Find',
-          serviceUrl: '/',
+          serviceName: 'ATLAS - Search',
+          serviceUrl: '/search',
           user: null
         })
       })
@@ -165,19 +160,14 @@ describe('context and cache', () => {
           assetPath: '/public/assets',
           breadcrumbs: [],
           getAssetPath: expect.any(Function),
-          navigation: [
-            {
-              current: true,
-              text: 'Home',
-              href: '/'
-            }
-          ],
+          navigation: expect.any(Array),
+          links: expect.any(Object),
           cspNonce: null,
           googleTagManagerKey: '',
           cookieName: 'gep-find-geo-data-frontend_policy',
           currentUrl: '/',
-          serviceName: 'Defra Group Land Service - Search and Find',
-          serviceUrl: '/',
+          serviceName: 'ATLAS - Search',
+          serviceUrl: '/search',
           user: null
         })
       })

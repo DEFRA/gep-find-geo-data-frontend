@@ -3,7 +3,7 @@ import Accept from '@hapi/accept'
 import * as geonetwork from '../common/services/geonetwork/client.js'
 import { buildViewModel, parseQuery, toSearchRequest } from './view-model.js'
 
-const BASE_PATH = '/'
+const BASE_PATH = '/search'
 
 export const searchController = {
   async handler (request, h) {

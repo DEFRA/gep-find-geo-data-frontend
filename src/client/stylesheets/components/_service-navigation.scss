@@ -1,0 +1,53 @@
+@use 'govuk-frontend' as *;
+
+.app-service-navigation {
+  border-bottom-color: var(--govuk-border-colour);
+  background-color: var(--govuk-body-background-colour);
+
+  .govuk-service-navigation__link {
+    font-weight: bold;
+
+    &:link,
+    &:visited,
+    &:hover {
+      color: var(--govuk-text-colour);
+    }
+  }
+
+  .govuk-service-navigation__item--active {
+    border-color: var(--govuk-brand-colour);
+
+    .govuk-service-navigation__link:link,
+    .govuk-service-navigation__link:visited {
+      color: var(--govuk-brand-colour);
+    }
+  }
+
+  // Hover shows a bar like the current item instead of an underline
+  @include govuk-media-query($from: tablet) {
+    .govuk-service-navigation__item:has(.govuk-service-navigation__link:hover) .govuk-service-navigation__link {
+      text-decoration: none;
+    }
+
+    .govuk-service-navigation__item:not(.govuk-service-navigation__item--active):has(.govuk-service-navigation__link:hover) {
+      padding-bottom: govuk-spacing(3) - govuk-spacing(1);
+      border-bottom-width: govuk-spacing(1);
+      border-color: var(--govuk-text-colour);
+    }
+  }
+
+  // Focus style for keyboard users only, not mouse clicks
+  .govuk-service-navigation__link:focus:not(:focus-visible) {
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--govuk-text-colour);
+  }
+
+  .govuk-service-navigation__item--active .govuk-service-navigation__link:focus:not(:focus-visible) {
+    color: var(--govuk-brand-colour);
+  }
+
+  .govuk-service-navigation__toggle {
+    color: var(--govuk-text-colour);
+  }
+}

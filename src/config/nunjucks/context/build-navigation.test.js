@@ -1,29 +1,19 @@
 import { buildNavigation } from './build-navigation.js'
 
-function mockRequest (options) {
-  return { ...options }
+function currentItems (path) {
+  return buildNavigation({ path })
+    .filter((item) => item.current)
+    .map((item) => item.text)
 }
 
 describe('#buildNavigation', () => {
-  test('Should provide expected navigation details', () => {
-    expect(
-      buildNavigation(mockRequest({ path: '/non-existent-path' }))
-    ).toEqual([
-      {
-        current: false,
-        text: 'Home',
-        href: '/'
-      }
-    ])
-  })
-
-  test('Should provide expected highlighted navigation details', () => {
-    expect(buildNavigation(mockRequest({ path: '/' }))).toEqual([
-      {
-        current: true,
-        text: 'Home',
-        href: '/'
-      }
-    ])
+  test.each([
+    ['/', ['Home']],
+    ['/search', ['ATLAS Search']],
+    ['/dataset/abc-123', ['ATLAS Search']],
+    ['/privacy', []],
+    [undefined, []]
+  ])('marks current items for %s', (path, expected) => {
+    expect(currentItems(path)).toEqual(expected)
   })
 })

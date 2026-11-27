@@ -16,7 +16,7 @@
   max-width: 540px;
 
   &:focus-within {
-    outline: 3px solid $govuk-yellow;
+    outline: 3px solid var(--govuk-focus-colour);
     outline-offset: 0;
   }
 }
@@ -29,13 +29,13 @@
 
   &:focus {
     outline: none;
-    border-right: 2px solid $govuk-black;
+    border-right: 2px solid var(--govuk-focus-text-colour);
     box-shadow: none;
   }
 }
 
 .app-search-box__button {
-  background-color: $defra-green;
+  background-color: var(--govuk-brand-colour);
   flex: 0 0 44px;
   padding: 0;
   margin-bottom: 0;
@@ -43,7 +43,7 @@
   align-items: center;
   justify-content: center;
   border: 0;
-  color: $govuk-white;
+  color: var(--govuk-inverse-text-colour);
   cursor: pointer;
   box-shadow: none;
 
@@ -57,10 +57,10 @@
 
   &:focus,
   &:focus:not(:active):not(:hover) {
-    outline: 2px solid $govuk-black;
+    outline: 2px solid var(--govuk-focus-text-colour);
     outline-offset: -2px;
-    background-color: $defra-green;
-    color: $govuk-white;
+    background-color: var(--govuk-brand-colour);
+    color: var(--govuk-inverse-text-colour);
     box-shadow: none;
   }
 }
@@ -118,7 +118,7 @@
   }
 
   .govuk-details__summary:not(:focus) .govuk-details__summary-text {
-    color: $defra-green;
+    color: var(--govuk-link-colour);
   }
 
   .govuk-details__text {
@@ -155,7 +155,7 @@
 }
 
 .app-filter-panel__apply {
-  background-color: $defra-green;
+  background-color: var(--govuk-brand-colour);
 
   &:hover {
     background-color: $defra-green-dark;
@@ -175,7 +175,7 @@
   gap: 10px 15px;
   padding: 10px 15px;
   margin: 0;
-  background-color: $govuk-white;
+  background-color: var(--govuk-body-background-colour);
 
   &:nth-child(odd) {
     background-color: $govuk-light-grey;
@@ -213,7 +213,7 @@
   padding: 4px 12px;
   border: 1px solid $govuk-mid-grey;
   border-radius: 3px;
-  background-color: $govuk-white;
+  background-color: var(--govuk-body-background-colour);
   font-family: $app-font-family;
   font-size: 16px;
   line-height: 1.5;
@@ -224,20 +224,20 @@
   &:hover,
   &:active,
   &:focus {
-    color: $govuk-black;
+    color: var(--govuk-text-colour);
     text-decoration: none;
   }
 
   &:hover {
     background-color: $defra-light-green;
-    border-color: $defra-green;
+    border-color: var(--govuk-brand-colour);
   }
 
   &:focus {
-    outline: 3px solid $govuk-yellow;
+    outline: 3px solid var(--govuk-focus-colour);
     outline-offset: 0;
-    background-color: $govuk-yellow;
-    box-shadow: inset 0 0 0 1px $govuk-black;
+    background-color: var(--govuk-focus-colour);
+    box-shadow: inset 0 0 0 1px var(--govuk-focus-text-colour);
   }
 }
 
@@ -249,7 +249,7 @@
 
   .app-active-filters__chip:hover &,
   .app-active-filters__chip:focus & {
-    color: $govuk-black;
+    color: var(--govuk-text-colour);
   }
 }
 
@@ -318,15 +318,15 @@
   &,
   &:link,
   &:visited {
-    color: $defra-green;
+    color: var(--govuk-link-colour);
   }
 
   &:hover {
-    color: $defra-green-dark;
+    color: var(--govuk-link-hover-colour);
   }
 
   &:focus {
-    color: $govuk-black;
+    color: var(--govuk-focus-text-colour);
   }
 }
 
@@ -334,11 +334,11 @@
   &,
   &:link,
   &:visited {
-    color: $defra-green;
+    color: var(--govuk-link-colour);
   }
 
   &:hover {
-    color: $defra-green-dark;
+    color: var(--govuk-link-hover-colour);
   }
 
   &:focus {
