@@ -50,7 +50,14 @@ export const config = convict({
   serviceDisplayName: {
     doc: 'Human-readable service name shown in the UI',
     format: String,
-    default: 'Defra Group Land Service - Search and Find'
+    default: 'ATLAS - Search',
+    env: 'SERVICE_DISPLAY_NAME'
+  },
+  hubDisplayName: {
+    doc: 'Human-readable service name shown on the hub page',
+    format: String,
+    default: 'ATLAS - Defra Group',
+    env: 'HUB_DISPLAY_NAME'
   },
   root: {
     doc: 'Project root',
@@ -85,10 +92,28 @@ export const config = convict({
     env: 'APP_BASE_URL'
   },
   landModelViewerUrl: {
-    doc: 'Land Model Viewer frontend base URL for view on map links',
+    doc: 'Land Model Viewer frontend base URL for navigation and view on map links',
     format: 'url',
     default: 'http://localhost:3002',
     env: 'LAND_MODEL_VIEWER_URL'
+  },
+  feedbackUrl: {
+    doc: 'Land Model Feedback frontend base URL for report an issue links',
+    format: 'url',
+    default: 'http://localhost:3004',
+    env: 'FEEDBACK_URL'
+  },
+  guidanceUrl: {
+    doc: 'Guidance material URL',
+    format: 'url',
+    default: 'https://defra.sharepoint.com/sites/DEFRA-Com720/Guidance%20and%20Information/Forms/AllItems.aspx',
+    env: 'GUIDANCE_URL'
+  },
+  contactEmail: {
+    doc: 'Contact email address for general queries',
+    format: 'email',
+    default: 'atlas@defra.gov.uk',
+    env: 'CONTACT_EMAIL'
   },
   log: {
     enabled: {

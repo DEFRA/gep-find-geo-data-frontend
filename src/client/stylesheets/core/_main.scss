@@ -1,30 +1,29 @@
 @use 'govuk-frontend' as *;
-@use '../variables/colours' as *;
 
 body {
   font-family: Helvetica, Arial, sans-serif;
-}
-
-.govuk-link:link {
-  color: $defra-green;
-}
-
-.govuk-link:visited {
-  color: $govuk-link-visited-colour;
-}
-
-.govuk-link:hover {
-  color: $defra-green-dark;
-}
-
-.govuk-link:focus {
-  color: var(--govuk-focus-text-colour);
 }
 
 .app-main-wrapper {
   display: block;
   padding-top: govuk-spacing(4);
   padding-bottom: govuk-spacing(3);
+}
+
+.govuk-main-wrapper {
+  padding-top: 0;
+  overflow-x: visible;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.govuk-breadcrumbs {
+  padding-top: 15px;
+  padding-bottom: 10px;
 }
 
 // Constrain images within content areas

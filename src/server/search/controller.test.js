@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { load } from 'cheerio'
 
 import { createServer } from '../server.js'
 import { statusCodes } from '../common/constants/status-codes.js'
@@ -128,6 +129,17 @@ describe('#searchController', () => {
       expect(statusCode).toBe(statusCodes.ok)
       expect(result).toContain('Search Defra Group Land Data')
       expect(result).toContain('id="search-input"')
+    })
+
+    test('renders the service navigation with ATLAS Search current', async () => {
+      const { result } = await server.inject({
+        method: 'GET',
+        url: '/search',
+        auth: mockAuthCredentials
+      })
+
+      const $ = load(result)
+      expect($('.govuk-service-navigation__link[aria-current="page"]').attr('href')).toBe('/search')
     })
 
     test('renders the totals, result titles and dataset links', async () => {

@@ -1,10 +1,10 @@
-@forward 'pkg:govuk-frontend' with (
-  $govuk-assets-path: '/public/assets/',
-  $govuk-global-styles: true,
-  $govuk-include-default-font-face: false,
-  $govuk-font-family: (
-    'Helvetica',
-    'Arial',
-    sans-serif
-  )
+@use "govuk-settings" as settings;
+
+// Expose the GOV.UK Sass API and output its CSS once, in application.scss.
+@forward "pkg:govuk-frontend" with (
+  $govuk-assets-path: settings.$assets-path,
+  $govuk-global-styles: settings.$global-styles,
+  $govuk-include-default-font-face: settings.$include-default-font-face,
+  $govuk-font-family: settings.$font-family,
+  $govuk-functional-colours: settings.$functional-colours
 );
