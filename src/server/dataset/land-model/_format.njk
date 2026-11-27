@@ -1,0 +1,8 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% set format = landModelDownload.format %}
+{% if format.text %}
+  <p class="govuk-body app-js-only">{{ format.text }}</p>
+{% endif %}
+
+{{ govukSelect(format.select) }}

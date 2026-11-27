@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { initSearch } from './search.js'
 
@@ -62,18 +62,10 @@ function mockFetchOk (payload) {
   })
 }
 
-async function flushAsync () {
-  await Promise.resolve()
-  await Promise.resolve()
-}
+const flushAsync = () => new Promise((resolve) => setTimeout(resolve))
 
 describe('search live-enhancement', () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-  })
-
   afterEach(() => {
-    vi.useRealTimers()
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
     window.sessionStorage.clear()
@@ -101,7 +93,6 @@ describe('search live-enhancement', () => {
     document.querySelector('form').dispatchEvent(
       new Event('submit', { cancelable: true })
     )
-    await vi.runAllTimersAsync()
     await flushAsync()
 
     expect(fetchSpy).toHaveBeenCalledTimes(1)
@@ -128,7 +119,6 @@ describe('search live-enhancement', () => {
     document.querySelector('form').dispatchEvent(
       new Event('submit', { cancelable: true })
     )
-    await vi.runAllTimersAsync()
     await flushAsync()
 
     expect(document.getElementById('search-error-summary').innerHTML).toBe('')
@@ -173,7 +163,6 @@ describe('search live-enhancement', () => {
     input.value = 'flood'
     input.dispatchEvent(new Event('input', { bubbles: true }))
 
-    await vi.advanceTimersByTimeAsync(500)
     await flushAsync()
 
     expect(fetchSpy).not.toHaveBeenCalled()

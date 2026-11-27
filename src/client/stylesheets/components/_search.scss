@@ -147,10 +147,6 @@
   transition: transform 0.2s ease;
 }
 
-.govuk-frontend-supported .app-js-fallback {
-  display: none;
-}
-
 .app-filter-panel__actions {
   display: flex;
   align-items: center;
@@ -299,13 +295,6 @@
   margin-bottom: 0;
   text-align: right;
   color: $govuk-secondary-text-colour;
-}
-
-// ===== Loading state =====
-
-.app-search-region[aria-busy="true"] {
-  opacity: 0.3;
-  pointer-events: none;
 }
 
 // ===== Search results list =====

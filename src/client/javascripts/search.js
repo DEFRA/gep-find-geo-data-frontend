@@ -6,16 +6,10 @@ import {
   Radios
 } from 'govuk-frontend'
 
+import { FetchError, buildUrl, fetchPartials } from '../common/helpers/fetch-partials.js'
 import { createSessionStore } from '../common/helpers/session-store.js'
 
 const GOVUK_PARTIAL_COMPONENTS = [Button, Checkboxes, ErrorSummary, Radios]
-
-class FetchError extends Error {
-  constructor (status) {
-    super(`Search failed: ${status}`)
-    this.status = status
-  }
-}
 
 const openFiltersStore = createSessionStore('gep:search:openFilters')
 
@@ -48,11 +42,6 @@ function recordToggle (event) {
   openFiltersStore.write([...open])
 }
 
-function buildUrl (form, endpoint) {
-  const qs = new URLSearchParams(new FormData(form)).toString()
-  return qs ? `${endpoint}?${qs}` : endpoint
-}
-
 function createPartialsLoader ({ resultsEl }) {
   let abortController = null
 
@@ -64,21 +53,14 @@ function createPartialsLoader ({ resultsEl }) {
     }
   }
 
-  const fetchPartials = async (url) => {
+  const loadPartials = async (url) => {
     abortController?.abort()
     abortController = new AbortController()
     const { signal } = abortController
     setBusy(true)
 
     try {
-      const response = await fetch(url, {
-        headers: { Accept: 'application/json' },
-        signal
-      })
-      if (!response.ok) {
-        throw new FetchError(response.status)
-      }
-      return await response.json()
+      return await fetchPartials(url, signal)
     } finally {
       if (!signal.aborted) {
         setBusy(false)
@@ -102,7 +84,7 @@ function createPartialsLoader ({ resultsEl }) {
 
   const load = async (url, onFailure) => {
     try {
-      const data = await fetchPartials(url)
+      const data = await loadPartials(url)
       swapPartials(data)
       globalThis.history.pushState({}, '', data.url || url)
     } catch (error) {
@@ -120,7 +102,7 @@ function createPartialsLoader ({ resultsEl }) {
 
   const syncFromHistory = async (url) => {
     try {
-      const data = await fetchPartials(url)
+      const data = await loadPartials(url)
       swapPartials(data)
     } catch (error) {
       if (error.name !== 'AbortError') {

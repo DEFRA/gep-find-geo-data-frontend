@@ -45,11 +45,13 @@ describe('#startServer', () => {
     })
   })
 
-  test('logs the configured GeoNetwork URL when using the live client', async () => {
+  test('logs where the live clients point', async () => {
     const originalGet = config.get.bind(config)
     const get = vi.spyOn(config, 'get').mockImplementation((key) => {
       if (key === 'geonetwork.useMock') return false
       if (key === 'geonetwork.apiUrl') return 'https://geonetwork.example.test/srv/api'
+      if (key === 'dash.useMock') return false
+      if (key === 'dash.azureAccountName') return 'examplestorage'
       return originalGet(key)
     })
     const server = { start: vi.fn(), logger: { info: vi.fn() } }
@@ -57,6 +59,7 @@ describe('#startServer', () => {
     try {
       await startServerImport.startServer()
       expect(server.logger.info).toHaveBeenCalledWith('GeoNetwork client: live at https://geonetwork.example.test/srv/api')
+      expect(server.logger.info).toHaveBeenCalledWith('Dash client: live at examplestorage')
     } finally {
       get.mockRestore()
     }
